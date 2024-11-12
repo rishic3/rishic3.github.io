@@ -142,7 +142,7 @@
         <ul class="file-list" id="fileList">
             <!-- toggle sections linked to markdown files -->
             <li class="file-item">
-                <button class="file-toggle" data-file="posts/sandel.md">post1</button>
+                <button class="file-toggle" data-file="posts/sandel.md"><i>The Tyranny of Merit</i>, Michael J. Sandel</button>
                 <div class="file-content">
                     <div class="markdown-content"></div>
                 </div>
@@ -196,18 +196,18 @@
                     toggle.nextElementSibling.classList.toggle('active');
     
                     // Only fetch and render if the content hasn't been loaded before
-                    if (toggle.classList.contains('active') && !fileContentDiv.innerHTML.trim()) {
-                        try {
-                            const response = await fetch(filePath);
-                            if (!response.ok) throw new Error(`Could not load ${filePath}`);
-                            const markdown = await response.text();
-                            
-                            // Use marked library to convert markdown to HTML
-                            fileContentDiv.innerHTML = marked.parse(markdown);
-                        } catch (error) {
-                            fileContentDiv.innerHTML = `<p>Error loading content: ${error.message}</p>`;
-                        }
+
+                    try {
+                        const response = await fetch(filePath);
+                        if (!response.ok) throw new Error(`Could not load ${filePath}`);
+                        const markdown = await response.text();
+                        
+                        // Use marked library to convert markdown to HTML
+                        fileContentDiv.innerHTML = marked.parse(markdown);
+                    } catch (error) {
+                        fileContentDiv.innerHTML = `<p>Error loading content: ${error.message}</p>`;
                     }
+                    
                 });
             });
         });
