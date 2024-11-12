@@ -1,22 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const fileSelector = document.getElementById('file-selector');
-    const contentDiv = document.getElementById('markdown-content');
+    const postList = document.getElementById('post-list');
+    const postContent = document.getElementById('post-content');
   
-    const loadMarkdown = async (fileName) => {
+    const loadPost = async (postFile) => {
       try {
-        const response = await fetch(`markdown/${fileName}`);
+        const response = await fetch(`posts/${postFile}`);
+        if (!response.ok) {
+          throw new Error(`Could not load ${postFile}`);
+        }
         const markdown = await response.text();
-        contentDiv.innerHTML = marked.parse(markdown);
+        postContent.innerHTML = marked.parse(markdown);
       } catch (error) {
-        contentDiv.innerHTML = `<p>Error loading markdown: ${error.message}</p>`;
+        postContent.innerHTML = `<p>Error loading post: ${error.message}</p>`;
       }
     };
   
-    fileSelector.addEventListener('change', (event) => {
-      loadMarkdown(event.target.value);
+    postList.addEventListener('click', (event) => {
+      if (event.target.tagName === 'A') {
+        event.preventDefault();
+        const postFile = event.target.getAttribute('data-post');
+        loadPost(postFile);
+      }
     });
   
-    // Load the default file initially
-    loadMarkdown(fileSelector.value);
+    // Optionally load the first post by default
+    loadPost('post1.md');
   });
   

@@ -3,20 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Markdown Viewer</title>
+  <title>Simple Blog</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <div id="content">
-    <h1>Markdown Viewer</h1>
-    <select id="file-selector">
-      <option value="example.md">example.md</option>
-      <!-- Add more options here if you add more markdown files -->
-    </select>
-    <div id="markdown-content"></div>
-  </div>
-
+  <header>
+    <h1>My Simple Blog</h1>
+    <nav>
+      <ul id="post-list">
+        <li><a href="#" data-post="post1.md">Post 1: Introduction</a></li>
+        <li><a href="#" data-post="post2.md">Post 2: Another Topic</a></li>
+        <!-- Add more posts here if needed -->
+      </ul>
+    </nav>
+  </header>
+  
+  <main>
+    <article id="post-content">
+      <p>Select a post from the list to view its content.</p>
+    </article>
+  </main>
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.12/marked.min.js"></script>
   <script src="script.js"></script>
 </body>
