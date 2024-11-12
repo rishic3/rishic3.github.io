@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markdown File Viewer</title>
+    <!-- Changed to use the full Lucide library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -198,13 +199,13 @@ Please follow the existing code style and conventions.
 
     <footer class="social-links">
         <a href="https://github.com" target="_blank" aria-label="GitHub">
-            <i data-lucide="github"></i>
+            <i class="lucide-github"></i>
         </a>
         <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
-            <i data-lucide="linkedin"></i>
+            <i class="lucide-linkedin"></i>
         </a>
         <a href="mailto:example@example.com" aria-label="Email">
-            <i data-lucide="mail"></i>
+            <i class="lucide-mail"></i>
         </a>
     </footer>
 
@@ -212,33 +213,33 @@ Please follow the existing code style and conventions.
         // Initialize Lucide icons
         lucide.createIcons();
 
-        // Parse all markdown content on page load
+        // Parse all markdown content on page load and set up toggle handlers
         document.addEventListener('DOMContentLoaded', () => {
+            // Parse markdown
             const markdownContents = document.querySelectorAll('.markdown-content');
             markdownContents.forEach(content => {
                 const rawMarkdown = content.textContent.trim();
                 content.innerHTML = marked.parse(rawMarkdown);
             });
-        });
 
-        // Add click handlers to toggles
-        const toggles = document.querySelectorAll('.file-toggle');
-        toggles.forEach(toggle => {
-            toggle.addEventListener('click', () => {
-                const content = toggle.nextElementSibling;
-                const isActive = toggle.classList.contains('active');
+            // Set up toggle handlers
+            const toggles = document.querySelectorAll('.file-toggle');
+            toggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const content = toggle.nextElementSibling;
+                    
+                    // Close all other open items
+                    document.querySelectorAll('.file-toggle.active').forEach(activeToggle => {
+                        if (activeToggle !== toggle) {
+                            activeToggle.classList.remove('active');
+                            activeToggle.nextElementSibling.classList.remove('active');
+                        }
+                    });
 
-                // Close all other open items
-                document.querySelectorAll('.file-toggle.active').forEach(activeToggle => {
-                    if (activeToggle !== toggle) {
-                        activeToggle.classList.remove('active');
-                        activeToggle.nextElementSibling.classList.remove('active');
-                    }
+                    // Toggle current item
+                    toggle.classList.toggle('active');
+                    content.classList.toggle('active');
                 });
-
-                // Toggle current item
-                toggle.classList.toggle('active');
-                content.classList.toggle('active');
             });
         });
     </script>
