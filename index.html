@@ -77,6 +77,17 @@
             background: #30363d; /* Slightly darker background on hover */
         }
 
+        .book-title {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .book-author {
+            text-align: right;
+            color: #333; /* Optional: change color for distinction */
+            font-style: normal; /* Ensures author's name isn't italicized */
+        }
+
         .file-toggle::after {
             content: '▼';
             font-size: 0.8rem;
@@ -177,7 +188,10 @@
             <!-- 2024 file section -->
             <li class="year-heading">2024</li>
             <li class="file-item">
-                <button class="file-toggle" data-file="posts/22-2024.md"><i>Never Let Me Go</i> Kazuo Ishiguro</button>
+                <button class="file-toggle" data-file="posts/22-2024.md">
+                    <span class="book-title"><i>Never Let Me Go</i></span>
+                    <span class="book-author">Kazuo Ishiguro</span>
+                </button>
                 <div class="file-content">
                     <div class="markdown-body markdown-content"></div>
                 </div>
