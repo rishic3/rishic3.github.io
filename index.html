@@ -1,30 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Blog</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown File Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .file-item {
+            margin-bottom: 1rem;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+
+        .file-toggle {
+            width: 100%;
+            padding: 1rem;
+            background: #f8f9fa;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #0066cc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .file-toggle:hover {
+            background: #e9ecef;
+        }
+
+        .file-toggle::after {
+            content: '▼';
+            font-size: 0.8rem;
+            transition: transform 0.2s;
+        }
+
+        .file-toggle.active::after {
+            transform: rotate(180deg);
+        }
+
+        .file-content {
+            display: none;
+            padding: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .file-content.active {
+            display: block;
+        }
+
+        /* Markdown Styling */
+        .markdown-content h1 { font-size: 1.8rem; margin-top: 1.5rem; }
+        .markdown-content h2 { font-size: 1.5rem; margin-top: 1.3rem; }
+        .markdown-content h3 { font-size: 1.3rem; margin-top: 1.1rem; }
+        .markdown-content p { margin: 1rem 0; }
+        .markdown-content code {
+            background: #f5f5f5;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .markdown-content pre code {
+            display: block;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>My Simple Blog</h1>
-    <nav>
-      <ul id="post-list">
-        <li><a href="#" data-post="post1.md">Post 1: Introduction</a></li>
-        <li><a href="#" data-post="post2.md">Post 2: Another Topic</a></li>
-        <!-- Add more posts here if needed -->
-      </ul>
-    </nav>
-  </header>
-  
-  <main>
-    <article id="post-content">
-      <p>Select a post from the list to view its content.</p>
-    </article>
-  </main>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.12/marked.min.js"></script>
-  <script src="script.js"></script>
+    <div class="container">
+        <h1>Markdown Files</h1>
+        <ul class="file-list" id="fileList">
+            <!-- Example files -->
+            <li class="file-item">
+                <button class="file-toggle">README.md</button>
+                <div class="file-content">
+                    <div class="markdown-content">
+# Project Overview
+
+This is a sample README file that demonstrates markdown rendering.
+
+## Features
+- Simple and clean interface
+- Expandable sections
+- Markdown support
+
+## Usage
+Click on any file to view its contents.
+                    </div>
+                </div>
+            </li>
+            <li class="file-item">
+                <button class="file-toggle">CONTRIBUTING.md</button>
+                <div class="file-content">
+                    <div class="markdown-content">
+# Contributing Guidelines
+
+Thank you for your interest in contributing!
+
+## How to Contribute
+1. Fork the repository
+2. Create a new branch
+3. Make your changes
+4. Submit a pull request
+
+## Code Style
+Please follow the existing code style and conventions.
+                    </div>
+                </div>
+            </li>
+            <li class="file-item">
+                <button class="file-toggle">CHANGELOG.md</button>
+                <div class="file-content">
+                    <div class="markdown-content">
+# Changelog
+
+## [1.0.0] - 2024-01-01
+### Added
+- Initial release
+- Basic markdown rendering
+- Expandable sections
+
+## [0.9.0] - 2023-12-15
+### Added
+- Beta version
+- Core functionality
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        // Parse all markdown content on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const markdownContents = document.querySelectorAll('.markdown-content');
+            markdownContents.forEach(content => {
+                const rawMarkdown = content.textContent.trim();
+                content.innerHTML = marked.parse(rawMarkdown);
+            });
+        });
+
+        // Add click handlers to toggles
+        const toggles = document.querySelectorAll('.file-toggle');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const content = toggle.nextElementSibling;
+                const isActive = toggle.classList.contains('active');
+
+                // Close all other open items
+                document.querySelectorAll('.file-toggle.active').forEach(activeToggle => {
+                    if (activeToggle !== toggle) {
+                        activeToggle.classList.remove('active');
+                        activeToggle.nextElementSibling.classList.remove('active');
+                    }
+                });
+
+                // Toggle current item
+                toggle.classList.toggle('active');
+                content.classList.toggle('active');
+            });
+        });
+    </script>
 </body>
 </html>
