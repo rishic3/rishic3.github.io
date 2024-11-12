@@ -182,7 +182,7 @@
     <div class="container">
         <div class="header">
             <h1>Rishi Chandra</h1>
-            <p class="subtitle">Reading Notes</p>
+            <p class="subtitle">Books I've read since 2023 in reverse chronological order, some with notes/highlights (*).</p>
         </div>
         <ul class="file-list" id="fileList">
             <!-- 2024 file section -->
@@ -415,29 +415,39 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Select all file toggle buttons and add event listeners
             document.querySelectorAll('.file-toggle').forEach(toggle => {
+                const filePath = toggle.getAttribute('data-file');
+                const titleSpan = toggle.querySelector('.book-title');
+                
+                // Fetch the markdown file to check for content
+                fetch(filePath)
+                    .then(response => response.text())
+                    .then(markdown => {
+                        // Add an asterisk to the book title if content exists
+                        if (markdown.trim() !== "No notes yet.") {
+                            titleSpan.innerHTML += " *";
+                        }
+                    })
+                    .catch(error => console.error(`Error loading content for ${filePath}:`, error));
+
+                // Event listener to toggle content visibility
                 toggle.addEventListener('click', async () => {
-                    const filePath = toggle.getAttribute('data-file');
                     const fileContentDiv = toggle.nextElementSibling.querySelector('.markdown-content');
-    
-                    // Toggle current item
                     toggle.classList.toggle('active');
                     toggle.nextElementSibling.classList.toggle('active');
-    
-                    // Only fetch and render if the content hasn't been loaded before
 
-                    try {
-                        const response = await fetch(filePath);
-                        if (!response.ok) throw new Error(`Could not load ${filePath}`);
-                        const markdown = await response.text();
-                        
-                        // Use marked library to convert markdown to HTML
-                        fileContentDiv.innerHTML = marked.parse(markdown);
-                    } catch (error) {
-                        fileContentDiv.innerHTML = `<p>Error loading content: ${error.message}</p>`;
+                    if (toggle.classList.contains('active') && !fileContentDiv.innerHTML.trim()) {
+                        try {
+                            const response = await fetch(filePath);
+                            if (!response.ok) throw new Error(`Could not load ${filePath}`);
+                            const markdown = await response.text();
+                            
+                            // Render markdown content
+                            fileContentDiv.innerHTML = marked.parse(markdown);
+                        } catch (error) {
+                            fileContentDiv.innerHTML = `<p>Error loading content: ${error.message}</p>`;
+                        }
                     }
-                    
                 });
             });
         });
