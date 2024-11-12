@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Viewer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="content">
+    <h1>Markdown Viewer</h1>
+    <select id="file-selector">
+      <option value="example.md">example.md</option>
+      <!-- Add more options here if you add more markdown files -->
+    </select>
+    <div id="markdown-content"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.12/marked.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
