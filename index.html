@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown File Viewer</title>
-    <!-- Changed to use the full Lucide library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.umd.min.js"></script>
+    <title>Rishi Chandra</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -15,14 +14,10 @@
             margin: 2rem auto;
             padding: 0 1rem;
             color: #333;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
 
         .container {
             width: 100%;
-            flex: 1;
         }
 
         .header {
@@ -103,38 +98,13 @@
             padding: 1rem;
             overflow-x: auto;
         }
-
-        /* Social Links */
-        .social-links {
-            text-align: center;
-            padding: 2rem 0;
-            margin-top: 2rem;
-            border-top: 1px solid #eee;
-        }
-
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            margin: 0 0.5rem;
-            color: #666;
-            border-radius: 50%;
-            transition: all 0.2s;
-        }
-
-        .social-links a:hover {
-            color: #0066cc;
-            transform: translateY(-2px);
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Markdown Files</h1>
-            <p class="subtitle">A collection of project documentation and guides</p>
+            <h1>Rishi Chandra</h1>
+            <p class="subtitle">A collection of readings</p>
         </div>
         <ul class="file-list" id="fileList">
             <!-- Example files -->
@@ -199,35 +169,28 @@ Please follow the existing code style and conventions.
 
     <footer class="social-links">
         <a href="https://github.com" target="_blank" aria-label="GitHub">
-            <i class="lucide-github"></i>
+            <i data-lucide="github"></i>
         </a>
         <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
-            <i class="lucide-linkedin"></i>
+            <i data-lucide="linkedin"></i>
         </a>
         <a href="mailto:example@example.com" aria-label="Email">
-            <i class="lucide-mail"></i>
+            <i data-lucide="mail"></i>
         </a>
     </footer>
 
     <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
-
-        // Parse all markdown content on page load and set up toggle handlers
+        // Wait for DOM content and marked.js to be loaded
         document.addEventListener('DOMContentLoaded', () => {
-            // Parse markdown
-            const markdownContents = document.querySelectorAll('.markdown-content');
-            markdownContents.forEach(content => {
+            // Parse markdown content
+            document.querySelectorAll('.markdown-content').forEach(content => {
                 const rawMarkdown = content.textContent.trim();
                 content.innerHTML = marked.parse(rawMarkdown);
             });
 
-            // Set up toggle handlers
-            const toggles = document.querySelectorAll('.file-toggle');
-            toggles.forEach(toggle => {
+            // Add click handlers to toggles
+            document.querySelectorAll('.file-toggle').forEach(toggle => {
                 toggle.addEventListener('click', () => {
-                    const content = toggle.nextElementSibling;
-                    
                     // Close all other open items
                     document.querySelectorAll('.file-toggle.active').forEach(activeToggle => {
                         if (activeToggle !== toggle) {
@@ -238,7 +201,7 @@ Please follow the existing code style and conventions.
 
                     // Toggle current item
                     toggle.classList.toggle('active');
-                    content.classList.toggle('active');
+                    toggle.nextElementSibling.classList.toggle('active');
                 });
             });
         });
