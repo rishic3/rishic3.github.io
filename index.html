@@ -87,17 +87,21 @@
             transform: rotate(180deg);
         }
 
-        /* File content styling */
         .file-content {
-            display: none;
+            visibility: hidden; /* Instead of display: none */
+            max-height: 0; /* To animate open/close effect */
+            overflow: hidden;
+            transition: max-height 0.3s ease, visibility 0.3s ease;
             padding: 1rem;
-            border-top: 1px solid #30363d; /* Border color matching the button */
-            background-color: #161b22; /* Background color matching container */
+            border-top: 1px solid #30363d;
+            background-color: #161b22;
         }
 
         .file-content.active {
-            display: block;
+            visibility: visible;
+            max-height: 500px; /* Adjust height based on expected content size */
         }
+
 
         .year-heading {
             font-size: 1.5rem;
