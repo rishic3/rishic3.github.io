@@ -211,22 +211,28 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Select all file toggle buttons and add event listeners
             document.querySelectorAll('.file-toggle').forEach(toggle => {
                 toggle.addEventListener('click', async () => {
                     const filePath = toggle.getAttribute('data-file');
                     const fileContentDiv = toggle.nextElementSibling.querySelector('.markdown-content');
 
+                    // Toggle the visibility of the content
                     toggle.classList.toggle('active');
                     toggle.nextElementSibling.classList.toggle('active');
 
-                    try {
-                        const response = await fetch(filePath);
-                        if (!response.ok) throw new Error(`Could not load ${filePath}`);
-                        const markdown = await response.text();
-                        
-                        fileContentDiv.innerHTML = marked.parse(markdown);
-                    } catch (error) {
-                        fileContentDiv.innerHTML = `<p>Error loading content: ${error.message}</p>`;
+                    // Check if the content has already been loaded
+                    if (toggle.classList.contains('active') && !fileContentDiv.innerHTML.trim()) {
+                        try {
+                            const response = await fetch(filePath);
+                            if (!response.ok) throw new Error(`Could not load ${filePath}`);
+                            const markdown = await response.text();
+                            
+                            // Use marked library to parse markdown and display it
+                            fileContentDiv.innerHTML = marked.parse(markdown);
+                        } catch (error) {
+                            fileContentDiv.innerHTML = `<p>Error loading content: ${error.message}</p>`;
+                        }
                     }
                 });
             });
