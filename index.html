@@ -88,6 +88,10 @@
             padding-right: 1rem;
         }
 
+        .favorite {
+            color: red; /* Set text color to red for favorite books */
+        }
+
         .file-toggle::after {
             content: '▼';
             font-size: 0.8rem;
@@ -182,7 +186,8 @@
     <div class="container">
         <div class="header">
             <h1>Rishi Chandra</h1>
-            <p>Books I've read since 2023 in reverse chronological order, some with notes 📝.</p>
+            <p>Books I've read since 2023, some with notes 📝.</p>
+            <p></p>
         </div>
         <ul class="file-list" id="fileList">
             <!-- 2024 READS -->
@@ -206,7 +211,7 @@
                 </div>
             </li>
             <li class="file-item">
-                <button class="file-toggle" data-file="posts/2024/20-2024.md">
+                <button class="file-toggle favorite" data-file="posts/2024/20-2024.md">
                     <span class="book-title"><i>Kafka on the Shore</i></span>
                     <span class="book-author">Haruki Murakami</span>
                 </button>
@@ -233,7 +238,7 @@
                 </div>
             </li>
             <li class="file-item">
-                <button class="file-toggle" data-file="posts/2024/17-2024.md">
+                <button class="file-toggle favorite" data-file="posts/2024/17-2024.md">
                     <span class="book-title"><i>Sapiens</i></span>
                     <span class="book-author">Yuval Noah Harari</span>
                 </button>
@@ -287,7 +292,7 @@
                 </div>
             </li>
             <li class="file-item">
-                <button class="file-toggle" data-file="posts/2024/11-2024.md">
+                <button class="file-toggle favorite" data-file="posts/2024/11-2024.md">
                     <span class="book-title"><i>The Plague</i></span>
                     <span class="book-author">Albert Camus</span>
                 </button>
@@ -296,7 +301,7 @@
                 </div>
             </li>
             <li class="file-item">
-                <button class="file-toggle" data-file="posts/2024/10-2024.md">
+                <button class="file-toggle favorite" data-file="posts/2024/10-2024.md">
                     <span class="book-title"><i>The Alignment Problem</i></span>
                     <span class="book-author">Brian Christian</span>
                 </button>
@@ -332,7 +337,7 @@
                 </div>
             </li>
             <li class="file-item">
-                <button class="file-toggle" data-file="posts/2024/6-2024.md">
+                <button class="file-toggle favorite" data-file="posts/2024/6-2024.md">
                     <span class="book-title"><i>The Information: A History, a Theory, a Flood</i></span>
                     <span class="book-author">James Gleick</span>
                 </button>
@@ -368,7 +373,7 @@
                 </div>
             </li>
             <li class="file-item">
-                <button class="file-toggle" data-file="posts/2024/2-2024.md">
+                <button class="file-toggle favorite" data-file="posts/2024/2-2024.md">
                     <span class="book-title"><i>Stories of Your Life and Others</i></span>
                     <span class="book-author">Ted Chiang</span>
                 </button>
@@ -407,7 +412,7 @@
             </li>
             <li class="file-item">
                 <button class="file-toggle" data-file="posts/2023/14-2023.md">
-                    <span class="book-title"><i>Exhalation</i></span>
+                    <span class="book-title favorite"><i>Exhalation</i></span>
                     <span class="book-author">Ted Chiang</span>
                 </button>
                 <div class="file-content">
@@ -425,7 +430,7 @@
             </li>
             <li class="file-item">
                 <button class="file-toggle" data-file="posts/2023/12-2023.md">
-                    <span class="book-title"><i>Siddhartha</i></span>
+                    <span class="book-title favorite"><i>Siddhartha</i></span>
                     <span class="book-author">Hermann Hesse</span>
                 </button>
                 <div class="file-content">
@@ -434,7 +439,7 @@
             </li>
             <li class="file-item">
                 <button class="file-toggle" data-file="posts/2023/11-2023.md">
-                    <span class="book-title"><i>The Beginning of Infinity</i></span>
+                    <span class="book-title favorite"><i>The Beginning of Infinity</i></span>
                     <span class="book-author">David Deutsch</span>
                 </button>
                 <div class="file-content">
@@ -461,7 +466,7 @@
             </li>
             <li class="file-item">
                 <button class="file-toggle" data-file="posts/2023/8-2023.md">
-                    <span class="book-title"><i>Klara and the Sun</i></span>
+                    <span class="book-title favorite"><i>Klara and the Sun</i></span>
                     <span class="book-author">Kazuo Ishiguro</span>
                 </button>
                 <div class="file-content">
@@ -488,7 +493,7 @@
             </li>
             <li class="file-item">
                 <button class="file-toggle" data-file="posts/2023/5-2023.md">
-                    <span class="book-title"><i>The Dark Forest</i></span>
+                    <span class="book-title favorite"><i>The Dark Forest</i></span>
                     <span class="book-author">Cixin Liu</span>
                 </button>
                 <div class="file-content">
@@ -515,7 +520,7 @@
             </li>
             <li class="file-item">
                 <button class="file-toggle" data-file="posts/2023/2-2023.md">
-                    <span class="book-title"><i>The Selfish Gene</i></span>
+                    <span class="book-title favorite"><i>The Selfish Gene</i></span>
                     <span class="book-author">Richard Dawkins</span>
                 </button>
                 <div class="file-content">
