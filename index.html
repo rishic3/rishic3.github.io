@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,13 +6,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown.min.css">
     <style>
+        /* Dark theme colors */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             line-height: 1.6;
             max-width: 800px;
             margin: 2rem auto;
             padding: 0 1rem;
-            color: #333;
+            color: #c9d1d9; /* Light text color */
+            background-color: #0d1117; /* Dark background */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -22,6 +23,10 @@
         .container {
             width: 100%;
             flex: 1;
+            background-color: #161b22; /* Slightly lighter dark background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .header {
@@ -29,11 +34,15 @@
             margin-bottom: 2rem;
         }
 
+        .header h1, .header .subtitle {
+            color: #c9d1d9; /* Match the light text color */
+        }
+
         .subtitle {
-            color: #666;
             font-size: 1.2rem;
             margin-top: -0.5rem;
             margin-bottom: 2rem;
+            color: #8b949e; /* Subtle grey color for subtitle */
         }
 
         .file-list {
@@ -43,19 +52,20 @@
 
         .file-item {
             margin-bottom: 1rem;
-            border: 1px solid #eee;
+            border: 1px solid #30363d; /* Border color matching GitHub dark mode */
             border-radius: 4px;
         }
 
+        /* Button styling to match dark mode */
         .file-toggle {
             width: 100%;
             padding: 1rem;
-            background: #f8f9fa;
+            background: #21262d; /* Dark background for button */
             border: none;
             text-align: left;
             cursor: pointer;
             font-size: 1rem;
-            color: #0066cc;
+            color: #58a6ff; /* Blue color similar to GitHub links */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -63,12 +73,13 @@
         }
 
         .file-toggle:hover {
-            background: #e9ecef;
+            background: #30363d; /* Slightly darker background on hover */
         }
 
         .file-toggle::after {
             content: '▼';
             font-size: 0.8rem;
+            color: #8b949e; /* Grey arrow icon */
             transition: transform 0.2s;
         }
 
@@ -76,10 +87,12 @@
             transform: rotate(180deg);
         }
 
+        /* File content styling */
         .file-content {
             display: none;
             padding: 1rem;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #30363d; /* Border color matching the button */
+            background-color: #161b22; /* Background color matching container */
         }
 
         .file-content.active {
@@ -90,26 +103,37 @@
             font-size: 1.5rem;
             font-weight: bold;
             margin-top: 2rem;
-            color: #333;
-            border-bottom: 1px solid #ddd;
+            color: #c9d1d9; /* Light color */
+            border-bottom: 1px solid #30363d;
             padding-bottom: 0.5rem;
         }
 
         /* Markdown Styling */
+        .markdown-body {
+            color: #c9d1d9; /* Light text color */
+            background-color: #0d1117; /* Same as body background */
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
         .markdown-content h1 { font-size: 1.8rem; margin-top: 1.5rem; }
         .markdown-content h2 { font-size: 1.5rem; margin-top: 1.3rem; }
         .markdown-content h3 { font-size: 1.3rem; margin-top: 1.1rem; }
         .markdown-content p { margin: 1rem 0; }
         .markdown-content code {
-            background: #f5f5f5;
+            background: #21262d; /* Dark background for inline code */
             padding: 0.2rem 0.4rem;
             border-radius: 3px;
             font-size: 0.9em;
+            color: #d2a8ff; /* Light purple text for code */
         }
         .markdown-content pre code {
             display: block;
             padding: 1rem;
             overflow-x: auto;
+            background: #161b22; /* Background for code blocks */
+            color: #c9d1d9; /* Code text color */
+            border-radius: 6px;
         }
 
         /* Social Links */
@@ -117,7 +141,7 @@
             text-align: center;
             padding: 2rem 0;
             margin-top: 2rem;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #30363d; /* Border color matching dark mode */
         }
 
         .social-links a {
@@ -127,13 +151,13 @@
             width: 40px;
             height: 40px;
             margin: 0 0.5rem;
-            color: #666;
+            color: #8b949e; /* Light grey color for social icons */
             border-radius: 50%;
             transition: all 0.2s;
         }
 
         .social-links a:hover {
-            color: #0066cc;
+            color: #58a6ff; /* Blue color for hover effect */
             transform: translateY(-2px);
         }
 
@@ -158,133 +182,9 @@
                     <div class="markdown-body markdown-content"></div>
                 </div>
             </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/21-2024.md"><i>The Tyranny of Merit</i> Michael J. Sandel</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/20-2024.md"><i>Kafka on the Shore</i> Haruki Murakami</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/19-2024.md"><i>The Code Breaker</i> Walter Isaacson</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/18-2024.md"><i>A Thousand Brains</i> Jeff Hawkins</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/17-2024.md"><i>Sapiens</i> Yuval Noah Harari</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/16-2024.md"><i>All Systems Red</i> Martha Wells</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/15-2024.md"><i>Surely You're Joking, Mr. Feynman!</i> Richard P. Feynman</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/14-2024.md"><i>Chaos</i> James Glieck</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/13-2024.md"><i>Man's Search for Meaning</i> Viktor Frankl</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/12-2024.md"><i>What Money Can't Buy</i> Michael J. Sandel</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/11-2024.md"><i>The Plague</i> Albert Camus</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/10-2024.md"><i>The Alignment Problem</i> Brian Christian</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/9-2024.md"><i>Animal Farm</i> George Orwell</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/8-2024.md"><i>Probable Impossibilities</i> Alan Lightman</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/7-2024.md"><i>Foundation</i> Isaac Asimov</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/6-2024.md"><i>The Information: A History, a Theory, a Flood</i> James Glieck</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/5-2024.md"><i>The Black Swan</i> Nassim Nicholas Taleb</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/4-2024.md"><i>Project Hail Mary</i> Andy Weir</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/3-2024.md"><i>Free Will</i> Mark Balaguer</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/2-2024.md"><i>Stories of Your Life and Others</i> Ted Chiang</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="posts/1-2024.md"><i>Elon Musk</i> Walter Isaacson</button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
+            <!-- Add more file items as needed -->
             <li class="year-heading">2023</li>
+            <!-- Repeat for other years -->
         </ul>
     </div>
 
@@ -311,29 +211,23 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Select all file toggle buttons and add event listeners
             document.querySelectorAll('.file-toggle').forEach(toggle => {
                 toggle.addEventListener('click', async () => {
                     const filePath = toggle.getAttribute('data-file');
                     const fileContentDiv = toggle.nextElementSibling.querySelector('.markdown-content');
-    
-                    // Toggle current item
+
                     toggle.classList.toggle('active');
                     toggle.nextElementSibling.classList.toggle('active');
-    
-                    // Only fetch and render if the content hasn't been loaded before
 
                     try {
                         const response = await fetch(filePath);
                         if (!response.ok) throw new Error(`Could not load ${filePath}`);
                         const markdown = await response.text();
                         
-                        // Use marked library to convert markdown to HTML
                         fileContentDiv.innerHTML = marked.parse(markdown);
                     } catch (error) {
                         fileContentDiv.innerHTML = `<p>Error loading content: ${error.message}</p>`;
                     }
-                    
                 });
             });
         });
