@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -88,20 +89,15 @@
         }
 
         .file-content {
-            visibility: hidden; /* Instead of display: none */
-            max-height: 0; /* To animate open/close effect */
-            overflow: hidden;
-            transition: max-height 0.3s ease, visibility 0.3s ease;
+            display: none;
             padding: 1rem;
-            border-top: 1px solid #30363d;
-            background-color: #161b22;
+            border-top: 1px solid #30363d; /* Border color matching the button */
+            background-color: #161b22; /* Background color matching container */
         }
 
         .file-content.active {
-            visibility: visible;
-            max-height: 500px; /* Adjust height based on expected content size */
+            display: block;
         }
-
 
         .year-heading {
             font-size: 1.5rem;
