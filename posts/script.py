@@ -1,5 +1,7 @@
-import os
+def main(year):
+    for i in range(1, 17):
+        with open(f"{i}-{year}.md", 'a') as file:
+            file.write(f"No notes yet.")
 
-for i in range(18):
-    with open(f"{i}-2024.md", 'a') as file:
-        file.write("Notes pending.")
+if __name__ == "__main__":
+    main(2023)

@@ -185,7 +185,7 @@
             <p>Books I've read since 2023 in reverse chronological order, some with notes 📝.</p>
         </div>
         <ul class="file-list" id="fileList">
-            <!-- 2024 file section -->
+            <!-- 2024 READS -->
             <li class="year-heading">2024</li>
             <li class="file-item">
                 <button class="file-toggle" data-file="posts/22-2024.md">
@@ -386,7 +386,7 @@
                 </div>
             </li>
             <li class="year-heading">2023</li>
-            <!-- Add more sections as needed -->
+            <!-- 2023 READS -->
         </ul>
     </div>
 </body>
@@ -415,6 +415,28 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Track the current year based on the most recent year-heading encountered
+            let currentYear = null;
+            let bookIndex = 1;
+
+            // Get all list items, including year headings and file items
+            document.querySelectorAll('.file-list > li').forEach(item => {
+                // Check if the item is a year-heading
+                if (item.classList.contains('year-heading')) {
+                    // Update the current year from the year-heading text content
+                    currentYear = item.textContent.trim();
+                    bookIndex = 1; // Reset book index for the new year
+                } else if (item.classList.contains('file-item')) {
+                    // If it's a file-item, assign a data-file based on the current year and book index
+                    const toggleButton = item.querySelector('.file-toggle');
+                    if (toggleButton && currentYear) {
+                        // Set the data-file attribute dynamically
+                        toggleButton.setAttribute('data-file', `posts/${currentYear}/${bookIndex}-${currentYear}.md`);
+                        bookIndex += 1; // Increment book index for the next file in this year
+                    }
+                }
+            });
+
             document.querySelectorAll('.file-toggle').forEach(toggle => {
                 const filePath = toggle.getAttribute('data-file');
                 const titleSpan = toggle.querySelector('.book-title');
