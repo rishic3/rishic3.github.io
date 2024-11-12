@@ -182,7 +182,7 @@
     <div class="container">
         <div class="header">
             <h1>Rishi Chandra</h1>
-            <p class="subtitle">Books I've read since 2023 in reverse chronological order, some with notes/highlights (*).</p>
+            <p>Books I've read since 2023 in reverse chronological order, some with notes 📝.</p>
         </div>
         <ul class="file-list" id="fileList">
             <!-- 2024 file section -->
@@ -425,7 +425,7 @@
                     .then(markdown => {
                         // Add an asterisk to the book title if content exists
                         if (markdown.trim() !== "No notes yet.") {
-                            titleSpan.innerHTML += " *";
+                            titleSpan.innerHTML += " 📝";
                         }
                     })
                     .catch(error => console.error(`Error loading content for ${filePath}:`, error));
