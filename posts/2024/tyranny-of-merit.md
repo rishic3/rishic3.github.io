@@ -71,7 +71,7 @@ Breaking down Hayek's argument for free-market liberalism.
 
 > "Even if the reason for punishing theft is to uphold the institution of property, a characteristic side effect of such punishment is to stigmatize thieves. Similarly, even if the reason for paying surgeons more than janitors is that such pay differentials are part of a just basic structure that works to the advantage of the least well-off, a predictable side effect of such pay differentials is to honor the special talents and contributions of surgeons. Over time, these normative “side effects” shape attitudes toward success (and failure) that are hard to distinguish from meritocratic ones."
 
-Continuing on the theme of excessive weight placed on human effort, Sandel explains how this leads to demeaning attitidues toward the recipients of welfare.
+Importantly, the attitude we have toward the recipients of welfare is just as consequential as how we choose to distribute welfare.
 > "Luck egalitarians place great moral weight on people’s ability to choose. They seek to compensate for chance so people’s income and life prospects can reflect their own choices. But this demanding ethic of responsibility and choice carries a harsh implication: those who need help must be able to show that their neediness is not their own doing. To qualify for public assistance, they must present themselves—and conceive of themselves—as victims of forces beyond their control."
 
 ### Chapter 6. The Sorting Machine
