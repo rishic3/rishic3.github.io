@@ -612,9 +612,6 @@
             document.querySelectorAll('.file-toggle').forEach(toggle => {
                 const filePath = toggle.getAttribute('data-file');
                 const titleSpan = toggle.querySelector('.book-title');
-
-                // Clear the content of the markdown div to ensure it is reloaded
-                fileContentDiv.innerHTML = '';
                 
                 // Check if the markdown file title is "blank.md"
                 if (!filePath.endsWith("blank.md")) {
