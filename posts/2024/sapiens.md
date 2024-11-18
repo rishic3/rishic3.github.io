@@ -1,6 +1,6 @@
 This has become one of my favorite books ever, although it took me a while to get to it since the sheer popularity initially put me off. Required reading.  
 
-Harari's strings together many simple and digestable ideas into an extremely powerful lens through which to view history and project into the future.  
+Harari strings together many simple and digestible ideas into an extremely powerful lens through which to both view history and project into the future.  
 
 Below are highlights and my annotations.  
 
