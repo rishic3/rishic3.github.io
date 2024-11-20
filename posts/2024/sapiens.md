@@ -1,6 +1,4 @@
-This has become one of my favorite books ever, although it took me a while to get to it since the sheer popularity initially put me off. Required reading.  
-
-Harari strings together many simple and digestible ideas into an extremely powerful lens through which to both view history and project into the future.  
+This has become one of my favorite books ever, although it took me a while to get to it. Required reading.  
 
 Below are highlights and my annotations.  
 
