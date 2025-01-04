@@ -1,3 +1,3 @@
 # Rishi Chandra
 
-Blog website.
+Personal website for my notes.

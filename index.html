@@ -7,15 +7,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown.min.css">
     <style>
-        /* Dark theme colors */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             line-height: 1.6;
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1rem;
-            color: #c9d1d9; /* Light text color */
-            background-color: #0d1117; /* Dark background */
+            color: #c9d1d9;
+            background-color: #0d1117;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -24,7 +23,7 @@
         .container {
             width: 100%;
             flex: 1;
-            background-color: #161b22; /* Slightly lighter dark background */
+            background-color: #161b22;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -36,14 +35,14 @@
         }
 
         .header h1, .header .subtitle {
-            color: #c9d1d9; /* Match the light text color */
+            color: #c9d1d9;
         }
 
         .subtitle {
             font-size: 1.2rem;
             margin-top: -0.5rem;
             margin-bottom: 2rem;
-            color: #8b949e; /* Subtle grey color for subtitle */
+            color: #8b949e;
         }
 
         .file-list {
@@ -53,20 +52,19 @@
 
         .file-item {
             margin-bottom: 1rem;
-            border: 1px solid #30363d; /* Border color matching GitHub dark mode */
+            border: 1px solid #30363d;
             border-radius: 4px;
         }
 
-        /* Button styling to match dark mode */
         .file-toggle {
             width: 100%;
             padding: 1rem;
-            background: #21262d; /* Dark background for button */
+            background: #21262d;
             border: none;
             text-align: left;
             cursor: pointer;
             font-size: 1rem;
-            color: #58a6ff; /* Blue color similar to GitHub links */
+            color: #58a6ff;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -74,7 +72,7 @@
         }
 
         .file-toggle:hover {
-            background: #30363d; /* Slightly darker background on hover */
+            background: #30363d;
         }
 
         .book-title {
@@ -84,18 +82,18 @@
 
         .book-author {
             text-align: right;
-            font-style: normal; /* Ensures author's name isn't italicized */
+            font-style: normal;
             padding-right: 1rem;
         }
 
         .favorite {
-            color: #DC143C; /* Set text color to red for favorite books */
+            color: #DC143C;
         }
 
         .file-toggle::after {
             content: '▼';
             font-size: 0.8rem;
-            color: #8b949e; /* Grey arrow icon */
+            color: #8b949e;
             transition: transform 0.2s;
         }
 
@@ -106,8 +104,8 @@
         .file-content {
             display: none;
             padding: 1rem;
-            border-top: 1px solid #30363d; /* Border color matching the button */
-            background-color: #161b22; /* Background color matching container */
+            border-top: 1px solid #30363d;
+            background-color: #161b22;
         }
 
         .file-content.active {
@@ -118,15 +116,14 @@
             font-size: 1.5rem;
             font-weight: bold;
             margin-top: 2rem;
-            color: #c9d1d9; /* Light color */
+            color: #c9d1d9;
             border-bottom: 1px solid #30363d;
             padding-bottom: 0.5rem;
         }
 
-        /* Markdown Styling */
         .markdown-body {
-            color: #c9d1d9; /* Light text color */
-            background-color: #0d1117; /* Same as body background */
+            color: #c9d1d9;
+            background-color: #0d1117;
             padding: 1rem;
             border-radius: 8px;
         }
@@ -136,27 +133,26 @@
         .markdown-content h3 { font-size: 1.3rem; margin-top: 1.1rem; }
         .markdown-content p { margin: 1rem 0; }
         .markdown-content code {
-            background: #21262d; /* Dark background for inline code */
+            background: #21262d;
             padding: 0.2rem 0.4rem;
             border-radius: 3px;
             font-size: 0.9em;
-            color: #d2a8ff; /* Light purple text for code */
+            color: #d2a8ff;
         }
         .markdown-content pre code {
             display: block;
             padding: 1rem;
             overflow-x: auto;
-            background: #161b22; /* Background for code blocks */
-            color: #c9d1d9; /* Code text color */
+            background: #161b22;
+            color: #c9d1d9;
             border-radius: 6px;
         }
 
-        /* Social Links */
         .social-links {
             text-align: center;
             padding: 2rem 0;
             margin-top: 2rem;
-            border-top: 1px solid #30363d; /* Border color matching dark mode */
+            border-top: 1px solid #30363d;
         }
 
         .social-links a {
@@ -166,13 +162,13 @@
             width: 40px;
             height: 40px;
             margin: 0 0.5rem;
-            color: #8b949e; /* Light grey color for social icons */
+            color: #8b949e;
             border-radius: 50%;
             transition: all 0.2s;
         }
 
         .social-links a:hover {
-            color: #58a6ff; /* Blue color for hover effect */
+            color: #58a6ff;
             transform: translateY(-2px);
         }
 
@@ -190,6 +186,17 @@
             <p></p>
         </div>
         <ul class="file-list" id="fileList">
+            <!-- 2025 READS -->
+            <li class="year-heading">2025</li>
+            <li class="file-item">
+                <button class="file-toggle" data-file="posts/blank.md">
+                    <span class="book-title"><i>The Innovators</i></span>
+                    <span class="book-author">Walter Isaacson</span>
+                </button>
+                <div class="file-content">
+                    <div class="markdown-body markdown-content"></div>
+                </div>
+            </li>
             <!-- 2024 READS -->
             <li class="year-heading">2024</li>
             <li class="file-item">
@@ -612,14 +619,11 @@
             document.querySelectorAll('.file-toggle').forEach(toggle => {
                 const filePath = toggle.getAttribute('data-file');
                 const titleSpan = toggle.querySelector('.book-title');
-                
-                // Check if the markdown file title is "blank.md"
+
                 if (!filePath.endsWith("blank.md")) {
-                    // Add an asterisk to the book title if the file is not "blank.md"
                     titleSpan.innerHTML += " 📝";
                 }
 
-                // Event listener to toggle content visibility
                 toggle.addEventListener('click', async () => {
                     const fileContentDiv = toggle.nextElementSibling.querySelector('.markdown-content');
                     toggle.classList.toggle('active');
@@ -630,8 +634,6 @@
                             const response = await fetch(filePath);
                             if (!response.ok) throw new Error(`Could not load ${filePath}`);
                             const markdown = await response.text();
-                            
-                            // Render markdown content
                             fileContentDiv.innerHTML = marked.parse(markdown);
                         } catch (error) {
                             fileContentDiv.innerHTML = `<p>Error loading content: ${error.message}</p>`;
