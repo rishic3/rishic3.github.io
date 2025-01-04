@@ -1,6 +1,6 @@
 Brilliant book, had a strong impact on me. Gave me an entirely new framework for thinking about the rise of populist figures and how we judge 'earned' vs. 'unearned' results in society.   
 
-Highly recommend, especially to those who contemplate affirmative action and the college application system, which was what initially drew me in.  
+Highly recommend, especially for his analysis of affirmative action and the college application system, which was what initially drew me in.  
 
 Below are highlights and my annotations.  
 

@@ -1,4 +1,4 @@
-This has become one of my favorite books ever, although it took me a while to get to it. Required reading.  
+This has become one of my favorite books ever, although it took me a while to get to it. 
 
 Below are highlights and my annotations.  
 
@@ -12,7 +12,7 @@ Below are highlights and my annotations.
 
 > It’s relatively easy to agree that only Homo sapiens can speak about things that don’t really exist, and believe six impossible things before breakfast. You could never convince a monkey to give you a banana by promising him limitless bananas after death in monkey heaven.
 
-I wonder if the key to human-level AI intelligence lies in explicit training for fiction-creation.
+I wonder if a requirement for human-level AI intelligence is the ability to create and believe in fictions.
 > However, fiction has enabled us not merely to imagine things, but to do so collectively. We can weave common myths such as the biblical creation story, the Dreamtime myths of Aboriginal Australians, and the nationalist myths of modern states. Such myths give Sapiens the unprecedented ability to cooperate flexibly in large numbers. Ants and bees can also work together in huge numbers, but they do so in a very rigid manner and only with close relatives. Wolves and chimpanzees cooperate far more flexibly than ants, but they can do so only with small numbers of other individuals that they know intimately. Sapiens can cooperate in extremely flexible ways with countless numbers of strangers.
 
 > Since large-scale human cooperation is based on myths, the way people cooperate can be altered by changing the myths–by telling different stories. Under the right circumstances myths can change rapidly. In 1789 the French population switched almost overnight from believing in the myth of the divine right of kings to believing in the myth of the sovereignty of the people.
@@ -27,12 +27,11 @@ I wonder if the key to human-level AI intelligence lies in explicit training for
 
 ### Chapter 5. History’s Biggest Fraud
 
-Selfish genes.
 > The currency of evolution is neither hunger nor pain, but rather copies of DNA helixes. Just as the economic success of a company is measured only by the number of dollars in its bank account, not by the happiness of its employees, so the evolutionary success of a species is measured by the number of copies of its DNA. If no more DNA copies remain, the species is extinct, just as a company without money is bankrupt. If a species boasts many DNA copies, it is a success, and the species flourishes. From such a perspective, 1,000 copies are always better than a hundred copies. This is the essence of the Agricultural Revolution: the ability to keep more people alive under worse conditions.
 
 > Why did people make such a fateful miscalculation? For the same reason that people throughout history have miscalculated. People were unable to fathom the full consequences of their decisions. Whenever they decided to do a bit of extra work–say, to hoe the fields instead of scattering seeds on the surface–people thought, ‘Yes, we will have to work harder. But the harvest will be so bountiful! We won’t have to worry any more about lean years. Our children will never go to sleep hungry.’ It made sense. If you worked harder, you would have a better life. That was the plan.
 
-Another book could be spent on the normative analysis of this phenomenon. Is this good or bad? Idk but it's probably unavoidable.
+Real
 > One of history’s few iron laws is that luxuries tend to become necessities and to spawn new obligations.
 
 ## Part Three: The Unification of Humankind
@@ -45,7 +44,7 @@ Another book could be spent on the normative analysis of this phenomenon. Is thi
 
 ### Chapter 11. Imperial Visions
 
-This quote had a strong impression on me.
+One of my favorite quotes of the book.
 > Even if we were to completely disavow the legacy of a brutal empire in the hope of reconstructing and safeguarding the ‘authentic’ cultures that preceded it, in all probability what we will be defending is nothing but the legacy of an older and no less brutal empire. Those who resent the mutilation of Indian culture by the British Raj inadvertently sanctify the legacies of the Mughal Empire and the conquering sultanate of Delhi. And whoever attempts to rescue ‘authentic Indian culture’ from the alien influences of these Muslim empires sanctifies the legacies of the Gupta Empire, the Kushan Empire and the Maurya Empire. If an extreme Hindu nationalist were to destroy all the buildings left by the British conquerors, such as Mumbai’s main train station, what about the structures left by India’s Muslim conquerors, such as the Taj Mahal?
 
 ### Chapter 12. The Law of Religion
@@ -95,8 +94,6 @@ This quote had a strong impression on me.
 > As far as we can tell, from a purely scientific viewpoint, human life has absolutely no meaning. Humans are the outcome of blind evolutionary processes that operate without goal or purpose. Our actions are not part of some divine cosmic plan, and if planet Earth were to blow up tomorrow morning, the universe would probably keep going about its business as usual. As far as we can tell at this point, human subjectivity would not be missed. Hence any meaning that people ascribe to their lives is just a delusion. The other-worldly meanings medieval people found in their lives were no more deluded than the modern humanist, nationalist and capitalist meanings modern people find.
 
 > According to the selfish gene theory, natural selection makes people, like other organisms, choose what is good for the reproduction of their genes, even if it is bad for them as individuals. Most males spend their lives toiling, worrying, competing and fighting, instead of enjoying peaceful bliss, because their DNA manipulates them for its own selfish aims. Like Satan, DNA uses fleeting pleasures to tempt people and place them in its power.
-
-Harari makes it fairly clear that he most strongly agrees with Buddhist philosophies.
 
 > According to Buddhism, the root of suffering is neither the feeling of pain nor of sadness nor even of meaninglessness. Rather, the real root of suffering is this never-ending and pointless pursuit of ephemeral feelings, which causes us to be in a constant state of tension, restlessness and dissatisfaction. Due to this pursuit, the mind is never satisfied. Even when experiencing pleasure, it is not content, because it fears this feeling might soon disappear, and craves that this feeling should stay and intensify. People are liberated from suffering not when they experience this or that fleeting pleasure, but rather when they understand the impermanent nature of all their feelings, and stop craving them.
 
