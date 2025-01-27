@@ -1,10 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const notesType = document.body.dataset.notesType;
+
     document.querySelectorAll('.file-toggle').forEach(toggle => {
         const filePath = toggle.getAttribute('data-file');
         const titleSpan = toggle.querySelector('.post-title');
 
-        if (!filePath.endsWith("blank.md")) {
+        if (!filePath.endsWith("blank.md") && notesType === 'reading') {
             titleSpan.innerHTML += " 📝";
+        }
+
+        if (notesType === 'reading') {
+            titleSpan.innerHTML = `<i>${titleSpan.textContent}</i>`;
         }
 
         toggle.addEventListener('click', async () => {
@@ -19,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const markdown = await response.text();
                     fileContentDiv.innerHTML = marked.parse(markdown);
                     
-                    // Render LaTeX after markdown is loaded
+                    // render latex
                     if (window.MathJax) {
                         window.MathJax.typesetPromise([fileContentDiv]).catch((err) => {
                             console.log('MathJax failed to typeset:', err);

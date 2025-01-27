@@ -122,3 +122,24 @@
 .back-button:hover {
     color: #8bb4fe;
 }
+
+/* latex configs */
+.markdown-content .MathJax {
+    outline: none;
+}
+
+.markdown-content .math-display {
+    overflow-x: auto;
+    margin: 1em 0;
+    padding: 1em 0;
+}
+
+.markdown-content .math-inline {
+    padding: 0 0.2em;
+}
+
+@media (max-width: 768px) {
+    .markdown-content .math-display {
+        font-size: 0.9em;
+    }
+}
