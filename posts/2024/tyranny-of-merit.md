@@ -7,7 +7,7 @@ Below are highlights and my annotations.
 
 ### Chapter 2. “Great Because Good”: A Brief Moral History of Merit
 
-My own interpretation of Sandel's main idea: society is in constant oscillation with how strongly we weigh individual human effort in explaining outcomes, as opposed to luck, chaos, or any complexity that cannot fit into a neat narrative picture. Sandel argues that we are in a phase where, with the rise of meritocracy, the extreme weight attributed to human effort is creating a tyrannical society. 
+My own interpretation of Sandel's main idea: society is in constant oscillation with how strongly we weigh individual human effort in explaining outcomes, as opposed to luck, chaos, or any complexity that cannot fit into a neat narrative picture. Sandel argues that we are in a phase where, with the rise of meritocracy, the extreme weight attributed to human effort is psychologically corrupting society.
 
 > "Biblical theology teaches that natural events happen for a reason. Favorable weather and a bountiful harvest are divine rewards for good behavior; drought and pestilence are punishments for sin. When a ship encounters stormy seas, people ask who on the crew has angered God. From the distance of our scientific age, this way of thinking may seem innocent, even childlike. But it is not as distant as it first appears. In fact, this outlook is the origin of meritocratic thinking. It reflects the belief that the moral universe is arranged in a way that aligns prosperity with merit and suffering with wrongdoing. This is not far from the familiar contemporary view that wealth signifies talent and hard work and that poverty signifies indolence."
 
