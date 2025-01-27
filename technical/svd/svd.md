@@ -181,7 +181,7 @@ How do we actually compute the (full) SVD?
 
 ### **Eigendecomposition**
 
-Vector $v$ $v$$A$$v$$A$$Av = \lambda v$ for some scalar $\lambda$ (the eigenvalue). 
+Vector $v$ is an eigenvector of $A$ if $Av = \lambda v$ for some scalar $\lambda$ (the eigenvalue). 
 
 For a square matrix $A: n \times n$ with $n$ linearly independent eigenvectors $q_i$:
 
