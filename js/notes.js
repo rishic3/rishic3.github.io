@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     document.querySelectorAll('.file-toggle').forEach(toggle => {
         const filePath = toggle.getAttribute('data-file');
         const titleSpan = toggle.querySelector('.post-title');
@@ -19,6 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!response.ok) throw new Error(`Could not load ${filePath}`);
                     const markdown = await response.text();
                     fileContentDiv.innerHTML = marked.parse(markdown);
+                    
+                    // Render LaTeX after markdown is loaded
+                    if (window.MathJax) {
+                        window.MathJax.typesetPromise([fileContentDiv]).catch((err) => {
+                            console.log('MathJax failed to typeset:', err);
+                        });
+                    }
                 } catch (error) {
                     fileContentDiv.innerHTML = `<p>Error loading content: ${error.message}</p>`;
                 }
