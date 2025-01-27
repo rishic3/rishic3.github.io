@@ -23,9 +23,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // find absoluate path of image
                     const baseDir = filePath.substring(0, filePath.lastIndexOf('/'));
-                    const modifiedMarkdown = markdown.replace(
-                        /!\[([^\]]*)\]\(images\//g,
-                        `![$1](${baseDir}/images/`
+                    let modifiedMarkdown = markdown.replace(
+                        /!\[([^\]]*)\]\((images\/[^)]+)\)/g,
+                        (match, altText, imagePath) => {
+                            const newPath = `${baseDir}/${imagePath}`;
+                            return `![${altText}](${newPath})`;
+                        }
+                    );
+                    
+                    modifiedMarkdown = modifiedMarkdown.replace(
+                        /<img[^>]*src="images\/([^"]+)"([^>]*)>/g,
+                        (match, imagePath, rest) => {
+                            const newPath = `${baseDir}/images/${imagePath}`;
+                            return `<img src="${newPath}"${rest}>`;
+                        }
                     );
                     
                     fileContentDiv.innerHTML = marked.parse(modifiedMarkdown);
