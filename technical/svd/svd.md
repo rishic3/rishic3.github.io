@@ -53,7 +53,7 @@ $V: n \times n$
     - Basis for space of vectors $x$ s.t. $Ax = 0$
 - $V$ is unitary, i.e. $V^TV = VV^T = I$
 
-Apply $A$ $A$$AS = U\Sigma V^T S$
+Apply $A$ to the unit sphere: $AS = U\Sigma V^T S$
 
 - $V^T$: unitary map (preserves inner product), preserves the sphere
 - $\Sigma$: stretches sphere into hyperellipse
