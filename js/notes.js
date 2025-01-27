@@ -1,40 +1,56 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // handle inline and block math
+    const blockMathExtension = {
+        name: 'blockMath',
+        level: 'block',
+        start(src) {
+            return src.match(/\$\$\n/)?.index;
+        },
+        tokenizer(src) {
+            const rule = /^\$\$\n([\s\S]*?)\n\$\$/;
+            const match = rule.exec(src);
+            if (match) {
+                return {
+                    type: 'blockMath',
+                    raw: match[0],
+                    text: match[1]
+                };
+            }
+        },
+        renderer(token) {
+            return `$$\n${token.text}\n$$\n`;
+        }
+    };
+
+    const inlineMathExtension = {
+        name: 'inlineMath',
+        level: 'inline',
+        start(src) {
+            return src.match(/\$/)?.index;
+        },
+        tokenizer(src) {
+            const rule = /^\$([^\n$]+)\$/;
+            const match = rule.exec(src);
+            if (match) {
+                return {
+                    type: 'inlineMath',
+                    raw: match[0],
+                    text: match[1]
+                };
+            }
+        },
+        renderer(token) {
+            return `$${token.text}$`;
+        }
+    };
+
     marked.setOptions({
         breaks: true,
         mangle: false,
         headerIds: false
     });
 
-    // handle multi-line LaTeX blocks
-    const mathExtension = {
-        name: 'math',
-        level: 'block',
-        start(src) {
-            return src.match(/\$\$/)?.index;
-        },
-        tokenizer(src) {
-            const multilineRule = /^\$\$\n([\s\S]*?)\n\$\$/;
-            const inlineRule = /^\$([^\n]*?)\$/;
-            
-            let match = multilineRule.exec(src) || inlineRule.exec(src);
-            if (match) {
-                return {
-                    type: 'math',
-                    raw: match[0],
-                    text: match[1],
-                    displayMode: match[0].startsWith('$$\n')
-                };
-            }
-        },
-        renderer(token) {
-            if (token.displayMode) {
-                return `$$\n${token.text}\n$$\n`;
-            }
-            return `$${token.text}$`;
-        }
-    };
-
-    marked.use({ extensions: [mathExtension] });
+    marked.use({ extensions: [blockMathExtension, inlineMathExtension] });
 
     const notesType = document.body.dataset.notesType;
 
