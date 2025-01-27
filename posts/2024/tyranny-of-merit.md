@@ -39,7 +39,8 @@ Important reminder that two-thirds of the country are without college degrees. T
 
 > "Here then was the basic argument of liberal and progressive politics in the decades leading up to Brexit, Trump, and the populist revolt: The global economy, as if a fact of nature, had somehow come upon us and was here to stay. The central political question was not how to reconfigure it but how to adapt to it, and how to alleviate its devastating effect on the wages and job prospects of workers outside the charmed circle of the elite professions. The answer: Improve the educational credentials of workers so that they, too, could “compete and win in the global economy.” If equality of opportunity was the primary moral and political project, expanding access to higher education was the overriding policy imperative."
 
-I suspect most people would agree with these assessments, but it is substantially harder to call upon these reminders when it matters. Believing in credentialism is a dangerously convenient, arms-reach method to relieve the burden of critical evaluation.
+I suspect most people would agree with these assessments, but it is substantially harder to call upon these reminders when it matters. Believing in credentialism is a dangerously convenient, arms-reach method to relieve the burden of critical evaluation. At the same time critical evaluation doesn't scale, so there needs to be some balance struck here.
+
 > "Having well-educated people run the government is generally desirable, provided they possess sound judgment and a sympathetic understanding of working people’s lives—what Aristotle called practical wisdom and civic virtue. But history shows little connection between prestigious academic credentials and either practical wisdom or an instinct for the common good in the here and now. One of the most ruinous examples of credentialism gone awry is described in David Halberstam’s classic book The Best and the Brightest. It shows how John F. Kennedy assembled a team with glittering credentials who, for all their technocratic brilliance, led the United States into the folly of the Vietnam War."
 
 > "It has not always been this way. Although the well-educated have always been disproportionately represented in Congress, as recently as the early 1960s about one-fourth of senators and one-fourth of members of the House were elected despite lacking a college degree. Over the past half decade, Congress has become more diverse with regard to race, ethnicity, and gender, but less diverse with regard to educational credentials and class."
@@ -58,7 +59,6 @@ Sandel makes an important distinction between civic virtue and academic intellec
 
 > "What matters for a meritocracy is that everyone has an equal chance to climb the ladder of success; it has nothing to say about how far apart the rungs on the ladder should be. The meritocratic ideal is not a remedy for inequality; it is a justification of inequality."
 
-Breaking down Hayek's argument for free-market liberalism.
 > "Hayek rejects the notion “that all must be assured an equal start and the same prospects” for success. Such a principle would require the state to control “all conditions relevant to a particular individual’s prospects,” a far-reaching project that Hayek considers “the opposite of freedom.”"
 
 > "Given the inevitable disagreement about which activities are meritorious or worthy of praise, any attempt to base distributive justice on moral merit rather than economic value would lead to coercion."
