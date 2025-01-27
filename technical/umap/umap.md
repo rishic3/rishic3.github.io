@@ -1,6 +1,6 @@
 # UMAP
 
-My summary of ["How UMAP Works"](https://umap-learn.readthedocs.io/en/latest/how_umap_works.html) by Leland McInnes—all content and insight is from his post.
+My summary of ["How UMAP Works"](https://umap-learn.readthedocs.io/en/latest/how_umap_works.html) by Leland McInnes—all content is straight from his post.
 
 ## High-Level
 
