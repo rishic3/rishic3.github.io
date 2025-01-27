@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const filePath = toggle.getAttribute('data-file');
         const titleSpan = toggle.querySelector('.post-title');
 
+        // only add italics/emoji for reading notes
         if (!filePath.endsWith("blank.md") && notesType === 'reading') {
             titleSpan.innerHTML += " 📝";
         }
@@ -23,7 +24,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     const response = await fetch(filePath);
                     if (!response.ok) throw new Error(`Could not load ${filePath}`);
                     const markdown = await response.text();
-                    fileContentDiv.innerHTML = marked.parse(markdown);
+                    
+                    // find absoluate path of image
+                    const baseDir = filePath.substring(0, filePath.lastIndexOf('/'));
+                    const modifiedMarkdown = markdown.replace(
+                        /!\[([^\]]*)\]\(images\//g,
+                        `![$1](${baseDir}/images/`
+                    );
+                    
+                    fileContentDiv.innerHTML = marked.parse(modifiedMarkdown);
                     
                     // render latex
                     if (window.MathJax) {
