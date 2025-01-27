@@ -21,6 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!response.ok) throw new Error(`Could not load ${filePath}`);
                     const markdown = await response.text();
                     
+                    // Debug: Log raw markdown content
+                    console.log('Raw markdown:', markdown);
+                    // Debug: Look for LaTeX content
+                    const latexMatches = markdown.match(/\$\$(.*?)\$\$/g);
+                    console.log('Found LaTeX blocks:', latexMatches);
+
                     // find absoluate path of image
                     const baseDir = filePath.substring(0, filePath.lastIndexOf('/'));
                     let modifiedMarkdown = markdown.replace(
@@ -38,9 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
                             return `<img src="${newPath}"${rest}>`;
                         }
                     );
+
+                    // Debug: Log the parsed HTML before insertion
+                    const parsedHTML = marked.parse(modifiedMarkdown);
+                    console.log('Parsed HTML:', parsedHTML);
                     
                     fileContentDiv.innerHTML = marked.parse(modifiedMarkdown);
                     
+                    // Debug: Check if MathJax is available
+                    console.log('MathJax available:', !!window.MathJax);
+
                     // render latex
                     if (window.MathJax) {
                         window.MathJax.typesetPromise([fileContentDiv]).catch((err) => {
