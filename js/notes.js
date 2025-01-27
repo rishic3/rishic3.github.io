@@ -10,10 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
             titleSpan.innerHTML += " 📝";
         }
 
-        if (notesType === 'reading') {
-            titleSpan.innerHTML = `<i>${titleSpan.textContent}</i>`;
-        }
-
         toggle.addEventListener('click', async () => {
             const fileContentDiv = toggle.nextElementSibling.querySelector('.markdown-content');
             toggle.classList.toggle('active');
