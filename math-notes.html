@@ -5,10 +5,14 @@
             inlineMath: [['$', '$']],
             displayMath: [['$$', '$$']],
             processEscapes: true,
-            processEnvironments: true
+            processEnvironments: true,
+            // Add packages that might be needed for your equations
+            packages: ['base', 'ams', 'noerrors', 'noundefined']
         },
         options: {
-            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            // Disable automatic math detection since we're explicitly marking math zones
+            processHtmlClass: 'tex2jax_process',
+            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
         },
         startup: {
             pageReady: () => {
