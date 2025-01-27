@@ -16,7 +16,7 @@ What’s a hyperellipse?
     - Stretch by factors $\sigma_1, \dots, \sigma_m$ in unit vector directions $u_1, \dots, u_m \in \mathbb{R^m}$
 - $\{\sigma_iu_i\}$: principal semiaxes of the hyperellipse with length $\sigma_1, \dots, \sigma_m$ (singular values!)
     
-    ![Screenshot 2025-01-25 at 2.31.29 PM.png](SVD%20PCA%20187c8bb5c4a28070a4d2c329d4df656d/Screenshot_2025-01-25_at_2.31.29_PM.png)
+    ![Screenshot 2025-01-25 at 2.31.29 PM.png](images/Screenshot_2025-01-25_at_2.31.29_PM.png)
     
 
 - **Left singular vectors:** unit vectors $\{u_1, u_2, \dots, u_n\}$ in the *directions* of the principal semiaxes of $AS$ (right-side picture)
@@ -27,7 +27,7 @@ What’s a hyperellipse?
 
 Let $A: m \times n$, $\text{rank}(A) = r$.
 
-![Screenshot 2025-01-25 at 2.41.35 PM.png](SVD%20PCA%20187c8bb5c4a28070a4d2c329d4df656d/a63adf9a-cb8f-464b-9a90-f81894f496ce.png)
+![Screenshot 2025-01-25 at 2.41.35 PM.png](images/a63adf9a-cb8f-464b-9a90-f81894f496ce.png)
 
 $\\ U \in m \times m$ 
 
@@ -63,7 +63,7 @@ Apply $A$ $A$$AS = U\Sigma V^T S$
 
 Let $A: m \times n$, $\text{rank}(A) = r$.
 
-![Screenshot 2025-01-25 at 2.37.33 PM.png](SVD%20PCA%20187c8bb5c4a28070a4d2c329d4df656d/31b5c8fe-70b6-43af-9cc2-6fb9334600fb.png)
+![Screenshot 2025-01-25 at 2.37.33 PM.png](images/31b5c8fe-70b6-43af-9cc2-6fb9334600fb.png)
 
 **Idea:** get rid of superfluous columns/rows.
 

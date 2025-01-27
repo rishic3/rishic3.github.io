@@ -20,22 +20,22 @@ My summary of ["How UMAP Works"](https://umap-learn.readthedocs.io/en/latest/how
 
 **Simplex**: high-dimensional triangle.
 
-![Image 11-3-24 at 5.16 PM.JPG](UMAP%20134c8bb5c4a280a4a968d49d8957a69d/Image_11-3-24_at_5.16_PM.jpg)
+![Image 11-3-24 at 5.16 PM.JPG](images/Image_11-3-24_at_5.16_PM.jpg)
 
 **Simplicial complex**: set of simplices glued together along their faces.
 
-<img src="UMAP%20134c8bb5c4a280a4a968d49d8957a69d/Image_11-3-24_at_5.21_PM.jpg" alt="Image 11-3-24 at 5.18 PM" width="250" />
+<img src="images/Image_11-3-24_at_5.21_PM.jpg" alt="Image 11-3-24 at 5.18 PM" width="250" />
 
 
 We can build up a simplicial complex from a topological space.
 
 Given data:
 
-![Image 11-3-24 at 5.17 PM.JPG](UMAP%20134c8bb5c4a280a4a968d49d8957a69d/Image_11-3-24_at_5.17_PM.jpg)
+![Image 11-3-24 at 5.17 PM.JPG](images/Image_11-3-24_at_5.17_PM.jpg)
 
 …we can create an open cover (fixed radius balls around each point):
 
-![Image 11-3-24 at 5.17 PM (1).JPG](UMAP%20134c8bb5c4a280a4a968d49d8957a69d/Image_11-3-24_at_5.17_PM_(1).jpg)
+![Image 11-3-24 at 5.17 PM (1).JPG](images/Image_11-3-24_at_5.17_PM_(1).jpg)
 
 …then we create simplices from this cover (called a Čech complex):
 
@@ -44,7 +44,7 @@ Given data:
 - Create a 2-simplex between three such sets if the triple intersection of all three is non-empty
 - …etc
     
-![Image 11-3-24 at 5.17 PM (2).JPG](UMAP%20134c8bb5c4a280a4a968d49d8957a69d/Image_11-3-24_at_5.17_PM_(2).jpg)
+![Image 11-3-24 at 5.17 PM (2).JPG](images/Image_11-3-24_at_5.17_PM_(2).jpg)
     
 
 **Nerve Theorem.** Basically, this simple structure preserves the important characteristics of the topological manifold.
@@ -68,7 +68,7 @@ Given data:
 - Different notion of ‘distance’ depending on which patch you are in.
 - Glue together these patches to make up the manifold.
 
-<img src="UMAP%20134c8bb5c4a280a4a968d49d8957a69d/Screenshot_2024-11-03_at_6.00.22_PM.png" alt="Image 11-3-24 at 5.18 PM" width="500" />
+<img src="images/Screenshot_2024-11-03_at_6.00.22_PM.png" alt="Image 11-3-24 at 5.18 PM" width="500" />
 
 
 **In practice:**
@@ -78,7 +78,7 @@ Given data:
 
 After applying the Riemannian metric:
 
-![Image 11-3-24 at 5.18 PM.JPG](UMAP%20134c8bb5c4a280a4a968d49d8957a69d/Image_11-3-24_at_5.18_PM.jpg)
+![Image 11-3-24 at 5.18 PM.JPG](images/Image_11-3-24_at_5.18_PM.jpg)
 
 Great! We’re better covering the manifold!
 
@@ -91,7 +91,7 @@ But why choose a fixed radius, a binary “yes” or “no” for membership to 
 
 Instead, we can use **fuzzy sets**:
 
-![Image 11-3-24 at 5.18 PM (1).JPG](UMAP%20134c8bb5c4a280a4a968d49d8957a69d/Image_11-3-24_at_5.18_PM_(1).jpg)
+![Image 11-3-24 at 5.18 PM (1).JPG](images/Image_11-3-24_at_5.18_PM_(1).jpg)
 
 Now the confidence that a neighboring point belongs to a set ‘decays’ as we get further away. 
 
@@ -104,7 +104,7 @@ Why? Curse of dimensionality:
 - In very high dimensions, all distances start to look similar (1st neighbor distance and 10th neighbor distance look relatively similar).
 - Local connectivity constraint ensures we focus on *relative distances* (vs. absolute distances)
     
-    ![Image 11-3-24 at 5.18 PM (2).JPG](UMAP%20134c8bb5c4a280a4a968d49d8957a69d/Image_11-3-24_at_5.18_PM_(2).jpg)
+    ![Image 11-3-24 at 5.18 PM (2).JPG](images/Image_11-3-24_at_5.18_PM_(2).jpg)
     
 
 ---
@@ -113,7 +113,7 @@ Why? Curse of dimensionality:
 
 **Problem:** our local metrics are not compatible!
 
-![Image 11-3-24 at 5.18 PM (3).JPG](UMAP%20134c8bb5c4a280a4a968d49d8957a69d/Image_11-3-24_at_5.18_PM_(3).jpg)
+![Image 11-3-24 at 5.18 PM (3).JPG](images/Image_11-3-24_at_5.18_PM_(3).jpg)
 
 There are multiple edges between any pair of points due to different notions of weights.
 
@@ -125,7 +125,7 @@ $$
 
 If we union together all the fuzzy simplicial sets, we end up with a single fuzzy simplicial complex:
 
-![Image 11-3-24 at 5.19 PM.JPG](UMAP%20134c8bb5c4a280a4a968d49d8957a69d/Image_11-3-24_at_5.19_PM.jpg)
+![Image 11-3-24 at 5.19 PM.JPG](images/Image_11-3-24_at_5.19_PM.jpg)
 
 Basically, just a weighted graph, but with strong mathematical foundation :).
 
@@ -146,7 +146,7 @@ How do we embed the data?
 
 Cross-Entropy Loss:
 
-![Screenshot 2024-11-03 at 7.05.37 PM.png](UMAP%20134c8bb5c4a280a4a968d49d8957a69d/Screenshot_2024-11-03_at_7.05.37_PM.png)
+![Screenshot 2024-11-03 at 7.05.37 PM.png](images/Screenshot_2024-11-03_at_7.05.37_PM.png)
 
 - $w_h(e)$ = weight in high-dimensional case
 - $w_l(e)$ = weight in low-dimensional case
