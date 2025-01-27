@@ -4,20 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rishi Chandra</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/notes.css">
 </head>
 <body>
     <div class="container">
-        <div class="landing-container">
-            <div class="header">
-                <h1>Rishi Chandra</h1>
-                 <!-- <p class="subtitle">My notes</p> -->
-            </div>
-            <div class="tab-buttons">
-                <a href="reading-notes.html" class="tab-button">Reading Notes</a>
-                <a href="math-notes.html" class="tab-button">Technical Notes</a>
-            </div>
+        <nav class="nav-bar">
+            <a href="index.html" class="back-button">← Back to Home</a>
+        </nav>
+        
+        <div class="header">
+            <h1>Technical Notes</h1>
         </div>
+
+        <ul class="file-list" id="fileList">
+            <li class="year-heading">2025</li>
+            <li class="file-item">
+                <button class="file-toggle" data-file="posts/blank.md">
+                    <span class="book-title"><i>The Innovators</i></span>
+                    <span class="book-author">Walter Isaacson</span>
+                </button>
+                <div class="file-content">
+                    <div class="markdown-body markdown-content"></div>
+                </div>
+            </li>
+        </ul>
     </div>
 
     <footer class="social-links">
@@ -40,5 +53,7 @@
             </svg>
         </a>
     </footer>
+
+    <script src="js/notes.js"></script>
 </body>
 </html>

@@ -1,0 +1,124 @@
+/* Notes list */
+.file-list {
+    list-style: none;
+    padding: 0;
+}
+
+.file-item {
+    margin-bottom: 1rem;
+    border: 1px solid #30363d;
+    border-radius: 4px;
+}
+
+.file-toggle {
+    width: 100%;
+    padding: 1rem;
+    background: #21262d;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #58a6ff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.file-toggle:hover {
+    background: #30363d;
+}
+
+.book-title {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.book-author {
+    text-align: right;
+    font-style: normal;
+    padding-right: 1rem;
+}
+
+.favorite {
+    color: #DC143C;
+}
+
+.file-toggle::after {
+    content: '▼';
+    font-size: 0.8rem;
+    color: #8b949e;
+    transition: transform 0.2s;
+}
+
+.file-toggle.active::after {
+    transform: rotate(180deg);
+}
+
+.file-content {
+    display: none;
+    padding: 1rem;
+    border-top: 1px solid #30363d;
+    background-color: #161b22;
+}
+
+.file-content.active {
+    display: block;
+}
+
+.year-heading {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 2rem;
+    color: #c9d1d9;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 0.5rem;
+}
+
+/* Markdown content */
+.markdown-body {
+    color: #c9d1d9;
+    background-color: #0d1117;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.markdown-content h1 { font-size: 1.8rem; margin-top: 1.5rem; }
+.markdown-content h2 { font-size: 1.5rem; margin-top: 1.3rem; }
+.markdown-content h3 { font-size: 1.3rem; margin-top: 1.1rem; }
+.markdown-content p { margin: 1rem 0; }
+.markdown-content code {
+    background: #21262d;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+    color: #d2a8ff;
+}
+.markdown-content pre code {
+    display: block;
+    padding: 1rem;
+    overflow-x: auto;
+    background: #161b22;
+    color: #c9d1d9;
+    border-radius: 6px;
+}
+
+/* Navigation bar for notes pages */
+.nav-bar {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #30363d;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    color: #58a6ff;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-button:hover {
+    color: #8bb4fe;
+}
