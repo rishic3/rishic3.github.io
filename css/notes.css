@@ -29,12 +29,12 @@
     background: #30363d;
 }
 
-.book-title {
+.post-title {
     flex-grow: 1;
     text-align: left;
 }
 
-.book-author {
+.post-subtitle {
     text-align: right;
     font-style: normal;
     padding-right: 1rem;

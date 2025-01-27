@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.file-toggle').forEach(toggle => {
         const filePath = toggle.getAttribute('data-file');
-        const titleSpan = toggle.querySelector('.book-title');
+        const titleSpan = toggle.querySelector('.post-title');
 
         if (!filePath.endsWith("blank.md")) {
             titleSpan.innerHTML += " 📝";
