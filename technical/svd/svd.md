@@ -1,6 +1,6 @@
 # SVD
 
-Lots of images/intuition taken from *Numerical Linear Algebra* by Trefethen and Bau <3.
+Knowledge (and images) from *Numerical Linear Algebra* by Trefethen and Bau <3.
 
 ## Intuition
 
