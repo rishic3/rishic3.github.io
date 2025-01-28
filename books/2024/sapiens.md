@@ -12,7 +12,7 @@ Below are highlights and my annotations.
 
 > It’s relatively easy to agree that only Homo sapiens can speak about things that don’t really exist, and believe six impossible things before breakfast. You could never convince a monkey to give you a banana by promising him limitless bananas after death in monkey heaven.
 
-I wonder if a requirement for human-level AI intelligence is the ability to create and believe in fictions.
+I wonder if a requirement to achieve human-level organization among intelligent AIs is the ability to create and believe in fictions. I suppose alignment is the second half of that—molding AIs to believe human "fictions".
 > However, fiction has enabled us not merely to imagine things, but to do so collectively. We can weave common myths such as the biblical creation story, the Dreamtime myths of Aboriginal Australians, and the nationalist myths of modern states. Such myths give Sapiens the unprecedented ability to cooperate flexibly in large numbers. Ants and bees can also work together in huge numbers, but they do so in a very rigid manner and only with close relatives. Wolves and chimpanzees cooperate far more flexibly than ants, but they can do so only with small numbers of other individuals that they know intimately. Sapiens can cooperate in extremely flexible ways with countless numbers of strangers.
 
 > Since large-scale human cooperation is based on myths, the way people cooperate can be altered by changing the myths–by telling different stories. Under the right circumstances myths can change rapidly. In 1789 the French population switched almost overnight from believing in the myth of the divine right of kings to believing in the myth of the sovereignty of the people.
@@ -31,7 +31,7 @@ I wonder if a requirement for human-level AI intelligence is the ability to crea
 
 > Why did people make such a fateful miscalculation? For the same reason that people throughout history have miscalculated. People were unable to fathom the full consequences of their decisions. Whenever they decided to do a bit of extra work–say, to hoe the fields instead of scattering seeds on the surface–people thought, ‘Yes, we will have to work harder. But the harvest will be so bountiful! We won’t have to worry any more about lean years. Our children will never go to sleep hungry.’ It made sense. If you worked harder, you would have a better life. That was the plan.
 
-Real
+!!:
 > One of history’s few iron laws is that luxuries tend to become necessities and to spawn new obligations.
 
 ## Part Three: The Unification of Humankind
