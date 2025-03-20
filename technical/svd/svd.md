@@ -100,7 +100,7 @@ Say we take the $k^{th}$ partial sum $A_k$, where $k < r$.
 For the Frobenius norm:
 
 $$
-||A - A_k||_F = \min_{\text{rank}(B) \le k} ||A - B||_F = \sqrt{\sigma_{k+1}^2 + \sigma_{k+2}^2 + \cdots + \sigma_r^2}
+||A - A_k||_F = \min_{\text{rank}(B) \le k} ||A - B||_F = \sqrt{\sigma_{k+1} + \sigma_{k+2} + \cdots + \sigma_r}
 $$
 
 For the 2-norm:
@@ -202,7 +202,7 @@ How to find the principal eigenvalue and eigenvector of a symmetric matrix $M$?
 2. Construct
     
     $$
-    x_{k+1} = \frac{M_{x_k}}{||M_{x_k}||_F}
+    x_{k+1} = \frac{M{x_k}}{||M{x_k}||_F}
     $$
     
     for $k = 0, 1, \dots$
