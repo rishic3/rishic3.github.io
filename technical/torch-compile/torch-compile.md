@@ -157,6 +157,7 @@ Inductor has already fused together CUDA kernels at the **IR level** to make the
 
 - Spend a fixed amount of time building CUDA graph at initialization
 - At runtime, we can launch multiple kernels with a single CPU operation (minimal idle time)
+    - This doesn't change kernel code (like Inductor)—it optimizes the way kernels are launched.
 
 **How?** Using CUDA Stream capture.
 
@@ -164,4 +165,4 @@ Inductor has already fused together CUDA kernels at the **IR level** to make the
     - Instead of enqueuing work for execution, append to a graph
     - Progressively build graph of kernel operations (without argument setup / kernel dispatch)
 
-We can create many such graphs to t
+At run-time, we can launch a batch of kernels together as a CUDA graph!
