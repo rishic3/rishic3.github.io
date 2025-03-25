@@ -4,7 +4,7 @@
 
 1. TorchDynamo (Tracing)
 2. TorchInductor (Compiling)
-3. CUDA Graphs (Kernel Fusing)
+3. CUDA Graphs (Kernel Batching)
 
 ## High-Level
 

@@ -1,7 +1,5 @@
 # SVD
 
-Knowledge (and images) from *Numerical Linear Algebra* by Trefethen and Bau <3.
-
 ## Intuition
 
 A geometric fact:

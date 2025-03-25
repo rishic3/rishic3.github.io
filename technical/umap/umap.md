@@ -1,6 +1,6 @@
 # UMAP
 
-My summary of ["How UMAP Works"](https://umap-learn.readthedocs.io/en/latest/how_umap_works.html) by Leland McInnes—all content is straight from his post.
+From ["How UMAP Works"](https://umap-learn.readthedocs.io/en/latest/how_umap_works.html) by Leland McInnes.
 
 ## High-Level
 
@@ -48,6 +48,7 @@ Given data:
     
 
 **Nerve Theorem.** Basically, this simple structure preserves the important characteristics of the topological manifold.
+Particularly, this structure is a **homotopy equivalence** to the original data space (i.e., we can transform one into the other through bending, shrinking, and expanding).
 
 ---
 
