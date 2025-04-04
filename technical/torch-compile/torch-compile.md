@@ -110,7 +110,7 @@ For code that is (graph1, problematic code, graph2), it returns:
 3. Bytecode that made Dynamo graph break (raw problematic code)
 4. Bytecode that executes the second graph
 
-# 3. Torch Inductor
+# 2. Torch Inductor
 
 **How do we compile the FX Graph that Dynamo traces?**
 
