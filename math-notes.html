@@ -1,39 +1,33 @@
 <!DOCTYPE html>
-<script>
-    window.MathJax = {
-        tex: {
-            inlineMath: [['$', '$']],
-            displayMath: [['$$', '$$']],
-            processEscapes: true,
-            processEnvironments: true,
-            // Add packages that might be needed for your equations
-            packages: ['base', 'ams', 'noerrors', 'noundefined']
-        },
-        options: {
-            // Disable automatic math detection since we're explicitly marking math zones
-            processHtmlClass: 'tex2jax_process',
-            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        },
-        startup: {
-            pageReady: () => {
-                return MathJax.startup.defaultPageReady();
-            }
-        }
-    };
-</script>
-<script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rishi Chandra</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/notes.css">
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']],
+                processEscapes: true,
+                processEnvironments: true,
+                packages: ['base', 'ams', 'noerrors', 'noundefined']
+            },
+            options: {
+                processHtmlClass: 'tex2jax_process',
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
-<body data-notes-type="math">
+<body>
     <div class="container">
         <nav class="nav-bar">
             <a href="index.html" class="back-button">← Back to Home</a>
@@ -42,39 +36,27 @@
         <div class="header">
             <h1>Math/CS</h1>
         </div>
-        <ul class="file-list" id="fileList">
+        <ul class="notes-list">
             <!-- Add notes here -->
-            <li class="file-item">
-                <button class="file-toggle" data-file="technical/gbdt/gbdt.md">
-                    <span class="post-title">Decision Trees and Gradient Boosting</span>
-                </button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
+            <li class="notes-item">
+                <a href="notes/technical/gbdt/gbdt.html">
+                    <div class="note-title">Decision Trees and Gradient Boosting</div>
+                </a>
             </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="technical/torch-compile/torch-compile.md">
-                    <span class="post-title">Torch Compiler</span>
-                </button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
+            <li class="notes-item">
+                <a href="notes/technical/torch-compile/torch-compile.html">
+                    <div class="note-title">Torch Compiler</div>
+                </a>
             </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="technical/svd/svd.md">
-                    <span class="post-title">SVD and Low-Rank Approximation</span>
-                </button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
+            <li class="notes-item">
+                <a href="notes/technical/svd/svd.html">
+                    <div class="note-title">SVD and Low-Rank Approximation</div>
+                </a>
             </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="technical/umap/umap.md">
-                    <span class="post-title">UMAP</span>
-                </button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
+            <li class="notes-item">
+                <a href="notes/technical/umap/umap.html">
+                    <div class="note-title">UMAP</div>
+                </a>
             </li>
         </ul>
     </div>
@@ -99,7 +81,19 @@
             </svg>
         </a>
     </footer>
-
-    <script src="js/notes.js"></script>
+    
+    <!-- Inject navigation into technical note pages -->
+    <script>
+        // Store the path to our navigation script for technical pages
+        localStorage.setItem('technicalNavScript', window.location.origin + '/js/notes-template.js');
+        
+        // Add click event to all technical note links
+        document.querySelectorAll('a[href*="/technical/"][href$=".html"]').forEach(link => {
+            link.addEventListener('click', function() {
+                // Set a flag that we're coming from a page with proper navigation
+                localStorage.setItem('fromMathNotesPage', 'true');
+            });
+        });
+    </script>
 </body>
 </html>

@@ -6,19 +6,20 @@
 
 .file-item {
     margin-bottom: 1rem;
-    border: 1px solid #30363d;
+    border: 1px solid #eee;
     border-radius: 4px;
+    overflow: hidden;
 }
 
 .file-toggle {
     width: 100%;
     padding: 1rem;
-    background: #21262d;
+    background: #fff;
     border: none;
     text-align: left;
     cursor: pointer;
     font-size: 1rem;
-    color: #58a6ff;
+    color: #333;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -26,18 +27,21 @@
 }
 
 .file-toggle:hover {
-    background: #30363d;
+    background: #f8f8f8;
 }
 
 .post-title {
     flex-grow: 1;
     text-align: left;
+    font-weight: 500;
 }
 
 .post-subtitle {
     text-align: right;
     font-style: normal;
     padding-right: 1rem;
+    color: #666;
+    font-size: 0.9rem;
 }
 
 .favorite {
@@ -47,7 +51,7 @@
 .file-toggle::after {
     content: '▼';
     font-size: 0.8rem;
-    color: #8b949e;
+    color: #888;
     transition: transform 0.2s;
 }
 
@@ -58,72 +62,68 @@
 .file-content {
     display: none;
     padding: 1rem;
-    border-top: 1px solid #30363d;
-    background-color: #161b22;
+    border-top: 1px solid #eee;
+    background-color: #fff;
 }
 
 .file-content.active {
     display: block;
 }
 
-.year-heading {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-top: 2rem;
-    color: #c9d1d9;
-    border-bottom: 1px solid #30363d;
-    padding-bottom: 0.5rem;
-}
-
 /* Markdown content */
 .markdown-body {
-    color: #c9d1d9;
-    background-color: #0d1117;
+    color: #333;
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: 4px;
+    line-height: 1.8;
 }
 
-.markdown-content h1 { font-size: 1.8rem; margin-top: 1.5rem; }
-.markdown-content h2 { font-size: 1.5rem; margin-top: 1.3rem; }
-.markdown-content h3 { font-size: 1.3rem; margin-top: 1.1rem; }
+.markdown-content h1 { font-size: 1.8rem; margin-top: 1.5rem; color: #222; }
+.markdown-content h2 { font-size: 1.5rem; margin-top: 1.3rem; color: #222; }
+.markdown-content h3 { font-size: 1.3rem; margin-top: 1.1rem; color: #222; }
 .markdown-content p { margin: 1rem 0; }
 .markdown-content code {
-    background: #21262d;
+    background: #f6f6f6;
     padding: 0.2rem 0.4rem;
     border-radius: 3px;
     font-size: 0.9em;
-    color: #d2a8ff;
+    color: #333;
 }
 .markdown-content pre code {
     display: block;
     padding: 1rem;
     overflow-x: auto;
-    background: #161b22;
-    color: #c9d1d9;
-    border-radius: 6px;
+    background: #f9f9f9;
+    color: #333;
+    border-radius: 4px;
 }
 
-/* Navigation bar for notes pages */
-.nav-bar {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #30363d;
+.markdown-content blockquote {
+    border-left: 3px solid #ddd;
+    padding-left: 1rem;
+    margin-left: 0;
+    color: #666;
 }
 
-.back-button {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    color: #58a6ff;
-    text-decoration: none;
-    transition: color 0.2s;
+.markdown-content img {
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem 0;
+    border-radius: 4px;
 }
 
-.back-button:hover {
-    color: #8bb4fe;
+/* Misc */
+.year-heading {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
 }
 
-/* latex configs */
+/* MathJax styling */
 .markdown-content .MathJax {
     outline: none;
 }
@@ -142,4 +142,24 @@
     .markdown-content .math-display {
         font-size: 0.9em;
     }
+}
+
+/* Navigation bar for notes pages */
+.nav-bar {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #30363d;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-button:hover {
+    color: #666;
 }

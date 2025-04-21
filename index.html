@@ -6,7 +6,7 @@
     <title>Rishi Chandra</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="home-page">
     <div class="container">
         <div class="landing-container">
             <div class="header">
@@ -40,5 +40,20 @@
             </svg>
         </a>
     </footer>
+
+    <!-- Add a script to adjust the height precisely -->
+    <script>
+        // Fine-tune the layout to fit perfectly on load and resize
+        function adjustLayout() {
+            const viewportHeight = window.innerHeight;
+            document.body.style.height = `${viewportHeight}px`;
+        }
+        
+        // Run on page load
+        adjustLayout();
+        
+        // Run on window resize
+        window.addEventListener('resize', adjustLayout);
+    </script>
 </body>
 </html>

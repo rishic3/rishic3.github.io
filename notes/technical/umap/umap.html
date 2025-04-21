@@ -1,0 +1,710 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>UMAP</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: undefined; }
+.select-value-color-pink { background-color: rgba(225, 136, 179, 0.27); }
+.select-value-color-purple { background-color: rgba(168, 129, 197, 0.27); }
+.select-value-color-green { background-color: rgba(123, 183, 129, 0.27); }
+.select-value-color-gray { background-color: rgba(84, 72, 49, 0.15); }
+.select-value-color-transparentGray { background-color: undefined; }
+.select-value-color-translucentGray { background-color: undefined; }
+.select-value-color-orange { background-color: rgba(224, 124, 57, 0.27); }
+.select-value-color-brown { background-color: rgba(210, 162, 141, 0.35); }
+.select-value-color-red { background-color: rgba(244, 171, 159, 0.4); }
+.select-value-color-yellow { background-color: rgba(236, 191, 66, 0.39); }
+.select-value-color-blue { background-color: rgba(93, 165, 206, 0.27); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="134c8bb5-c4a2-80a4-a968-d49d8957a69d" class="page sans"><header><h1 class="page-title">UMAP</h1><p class="page-description"></p></header><div class="page-body"><p id="1dcc8bb5-c4a2-80e5-9a19-eb6956a116eb" class="">Notes from <a href="https://umap-learn.readthedocs.io/en/latest/how_umap_works.html">&quot;How UMAP Works&quot;</a> by Leland McInnes.</p><h2 id="134c8bb5-c4a2-80d4-a264-f2923a40c667" class=""><mark class="highlight-red">High-Level</mark></h2><ol type="1" id="134c8bb5-c4a2-80de-ab23-cadf6bacb3e3" class="numbered-list" start="1"><li><strong>Graph Construction</strong><ol type="a" id="134c8bb5-c4a2-8095-a944-f544b341bdf9" class="numbered-list" start="1"><li>Construct weighted K-NN graph.</li></ol><ol type="a" id="134c8bb5-c4a2-80c7-9d8f-ebad30652457" class="numbered-list" start="2"><li>Transform edges to approximate local distances.</li></ol><ol type="a" id="134c8bb5-c4a2-8041-880f-e703b283744c" class="numbered-list" start="3"><li>Deal with asymmetry between local notions of ‘distance’. </li></ol></li></ol><ol type="1" id="134c8bb5-c4a2-8001-879b-f7b3178e4781" class="numbered-list" start="2"><li><strong>Graph Layout</strong><ol type="a" id="134c8bb5-c4a2-800d-a307-e46f13841e4d" class="numbered-list" start="1"><li>Define objective function that preserves characteristics of K-NN graph. </li></ol><ol type="a" id="134c8bb5-c4a2-8017-89e9-dc0f69817428" class="numbered-list" start="2"><li>Find low-dimensional representation of data optimizing objective.</li></ol></li></ol><p id="134c8bb5-c4a2-808e-a62c-f265b3078e08" class="">
+</p><hr id="134c8bb5-c4a2-80d0-adc2-c4047f530bb8"/><h1 id="13bc8bb5-c4a2-8095-9950-d48ad6abd0e1" class=""><mark class="highlight-orange">1.</mark> Graph Construction</h1><h2 id="134c8bb5-c4a2-802d-85ff-cdcc7126f671" class=""><mark class="highlight-blue"><mark class="highlight-blue_background">1a: </mark></mark><mark class="highlight-blue_background">Construct weighted K-NN graph</mark></h2><div id="134c8bb5-c4a2-80fd-86f2-c79d70597a3c" class="column-list"><div id="134c8bb5-c4a2-8027-b0c2-ca9196367e28" style="width:31.25%" class="column"><p id="134c8bb5-c4a2-8040-b3ec-df923ff84073" class=""><mark class="highlight-teal"><strong>Simplex</strong></mark><mark class="highlight-teal">:</mark> high-dimensional triangle.</p></div><div id="134c8bb5-c4a2-8067-8b9a-c2ebab5290f7" style="width:68.75%" class="column"><figure id="134c8bb5-c4a2-80fa-ac99-f62d490436d1" class="image" style="text-align:right"><a href="images/Image_11-3-24_at_5.16_PM.jpg"><img style="width:432px" src="images/Image_11-3-24_at_5.16_PM.jpg"/></a></figure></div></div><p id="134c8bb5-c4a2-80ac-8a0c-f7586376ad7f" class="">
+</p><div id="134c8bb5-c4a2-80b9-b478-e419c97e7904" class="column-list"><div id="134c8bb5-c4a2-80df-8679-ea851ceae9bd" style="width:50%" class="column"><p id="134c8bb5-c4a2-80d6-8ae6-cf35aacc5d16" class=""><mark class="highlight-teal"><strong>Simplicial complex</strong></mark><mark class="highlight-teal">:</mark> set of simplices glued together along their faces.</p><p id="134c8bb5-c4a2-808b-9222-c4bb0a555f18" class="">
+</p></div><div id="134c8bb5-c4a2-8084-96df-f96eacaa7a72" style="width:50%" class="column"><figure id="134c8bb5-c4a2-807a-99c6-e7979da0ef1a" class="image"><a href="images/Image_11-3-24_at_5.21_PM.jpg"><img style="width:192px" src="images/Image_11-3-24_at_5.21_PM.jpg"/></a></figure></div></div><p id="134c8bb5-c4a2-8077-a857-cb025f17e9d9" class="">We can build up a simplicial complex from a topological space.</p><p id="134c8bb5-c4a2-8040-b91e-f64975bcc116" class="">Given data:</p><figure id="134c8bb5-c4a2-80aa-a136-e4cdc0b3e47c" class="image"><a href="images/Image_11-3-24_at_5.17_PM.jpg"><img style="width:576px" src="images/Image_11-3-24_at_5.17_PM.jpg"/></a></figure><p id="134c8bb5-c4a2-80d2-959a-cbf7422c7bf6" class="">…we can create an open cover (fixed radius balls around each point):</p><figure id="134c8bb5-c4a2-80e2-a65b-f13e833b91f5" class="image"><a href="images/Image_11-3-24_at_5.17_PM_(1).jpg"><img style="width:576px" src="images/Image_11-3-24_at_5.17_PM_(1).jpg"/></a></figure><p id="134c8bb5-c4a2-802d-b1d5-cea4cf957536" class="">…then we create simplices from this cover (called a Čech complex):</p><ul id="134c8bb5-c4a2-8087-9686-c34a3d97d04a" class="bulleted-list"><li style="list-style-type:disc">Let each set in the cover be a 0-simplex.</li></ul><ul id="134c8bb5-c4a2-8091-bc57-fa1df6413598" class="bulleted-list"><li style="list-style-type:disc">Create a 1-simplex between two sets if they have a non-empty intersection</li></ul><ul id="134c8bb5-c4a2-803d-aa44-f9e461a1795b" class="bulleted-list"><li style="list-style-type:disc">Create a 2-simplex between three such sets if the triple intersection of all three is non-empty</li></ul><ul id="134c8bb5-c4a2-8083-8b19-e6b0256b9875" class="bulleted-list"><li style="list-style-type:disc">…etc<figure id="134c8bb5-c4a2-809b-b5cc-d0a522c6ec7d" class="image"><a href="images/Image_11-3-24_at_5.17_PM_(2).jpg"><img style="width:624px" src="images/Image_11-3-24_at_5.17_PM_(2).jpg"/></a></figure></li></ul><p id="134c8bb5-c4a2-80a3-b5ed-ef335b2cafc0" class="">
+</p><p id="134c8bb5-c4a2-80ed-b5cf-f7493d59432a" class=""><mark class="highlight-teal"><strong>Nerve Theorem.</strong></mark><mark class="highlight-teal"> </mark>Basically,<mark class="highlight-teal"> </mark>this simple structure preserves the important characteristics of the topological manifold.</p><p id="1dcc8bb5-c4a2-802d-b316-f7a502fa8fee" class="">Particularly, this structure is a <strong>homotopy equivalence</strong> to the original data space (i.e., we can transform one into the other through bending, shrinking, and expanding).</p><p id="134c8bb5-c4a2-8049-adc5-dab7bc857826" class="">
+</p><hr id="134c8bb5-c4a2-8022-967a-d99d47c008c7"/><h2 id="134c8bb5-c4a2-804c-889b-d7785add8c95" class=""><mark class="highlight-blue"><mark class="highlight-blue_background">1b: </mark></mark><mark class="highlight-default"><mark class="highlight-blue_background">Transform edges to approximate local distances</mark></mark></h2><p id="134c8bb5-c4a2-80c7-87fc-d630a6d82cbc" class=""><strong>Problem:</strong> in the picture above, the representation isn’t perfect—there are gaps and clumps. </p><ul id="134c8bb5-c4a2-80c9-a57c-d0d3ea71cea9" class="bulleted-list"><li style="list-style-type:disc">…why? Because the data wasn’t uniformly distributed on the manifold!</li></ul><p id="134c8bb5-c4a2-8034-af52-fda62b1e88d5" class=""><strong>Assumption: a</strong>ssume the data is <span style="border-bottom:0.05em solid">uniformly distributed</span> on the manifold.</p><ul id="134c8bb5-c4a2-80a4-9951-d83a7b70e742" class="bulleted-list"><li style="list-style-type:disc">Define a <mark class="highlight-teal"><strong>Riemannian Metric</strong></mark> on the manifold to make this true.</li></ul><p id="134c8bb5-c4a2-806d-a712-fe0c4209b75a" class="">
+</p><p id="134c8bb5-c4a2-80db-9344-c0354ed154e0" class=""><mark class="highlight-teal"><strong>Riemannian Metric:</strong></mark></p><p id="134c8bb5-c4a2-80b6-9c1e-ecabc14f316a" class=""><strong>Idea: </strong>Patches on the manifold <em>map down to euclidean spaces on different scales.</em></p><ul id="134c8bb5-c4a2-8042-9072-c9359e7b288e" class="bulleted-list"><li style="list-style-type:disc">Different notion of ‘distance’ depending on which patch you are in. </li></ul><ul id="134c8bb5-c4a2-808c-8696-fb275e2df792" class="bulleted-list"><li style="list-style-type:disc">Glue together these patches to make up the manifold.</li></ul><figure id="134c8bb5-c4a2-80d3-87b3-cd56481ac377" class="image"><a href="images/Screenshot_2024-11-03_at_6.00.22_PM.png"><img style="width:432px" src="images/Screenshot_2024-11-03_at_6.00.22_PM.png"/></a></figure><p id="134c8bb5-c4a2-8065-8da7-c10b5a6e9024" class=""><strong>In practice:</strong></p><ul id="134c8bb5-c4a2-80ae-bbce-f47d9e47cacd" class="bulleted-list"><li style="list-style-type:disc">Each point has its own local notion of distance</li></ul><ul id="134c8bb5-c4a2-805c-bbd8-e7a848091315" class="bulleted-list"><li style="list-style-type:disc">Unit ball about a point stretches to <em>k</em>-th nearest neighbor of the point, where <em>k</em> is the sample size we are using to approximate the local sense of distance</li></ul><p id="134c8bb5-c4a2-80c8-91a6-e184263b98ab" class="">
+</p><p id="134c8bb5-c4a2-80ed-a663-c275188c3800" class="">After applying the Riemannian metric:</p><figure id="134c8bb5-c4a2-80d8-87e8-c71e4da73660" class="image"><a href="images/Image_11-3-24_at_5.18_PM.jpg"><img style="width:576px" src="images/Image_11-3-24_at_5.18_PM.jpg"/></a></figure><p id="134c8bb5-c4a2-803f-900c-c91ba98c867b" class="">Great! We’re better covering the manifold!</p><p id="134c8bb5-c4a2-809e-b51a-fc569a852473" class="">
+</p><p id="134c8bb5-c4a2-807e-bcff-f8ccd042bc82" class="">Choosing hyperparameter <code>k</code><em>:</em></p><ul id="134c8bb5-c4a2-8055-baf8-df17191245d5" class="bulleted-list"><li style="list-style-type:disc">Small <em>k</em>: very local interpretation, capture fine detail structure of the Riemannian metric</li></ul><ul id="134c8bb5-c4a2-80bc-8ac8-f70a42c122e7" class="bulleted-list"><li style="list-style-type:disc">Large <em>k</em>: estimate based on larger regions; miss some of the fine detail structure, but more accurate across the whole manifold (more data to estimate with)</li></ul><p id="134c8bb5-c4a2-80eb-ad6c-f3239206cf2e" class="">
+</p><p id="134c8bb5-c4a2-80cc-935f-fcdf4b00ea52" class="">But why choose a fixed radius, a binary “yes” or “no” for membership to a simplicial set?</p><p id="134c8bb5-c4a2-8094-99e3-e3344fe8b5e5" class="">Instead, we can use <mark class="highlight-teal"><strong>fuzzy sets</strong></mark>:</p><figure id="134c8bb5-c4a2-804f-862e-cec73753ab71" class="image"><a href="images/Image_11-3-24_at_5.18_PM_(1).jpg"><img style="width:576px" src="images/Image_11-3-24_at_5.18_PM_(1).jpg"/></a></figure><p id="134c8bb5-c4a2-8043-a1ae-d88b312479cc" class="">Now the confidence that a neighboring point belongs to a set ‘decays’ as we get further away. </p><p id="134c8bb5-c4a2-801a-bb41-f56f2f1d25f0" class="">
+</p><p id="134c8bb5-c4a2-8027-8996-c9e87072ebe7" class=""><strong>Assumption: w</strong>e will also assume that points are <span style="border-bottom:0.05em solid">locally connected:</span></p><ul id="134c8bb5-c4a2-802b-a709-f161a8983708" class="bulleted-list"><li style="list-style-type:disc">Fuzzy set confidence decays only <em>beyond the first nearest neighbor.</em></li></ul><p id="134c8bb5-c4a2-808b-941e-c1b717426189" class="">Why? Curse of dimensionality:</p><ul id="134c8bb5-c4a2-80a1-bfe7-e1e2057005ca" class="bulleted-list"><li style="list-style-type:disc">In very high dimensions, all distances start to look similar (1st neighbor distance and 10th neighbor distance look relatively similar). </li></ul><ul id="134c8bb5-c4a2-8050-96db-c4d4265685f2" class="bulleted-list"><li style="list-style-type:disc">Local connectivity constraint ensures we focus on <em>relative distances </em>(vs. absolute distances)<figure id="134c8bb5-c4a2-8033-8860-cd09ff09af36" class="image"><a href="images/Image_11-3-24_at_5.18_PM_(2).jpg"><img style="width:624px" src="images/Image_11-3-24_at_5.18_PM_(2).jpg"/></a></figure></li></ul><p id="134c8bb5-c4a2-804f-8678-d338a7b70797" class="">
+</p><hr id="134c8bb5-c4a2-8012-8551-e6dbf8d38992"/><h2 id="134c8bb5-c4a2-807c-bb57-c4851e005ae7" class=""><mark class="highlight-blue"><mark class="highlight-blue_background">1c: </mark></mark><mark class="highlight-default"><mark class="highlight-blue_background">Deal with asymmetry between local notions of distance</mark></mark></h2><p id="134c8bb5-c4a2-80a1-97c4-f49efaf5d00a" class=""><strong>Problem:</strong> our local metrics are not compatible!</p><figure id="134c8bb5-c4a2-800e-8fc1-c8366631cb13" class="image"><a href="images/Image_11-3-24_at_5.18_PM_(3).jpg"><img style="width:576px" src="images/Image_11-3-24_at_5.18_PM_(3).jpg"/></a></figure><p id="134c8bb5-c4a2-8067-b09d-f96a379edc57" class="">There are multiple edges between any pair of points due to different notions of weights.</p><p id="134c8bb5-c4a2-8085-812b-f73481f66e3d" class=""><strong>Solution: </strong>Take the <mark class="highlight-teal"><strong>fuzzy union</strong></mark> between these fuzzy simplicial sets.</p><figure id="134c8bb5-c4a2-80b0-8baf-ea4fa696a87b" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>α</mi><mo separator="true">,</mo><mi>β</mi><mo stretchy="false">)</mo><mo>=</mo><mi>α</mi><mo>+</mo><mi>β</mi><mo>−</mo><mi>α</mi><mo>⋅</mo><mi>β</mi></mrow><annotation encoding="application/x-tex">f(\alpha, \beta) = \alpha + \beta - \alpha \cdot \beta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4445em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span></span></span></div></figure><p id="134c8bb5-c4a2-805c-a34c-cbe2595ff3d7" class="">If we union together all the fuzzy simplicial sets, we end up with a single fuzzy simplicial complex:</p><figure id="134c8bb5-c4a2-80d8-95cf-faad99e05921" class="image"><a href="images/Image_11-3-24_at_5.19_PM.jpg"><img style="width:624px" src="images/Image_11-3-24_at_5.19_PM.jpg"/></a></figure><p id="134c8bb5-c4a2-80ef-a800-e8817d4f3ce3" class="">Basically, just a weighted graph, but with strong mathematical foundation :).</p><p id="134c8bb5-c4a2-80e9-876c-e2b7bbfed42a" class="">
+</p><hr id="134c8bb5-c4a2-808d-80b8-c2bdb217851e"/><h1 id="13bc8bb5-c4a2-80a3-8ed4-ebff8ea25067" class=""><mark class="highlight-orange">2.</mark> Graph Layout</h1><h2 id="134c8bb5-c4a2-8020-ba44-f63262482318" class=""><mark class="highlight-blue"><mark class="highlight-blue_background">2a: </mark></mark><mark class="highlight-default"><mark class="highlight-blue_background">Define objective function preserving graph characteristics</mark></mark></h2><p id="134c8bb5-c4a2-80a6-8f6e-c14b346a3694" class="">Now, we have a <strong>fuzzy topological representation</strong> of the data.</p><p id="134c8bb5-c4a2-809a-8c6e-fed5566d5106" class="">
+</p><p id="134c8bb5-c4a2-80aa-8f98-f6492930a293" class="">How do we embed the data?</p><ul id="134c8bb5-c4a2-8066-8fce-d60903a24efd" class="bulleted-list"><li style="list-style-type:disc">we <em>know</em> the manifold (low-dimensional euclidean space, e.g. <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="double-struck">R</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\mathbb{R}^3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathbb">R</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span>)</li></ul><ul id="134c8bb5-c4a2-807d-b3dc-f53812a3689d" class="bulleted-list"><li style="list-style-type:disc">we <em>don’t know </em>the correct nearest neighbor distance (where to embed the graph)</li></ul><p id="134c8bb5-c4a2-801a-8c0a-c99288496af8" class="">
+</p><p id="134c8bb5-c4a2-80b1-a43e-ef1343bd0805" class=""><strong>Optimization: </strong>find the low-dimensional representation that “best matches” the fuzzy topological representation.</p><p id="134c8bb5-c4a2-80c0-8c54-f59540bfb9b6" class="">
+</p><p id="134c8bb5-c4a2-8042-ab8f-d90563f9b1e8" class="">Cross-Entropy Loss:</p><figure id="134c8bb5-c4a2-8013-afd2-cdcee807688b" class="image"><a href="images/Screenshot_2024-11-03_at_7.05.37_PM.png"><img style="width:672px" src="images/Screenshot_2024-11-03_at_7.05.37_PM.png"/></a></figure><ul id="134c8bb5-c4a2-8032-ad4b-e9184280d956" class="bulleted-list"><li style="list-style-type:disc"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>h</mi></msub><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">w_h(e)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">h</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">e</span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span> = weight in high-dimensional case</li></ul><ul id="134c8bb5-c4a2-80e5-8a2b-d00b60370b7e" class="bulleted-list"><li style="list-style-type:disc"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>l</mi></msub><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">w_l(e)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">e</span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span> = weight in low-dimensional case</li></ul><p id="134c8bb5-c4a2-806e-af59-e9e54e15bd19" class="">
+</p><p id="134c8bb5-c4a2-80de-a139-c869356d1d29" class=""><strong>First term:</strong> <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mrow><mi>e</mi><mo>∈</mo><mi>E</mi></mrow></msub><msub><mi>w</mi><mi>h</mi></msub><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mfrac><mrow><msub><mi>w</mi><mi>h</mi></msub><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo></mrow><mrow><msub><mi>w</mi><mi>l</mi></msub><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo></mrow></mfrac><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\sum_{e \in E} w_h(e) \log(\frac{w_h(e)}{w_l(e)})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.53em;vertical-align:-0.52em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1786em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">e</span><span class="mrel mtight">∈</span><span class="mord mathnormal mtight" style="margin-right:0.05764em;">E</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3271em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">h</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">e</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mopen">(</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.01em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:-0.0269em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">e</span><span class="mclose mtight">)</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.485em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:-0.0269em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">h</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">e</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span></p><ul id="134c8bb5-c4a2-802e-a134-ef71e914f33e" class="bulleted-list"><li style="list-style-type:disc">“Get the clusters right” (attractive force)</li></ul><p id="134c8bb5-c4a2-8025-bc84-c1a353206e07" class=""><strong>Second term:</strong> <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msub><mi>w</mi><mi>h</mi></msub><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mfrac><mrow><mn>1</mn><mo>−</mo><msub><mi>w</mi><mi>h</mi></msub><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo></mrow><mrow><mn>1</mn><mo>−</mo><msub><mi>w</mi><mi>l</mi></msub><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo></mrow></mfrac><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(1- w_h(e))\log(\frac{1-w_h(e)}{1-w_l(e)})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.53em;vertical-align:-0.52em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">h</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">e</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mopen">(</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.01em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mbin mtight">−</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:-0.0269em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">e</span><span class="mclose mtight">)</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.485em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mbin mtight">−</span><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:-0.0269em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">h</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">e</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span></p><ul id="134c8bb5-c4a2-80ac-befd-fa1d174bd174" class="bulleted-list"><li style="list-style-type:disc">“Get the gaps between clusters right” (repulsive force)</li></ul><p id="134c8bb5-c4a2-8060-82ec-ed989cc2082d" class="">
+</p><p id="134c8bb5-c4a2-80d2-bb9d-f964df374597" class=""><code>min_dist</code> : minimum distance between points in low-dimensional space. </p><ul id="134c8bb5-c4a2-80b7-b254-d27b868ddd32" class="bulleted-list"><li style="list-style-type:disc">small value: more tightly packed embeddings—focus on clustering, fine topological structure</li></ul><ul id="134c8bb5-c4a2-8052-9ebe-c5ce3520b91e" class="bulleted-list"><li style="list-style-type:disc">large value: more loosely packed embeddings—focus on broad topological structure (softer, more general features)</li></ul><p id="134c8bb5-c4a2-8003-86c5-c33dc79ef3b8" class="">
+</p><hr id="134c8bb5-c4a2-804a-b366-e37529a7a574"/><h2 id="134c8bb5-c4a2-8052-9bfe-e8582e935b57" class=""><mark class="highlight-blue"><mark class="highlight-blue_background">2b: </mark></mark><mark class="highlight-default"><mark class="highlight-blue_background">Find low-dimensional representation optimizing objective</mark></mark></h2><p id="134c8bb5-c4a2-8019-97ae-d915e29f7eb3" class="">Now we have a <strong>fuzzy topological representation</strong> of the data, and an objective function that defines the <strong>best low-dimensional embedding for the representation. </strong></p><p id="134c8bb5-c4a2-809d-a349-e54da14148db" class="">
+</p><p id="134c8bb5-c4a2-8040-af0d-dd09a104b945" class="">Use SGD to optimize the low dimensional embedding according to cross-entropy.</p><p id="134c8bb5-c4a2-80e0-b835-f88be4e163f4" class="">
+</p><h2 id="134c8bb5-c4a2-8071-97a9-cf30aed4a1ef" class=""><mark class="highlight-blue_background"><strong>Computational tricks:</strong></mark></h2><ul id="134c8bb5-c4a2-80d9-9f8f-c39a4bc1b006" class="bulleted-list"><li style="list-style-type:disc">Compute approximate nearest neighbors (NN-Descent)</li></ul><ul id="134c8bb5-c4a2-800c-a77e-edcbb623e4f4" class="bulleted-list"><li style="list-style-type:disc">Make the objective function differentiable<ul id="134c8bb5-c4a2-80ef-b0f5-fbbf0ef7c713" class="bulleted-list"><li style="list-style-type:circle">Use a smooth approximation of the membership strength</li></ul></li></ul><ul id="134c8bb5-c4a2-8088-a4a6-e13ad2cf1174" class="bulleted-list"><li style="list-style-type:disc">Instead of dealing with all possible edges, use negative sampling<ul id="134c8bb5-c4a2-80da-b226-f7d4bf094a4d" class="bulleted-list"><li style="list-style-type:circle">Randomly sample edges to act as “dissimilar” examples</li></ul></li></ul><ul id="134c8bb5-c4a2-8065-ba6c-c4dd6b5d412d" class="bulleted-list"><li style="list-style-type:disc">Use spectral embedding to initialize the graph in a good state</li></ul><p id="19ec8bb5-c4a2-8008-b6bf-db6bb3ebc52d" class="">
+</p><h3 id="19ec8bb5-c4a2-8031-aece-d3d5e6b2893e" class=""><mark class="highlight-blue">Batched NN-Descent</mark></h3><p id="19ec8bb5-c4a2-8003-afee-f562aef25cd5" class=""><strong>Problem:</strong> Running brute-force to compute all-neighbors graph is computationally bad <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>O</mtext><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\text{O}(n^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">O</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span>.</p><p id="19ec8bb5-c4a2-801e-800b-c2698ff22b48" class=""><strong>Goal:</strong> Run KNN on a large dataset by <span style="border-bottom:0.05em solid">keeping it on host</span> and processing it <span style="border-bottom:0.05em solid">in batches on device</span>.</p><p id="19ec8bb5-c4a2-807f-8d21-d74123f9651a" class="">
+</p><p id="19ec8bb5-c4a2-8026-9b3c-ff58e09a905b" class=""><strong>High-level:</strong></p><ol type="1" id="19ec8bb5-c4a2-80ae-b469-d275ec175030" class="numbered-list" start="1"><li>Run balanced <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span></span><span>﻿</span></span>-means on data subsample<ol type="a" id="19ec8bb5-c4a2-80cd-b64b-e9d264163d9f" class="numbered-list" start="1"><li>Partition dataset into batches based on closest clusters</li></ol></li></ol><ol type="1" id="19ec8bb5-c4a2-80e5-9a89-e5f179c38ff0" class="numbered-list" start="2"><li>Iteratively run NN-descent on each partition</li></ol><ol type="1" id="19ec8bb5-c4a2-8058-92ba-c2a488b74bac" class="numbered-list" start="3"><li>Merge KNN subgraph with global all-neighbors graph</li></ol><p id="19ec8bb5-c4a2-80ff-a319-c3d44dbee68c" class="">
+</p><h3 id="19ec8bb5-c4a2-809c-9bce-cdaf46d11d9e" class=""><strong>1. Balanced </strong><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span></span><span>﻿</span></span><strong>-means</strong></h3><p id="19ec8bb5-c4a2-802d-b1d7-c5c2ab18d1aa" class="">How do we choose a data subset such that samples are likely to be close in distance?</p><p id="19ec8bb5-c4a2-80cf-9dd6-f1ab8fae580a" class=""><strong>Idea:</strong> perform balanced <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span></span><span>﻿</span></span>-means on data subsample.</p><ul id="19ec8bb5-c4a2-8036-9f64-df7a346b7c02" class="bulleted-list"><li style="list-style-type:disc">Balanced <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span></span><span>﻿</span></span>-means = <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span></span><span>﻿</span></span>-means where cluster sizes are equal</li></ul><p id="19ec8bb5-c4a2-80e5-b63b-f314a1276c17" class="">
+</p><p id="19ec8bb5-c4a2-8035-a431-df115eff5f89" class=""><strong>Process:</strong></p><ul id="19ec8bb5-c4a2-807c-964e-c68684b0a4a6" class="bulleted-list"><li style="list-style-type:disc">Choose subsample, e.g., 10%, to cluster (since we assume that dataset doesn’t fit in device memory)</li></ul><ul id="19ec8bb5-c4a2-80e9-af0d-e8b3e6325741" class="bulleted-list"><li style="list-style-type:disc">Run balanced <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span></span><span>﻿</span></span>-means with k = <code>nnd_n_clusters</code></li></ul><ul id="19ec8bb5-c4a2-8052-ae11-dd867746ce37" class="bulleted-list"><li style="list-style-type:disc">Assign each data point to 2 closest cluster centers<ul id="19ec8bb5-c4a2-802d-8ec6-cdb95c30b3e4" class="bulleted-list"><li style="list-style-type:circle">By assigning each point to 2 centers, neighborhoods in each cluster overlap</li></ul><ul id="19ec8bb5-c4a2-80f0-a0d9-d55f290c1261" class="bulleted-list"><li style="list-style-type:circle">Makes it more likely that final neighborhoods will have near-neighbors</li></ul></li></ul><p id="19ec8bb5-c4a2-80b2-8cd2-d19ad43c5e01" class="">
+</p><h3 id="19ec8bb5-c4a2-8056-a51d-e3fea22b1f6f" class="">2. NN-Descent</h3><p id="19ec8bb5-c4a2-80dc-ba62-d24e3cb81c15" class="">Now, we have clusters (partitions) of dataset. </p><p id="19ec8bb5-c4a2-80b5-92e4-e6f445c95bf4" class=""><strong>NN-Descent:</strong></p><ul id="19ec8bb5-c4a2-8027-8080-c527fcfefd52" class="bulleted-list"><li style="list-style-type:disc">For each cluster:<ul id="19ec8bb5-c4a2-8074-bcf7-f229c92c1fbf" class="bulleted-list"><li style="list-style-type:circle">Load cluster data points onto device</li></ul><ul id="19ec8bb5-c4a2-80d8-94e2-d0117e5482a7" class="bulleted-list"><li style="list-style-type:circle">Run NN-descent on cluster to get KNN subgraph</li></ul><ul id="19ec8bb5-c4a2-808c-b8c7-ed3979af5704" class="bulleted-list"><li style="list-style-type:circle">Merge KNN subgraph with global all-neighbors graph</li></ul></li></ul><p id="19ec8bb5-c4a2-80e2-a0de-cc51c338985f" class=""><strong>Finally:</strong></p><ul id="19ec8bb5-c4a2-80d3-ae7a-fad84ba7ca88" class="bulleted-list"><li style="list-style-type:disc">Return global all-neighbors graph (much smaller than input dataset)</li></ul><p id="19ec8bb5-c4a2-8095-b7eb-c60d6412b732" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span><script src="../../../js/notes-template.js"></script></body></html>
