@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rishi Chandra</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Preload the navigation script to make it available immediately -->
+    <link rel="preload" href="js/notes-template.js" as="script">
     <script>
         window.MathJax = {
             tex: {
@@ -92,6 +94,13 @@
             link.addEventListener('click', function() {
                 // Set a flag that we're coming from a page with proper navigation
                 localStorage.setItem('fromMathNotesPage', 'true');
+                
+                // Attempt to preload the script before navigation
+                const preloadLink = document.createElement('link');
+                preloadLink.rel = 'preload';
+                preloadLink.as = 'script';
+                preloadLink.href = '/js/notes-template.js';
+                document.head.appendChild(preloadLink);
             });
         });
     </script>

@@ -19,15 +19,41 @@ fs.readFile(targetFile, 'utf8', (err, data) => {
   }
 
   // Check if script is already added
-  if (data.includes("../../../js/notes-template.js")) {
+  if (data.includes("notes-template.js")) {
     console.log('Script tag already exists in the file');
+    
+    // Remove the script from the end of the body if it exists
+    let modifiedData = data;
+    if (data.includes('<script src="../../../js/notes-template.js"></script></body>')) {
+      modifiedData = data.replace(
+        '<script src="../../../js/notes-template.js"></script></body>',
+        '</body>'
+      );
+      
+      // Add the script to the head if it's not already there
+      if (!modifiedData.includes('<script defer src="../../../js/notes-template.js"></script>')) {
+        modifiedData = modifiedData.replace(
+          '</head>',
+          '<script defer src="../../../js/notes-template.js"></script></head>'
+        );
+        
+        // Write the modified content back to the file
+        fs.writeFile(targetFile, modifiedData, 'utf8', (err) => {
+          if (err) {
+            console.error(`Error writing file: ${err}`);
+            return;
+          }
+          console.log(`Successfully moved template script to head in ${targetFile}`);
+        });
+      }
+    }
     return;
   }
 
-  // Replace the closing body tag with our script followed by the closing body tag
+  // Add the script to the head section with defer attribute
   const modifiedData = data.replace(
-    '</body>',
-    '<script src="../../../js/notes-template.js"></script></body>'
+    '</head>',
+    '<script defer src="../../../js/notes-template.js"></script></head>'
   );
 
   // Write the modified content back to the file

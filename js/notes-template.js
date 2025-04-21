@@ -56,7 +56,16 @@
         container.appendChild(navBar);
 
         // Add to the beginning of the body - highest priority
-        document.body.insertBefore(container, document.body.firstChild);
+        if (document.body) {
+            document.body.insertBefore(container, document.body.firstChild);
+        } else {
+            // If body isn't available yet, try again when it is
+            requestAnimationFrame(() => {
+                if (document.body) {
+                    document.body.insertBefore(container, document.body.firstChild);
+                }
+            });
+        }
 
         // Remove page header icon if present - high priority
         const headerIcon = document.querySelector('.page-header-icon');
@@ -66,7 +75,7 @@
         }
 
         // Defer code highlighting to ensure header appears first
-        requestAnimationFrame(() => {
+        setTimeout(() => {
             // Add custom CSS to control code font size and appearance - do this early
             addCustomCodeStyles();
             
@@ -74,13 +83,19 @@
             fixCodeCapitalization();
             
             // Then load Prism for syntax highlighting with a slight delay
-            setTimeout(loadPrismHighlighter, 10);
-        });
+            setTimeout(loadPrismHighlighter, 50);
+        }, 0);
     }
 
     // Add custom CSS styles for code
     function addCustomCodeStyles() {
+        // Check if styles already exist
+        if (document.querySelector('#custom-code-styles')) {
+            return;
+        }
+        
         const customStyles = document.createElement('style');
+        customStyles.id = 'custom-code-styles';
         customStyles.textContent = `
             pre, code {
                 font-size: 14px !important;
@@ -164,10 +179,12 @@
         // Load Prism as a single bundle with common languages
         const prismScript = document.createElement('script');
         prismScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js';
+        prismScript.defer = true;
         prismScript.onload = function() {
             // Load Python language addon specifically
             const pythonScript = document.createElement('script');
             pythonScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js';
+            pythonScript.defer = true;
             pythonScript.onload = function() {
                 console.log('Prism fully loaded, highlighting code blocks');
                 
@@ -193,10 +210,10 @@
     }
 
     // Execute navigation setup immediately if possible
+    addNavigation();
+    
+    // Also ensure it runs when the DOM is ready as a fallback
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', addNavigation);
-    } else {
-        // DOM is already ready, add navigation now
-        addNavigation();
     }
 })(); 
