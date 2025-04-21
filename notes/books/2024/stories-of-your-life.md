@@ -1,1 +1,1 @@
-Short story collection - my favorites are *Hell is the Absence of God* and *Liking What You See: A Documentary*. 
+My favorites are *Hell is the Absence of God* and *Liking What You See: A Documentary*. 
