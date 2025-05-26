@@ -200,6 +200,11 @@ class MarkdownBlog {
                 await window.MathJax.typesetPromise([container]);
             }
             
+            // Trigger syntax highlighting
+            if (window.Prism) {
+                window.Prism.highlightAllUnder(container);
+            }
+            
             return post;
         } catch (error) {
             console.error('Error rendering post:', error);
@@ -303,6 +308,11 @@ window.loadBlogPost = async function(path) {
         // Re-render MathJax if available
         if (window.MathJax && window.MathJax.typesetPromise) {
             await window.MathJax.typesetPromise([blogContainer]);
+        }
+        
+        // Trigger syntax highlighting
+        if (window.Prism) {
+            window.Prism.highlightAllUnder(blogContainer);
         }
         
         // Update page title

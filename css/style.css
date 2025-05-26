@@ -118,6 +118,7 @@ body:not(.home-page) {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #eee;
+    text-align: center;
 }
 
 .back-button {
@@ -131,6 +132,22 @@ body:not(.home-page) {
 
 .back-button:hover {
     color: #000;
+}
+
+.site-title {
+    display: inline-block;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+    letter-spacing: normal;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.site-title:hover {
+    color: #333;
+    text-decoration: none;
 }
 
 /* Notes lists styling */
