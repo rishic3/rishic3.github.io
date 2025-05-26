@@ -54,14 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Only activate toggles on reading-notes page
     if (document.body.dataset.notesType === 'reading') {
-        document.querySelectorAll('.file-toggle').forEach(toggle => {
+        document.querySelectorAll('.file-toggle[data-file]').forEach(toggle => {
             const filePath = toggle.getAttribute('data-file');
-            const titleSpan = toggle.querySelector('.post-title');
-
-            if (!filePath.endsWith("blank.md") && titleSpan) {
-                titleSpan.innerHTML += " 📝";
-            }
-
+            
             toggle.addEventListener('click', async () => {
                 const fileContentDiv = toggle.nextElementSibling.querySelector('.markdown-content');
                 toggle.classList.toggle('active');

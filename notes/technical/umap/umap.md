@@ -1,3 +1,12 @@
+---
+title: "UMAP"
+date: "2024-11-03"
+layout: "post"
+category: "machine-learning"
+tags: ["notes", "machine-learning"]
+description: "Notes on how UMAP works."
+---
+
 # UMAP
 
 From ["How UMAP Works"](https://umap-learn.readthedocs.io/en/latest/how_umap_works.html) by Leland McInnes.

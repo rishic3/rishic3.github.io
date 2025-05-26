@@ -36,7 +36,7 @@
         const backButton = document.createElement('a');
         backButton.href = '../../../math-notes.html';
         backButton.className = 'back-button';
-        backButton.textContent = '← Back to Math/CS';
+        backButton.textContent = '← Back to Writing';
         backButton.style.display = 'inline-flex';
         backButton.style.alignItems = 'center';
         backButton.style.padding = '0.5rem 0';

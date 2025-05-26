@@ -48,15 +48,25 @@
     color: #DC143C;
 }
 
-.file-toggle::after {
+/* Only show dropdown arrow for books with notes (those with data-file attribute) */
+.file-toggle[data-file]::after {
     content: '▼';
     font-size: 0.8rem;
     color: #888;
     transition: transform 0.2s;
 }
 
-.file-toggle.active::after {
+.file-toggle[data-file].active::after {
     transform: rotate(180deg);
+}
+
+/* Books without notes should not be clickable */
+.file-toggle.no-notes {
+    cursor: default;
+}
+
+.file-toggle.no-notes:hover {
+    background: #fff;
 }
 
 .file-content {
@@ -110,6 +120,30 @@
     height: auto;
     margin: 1.5rem 0;
     border-radius: 4px;
+}
+
+/* Clean, minimal link styling */
+.markdown-content a {
+    color: #333;
+    text-decoration: underline;
+    text-decoration-color: #ccc;
+    text-underline-offset: 3px;
+    transition: all 0.2s ease;
+}
+
+.markdown-content a:hover {
+    color: #000;
+    text-decoration-color: #666;
+}
+
+.markdown-content a:visited {
+    color: #333;
+    text-decoration-color: #ccc;
+}
+
+.markdown-content a:visited:hover {
+    color: #000;
+    text-decoration-color: #666;
 }
 
 /* Misc */
