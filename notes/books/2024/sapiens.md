@@ -1,6 +1,6 @@
-This has become one of my favorite books ever, although it took me a while to get to it. 
+One of my favorite reads of the year, though I'm a bit late to reading it.
 
-Below are highlights and my annotations.  
+Below are some segments that stood out to me, and the occasional annotation.
 
 ## Part One: The Cognitive Revolution
 
@@ -12,7 +12,7 @@ Below are highlights and my annotations.
 
 > It’s relatively easy to agree that only Homo sapiens can speak about things that don’t really exist, and believe six impossible things before breakfast. You could never convince a monkey to give you a banana by promising him limitless bananas after death in monkey heaven.
 
-I wonder if a requirement to achieve human-level organization among intelligent AIs is the ability to create and believe in fictions. I suppose alignment is the second half of that—molding AIs to believe human "fictions".
+I wonder if a requirement to achieve human-level organization among intelligent AIs, such that a "country of geniuses in a datacenter" (as [Dario Amodei puts it](https://www.darioamodei.com/essay/machines-of-loving-grace)) can actually work in concert to fully leverage its collective intelligence, is the ability for AI to autonomously create and believe in its own fictions. Alignment ([ostensibly](https://www.anthropic.com/news/alignment-faking)) achieves this for a single model, but to achieve large-scale coordination among many aligned models — whom which, due to the inherent stochasticity of RL, will not necessarily be 'inter-aligned' even with, say, the same [constitution](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback) — a fundamentally grander scale of alignment might be needed: like an AI equivalent of societal and cultural forces, which incentivize individual AIs to both compete and cooperate in a balance that optimizes the force vector for progress. If we hope for increasing generalizability, it makes sense to allow AI to develop this 'culture' on their own, within some human-created meta-alignment policy that provides the guardrails. 
 > However, fiction has enabled us not merely to imagine things, but to do so collectively. We can weave common myths such as the biblical creation story, the Dreamtime myths of Aboriginal Australians, and the nationalist myths of modern states. Such myths give Sapiens the unprecedented ability to cooperate flexibly in large numbers. Ants and bees can also work together in huge numbers, but they do so in a very rigid manner and only with close relatives. Wolves and chimpanzees cooperate far more flexibly than ants, but they can do so only with small numbers of other individuals that they know intimately. Sapiens can cooperate in extremely flexible ways with countless numbers of strangers.
 
 > Since large-scale human cooperation is based on myths, the way people cooperate can be altered by changing the myths–by telling different stories. Under the right circumstances myths can change rapidly. In 1789 the French population switched almost overnight from believing in the myth of the divine right of kings to believing in the myth of the sovereignty of the people.
