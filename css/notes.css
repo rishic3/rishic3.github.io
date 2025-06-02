@@ -6,7 +6,7 @@
 
 .file-item {
     margin-bottom: 1rem;
-    border: 1px solid #eee;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     overflow: hidden;
 }
@@ -14,12 +14,12 @@
 .file-toggle {
     width: 100%;
     padding: 1rem;
-    background: #fff;
+    background: var(--button-bg);
     border: none;
     text-align: left;
     cursor: pointer;
     font-size: 1rem;
-    color: #333;
+    color: var(--text-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -27,7 +27,7 @@
 }
 
 .file-toggle:hover {
-    background: #f8f8f8;
+    background: var(--button-hover-bg);
 }
 
 .post-title {
@@ -40,7 +40,7 @@
     text-align: right;
     font-style: normal;
     padding-right: 1rem;
-    color: #666;
+    color: var(--text-secondary);
     font-size: 0.9rem;
 }
 
@@ -52,7 +52,7 @@
 .file-toggle[data-file]::after {
     content: '▼';
     font-size: 0.8rem;
-    color: #888;
+    color: var(--text-secondary);
     transition: transform 0.2s;
 }
 
@@ -66,14 +66,14 @@
 }
 
 .file-toggle.no-notes:hover {
-    background: #fff;
+    background: var(--button-bg);
 }
 
 .file-content {
     display: none;
     padding: 1rem;
-    border-top: 1px solid #eee;
-    background-color: #fff;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--button-bg);
 }
 
 .file-content.active {
@@ -82,37 +82,37 @@
 
 /* Markdown content */
 .markdown-body {
-    color: #333;
+    color: var(--text-color);
     padding: 1rem;
     border-radius: 4px;
     line-height: 1.8;
 }
 
-.markdown-content h1 { font-size: 1.8rem; margin-top: 1.5rem; color: #222; }
-.markdown-content h2 { font-size: 1.5rem; margin-top: 1.3rem; color: #222; }
-.markdown-content h3 { font-size: 1.3rem; margin-top: 1.1rem; color: #222; }
+.markdown-content h1 { font-size: 1.8rem; margin-top: 1.5rem; color: var(--text-heading); }
+.markdown-content h2 { font-size: 1.5rem; margin-top: 1.3rem; color: var(--text-heading); }
+.markdown-content h3 { font-size: 1.3rem; margin-top: 1.1rem; color: var(--text-heading); }
 .markdown-content p { margin: 1rem 0; }
 .markdown-content code {
-    background: #f6f6f6;
+    background: var(--code-bg);
     padding: 0.2rem 0.4rem;
     border-radius: 3px;
     font-size: 0.9em;
-    color: #333;
+    color: var(--text-color);
 }
 .markdown-content pre code {
     display: block;
     padding: 1rem;
     overflow-x: auto;
-    background: #f9f9f9;
-    color: #333;
+    background: var(--code-block-bg);
+    color: var(--text-color);
     border-radius: 4px;
 }
 
 .markdown-content blockquote {
-    border-left: 3px solid #ddd;
+    border-left: 3px solid var(--quote-border);
     padding-left: 1rem;
     margin-left: 0;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .markdown-content img {
@@ -124,26 +124,26 @@
 
 /* Clean, minimal link styling */
 .markdown-content a {
-    color: #333;
+    color: var(--text-color);
     text-decoration: underline;
-    text-decoration-color: #ccc;
+    text-decoration-color: var(--text-secondary);
     text-underline-offset: 3px;
     transition: all 0.2s ease;
 }
 
 .markdown-content a:hover {
-    color: #000;
-    text-decoration-color: #666;
+    color: var(--link-hover-color);
+    text-decoration-color: var(--text-secondary);
 }
 
 .markdown-content a:visited {
-    color: #333;
-    text-decoration-color: #ccc;
+    color: var(--text-color);
+    text-decoration-color: var(--text-secondary);
 }
 
 .markdown-content a:visited:hover {
-    color: #000;
-    text-decoration-color: #666;
+    color: var(--link-hover-color);
+    text-decoration-color: var(--text-secondary);
 }
 
 /* Misc */
@@ -152,8 +152,8 @@
     font-weight: bold;
     margin-top: 2rem;
     margin-bottom: 1.5rem;
-    color: #333;
-    border-bottom: 1px solid #eee;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 0.5rem;
 }
 
@@ -182,18 +182,18 @@
 .nav-bar {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .back-button {
     display: inline-flex;
     align-items: center;
     padding: 0.5rem 1rem;
-    color: #333;
+    color: var(--text-color);
     text-decoration: none;
     transition: color 0.2s;
 }
 
 .back-button:hover {
-    color: #000;
+    color: var(--link-hover-color);
 }
