@@ -22,15 +22,21 @@
                 displayMath: [['$$', '$$']],
                 processEscapes: true,
                 processEnvironments: true,
-                packages: ['base', 'ams', 'noerrors', 'noundefined']
+                packages: ['base', 'ams', 'noerrors', 'noundefined'],
+                macros: {
+                    // Add any custom macros here if needed
+                }
             },
             options: {
                 processHtmlClass: 'tex2jax_process',
+                ignoreHtmlClass: 'tex2jax_ignore',
                 skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
             },
             startup: {
                 pageReady: () => {
-                    return MathJax.startup.defaultPageReady();
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax loaded and ready');
+                    });
                 }
             }
         };

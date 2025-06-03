@@ -135,7 +135,31 @@ class MarkdownBlog {
             return content;
         }
         
-        // Configure marked for math support
+        // Store math blocks temporarily to protect them from markdown processing
+        const mathBlocks = [];
+        let mathIndex = 0;
+        
+        // Protect display math ($$...$$)
+        content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, mathContent) => {
+            const placeholder = `<!--MATHBLOCK${mathIndex}-->`;
+            mathBlocks[mathIndex] = `$$${mathContent}$$`;
+            mathIndex++;
+            return placeholder;
+        });
+        
+        // Protect inline math ($...$) - but be careful not to match single $ in text
+        content = content.replace(/\$([^\$\n]+?)\$/g, (match, mathContent) => {
+            // Simple check to avoid matching things like "$5" or "$USD"
+            if (/^[\d\s$]/.test(mathContent) && !/[a-zA-Z\\]/.test(mathContent)) {
+                return match; // Don't treat as math
+            }
+            const placeholder = `<!--MATHBLOCK${mathIndex}-->`;
+            mathBlocks[mathIndex] = `$${mathContent}$`;
+            mathIndex++;
+            return placeholder;
+        });
+        
+        // Configure marked options
         marked.setOptions({
             breaks: true,
             gfm: true,
@@ -143,7 +167,16 @@ class MarkdownBlog {
             mangle: false
         });
         
-        return marked.parse(content);
+        // Process markdown
+        let htmlContent = marked.parse(content);
+        
+        // Restore math blocks
+        for (let i = 0; i < mathBlocks.length; i++) {
+            const placeholder = `<!--MATHBLOCK${i}-->`;
+            htmlContent = htmlContent.replace(new RegExp(placeholder, 'g'), mathBlocks[i]);
+        }
+        
+        return htmlContent;
     }
 
     // Generate blog post HTML
