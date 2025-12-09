@@ -102,10 +102,10 @@ def add_book(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--title", type=str, required=True)
-    parser.add_argument("-a", "--author", type=str, required=True)
-    parser.add_argument("-y", "--year", type=int, required=True)
-    parser.add_argument("-f", "--post-file-path", type=str, required=False)
+    parser.add_argument("-t", "--title", type=str, help="Book title", required=True)
+    parser.add_argument("-a", "--author", type=str, help="Book author", required=True)
+    parser.add_argument("-y", "--year", type=int, help="Year read", required=True)
+    parser.add_argument("-f", "--post-file-path", type=str, help="Path to post file (optional)", required=False)
     args = parser.parse_args()
 
     add_book(args.title, args.author, args.year, args.post_file_path)
