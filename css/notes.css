@@ -22,7 +22,7 @@
     color: var(--text-color);
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     transition: background-color 0.2s;
 }
 
@@ -30,8 +30,20 @@
     background: var(--button-hover-bg);
 }
 
-.post-title {
+.book-info {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.title-author-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-title {
     text-align: left;
     font-weight: 500;
 }
@@ -39,9 +51,26 @@
 .post-subtitle {
     text-align: right;
     font-style: normal;
-    padding-right: 1rem;
     color: var(--text-secondary);
     font-size: 0.9rem;
+}
+
+/* Star rating styles */
+.star-rating {
+    display: flex;
+    gap: 1px;
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+.star {
+    color: #FFD700; /* Gold color for rated stars */
+    transition: color 0.2s ease;
+}
+
+.star-empty {
+    color: var(--text-secondary);
+    opacity: 0.3;
 }
 
 .favorite {
@@ -54,6 +83,9 @@
     font-size: 0.8rem;
     color: var(--text-secondary);
     transition: transform 0.2s;
+    margin-left: 1rem;
+    align-self: flex-start;
+    margin-top: 0.2rem;
 }
 
 .file-toggle[data-file].active::after {

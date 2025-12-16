@@ -1,4 +1,97 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Generate star ratings for books
+    function generateStarRatings() {
+        // Find all buttons with data-rating attribute
+        document.querySelectorAll('.file-toggle[data-rating]').forEach(button => {
+            const rating = parseInt(button.getAttribute('data-rating'));
+            
+            // Get the existing title and subtitle elements
+            const titleElement = button.querySelector('.post-title');
+            const subtitleElement = button.querySelector('.post-subtitle');
+            
+            if (titleElement && subtitleElement) {
+                // Clear existing content
+                button.innerHTML = '';
+                
+                // Create new structure
+                const bookInfo = document.createElement('div');
+                bookInfo.className = 'book-info';
+                
+                const titleAuthorRow = document.createElement('div');
+                titleAuthorRow.className = 'title-author-row';
+                titleAuthorRow.appendChild(titleElement.cloneNode(true));
+                titleAuthorRow.appendChild(subtitleElement.cloneNode(true));
+                
+                const starRating = document.createElement('div');
+                starRating.className = 'star-rating';
+                
+                // Generate 10 stars
+                for (let i = 1; i <= 10; i++) {
+                    const star = document.createElement('span');
+                    star.textContent = '★';
+                    star.className = i <= rating ? 'star' : 'star star-empty';
+                    starRating.appendChild(star);
+                }
+                
+                bookInfo.appendChild(titleAuthorRow);
+                bookInfo.appendChild(starRating);
+                button.appendChild(bookInfo);
+                
+                // If the button has a dropdown arrow (books with notes), add it back
+                if (button.hasAttribute('data-file')) {
+                    button.style.display = 'flex';
+                    button.style.alignItems = 'flex-start';
+                    // The CSS ::after pseudo-element will handle the arrow
+                }
+            }
+        });
+        
+        // Also handle buttons without ratings to show empty stars
+        document.querySelectorAll('.file-toggle:not([data-rating])').forEach(button => {
+            const titleElement = button.querySelector('.post-title');
+            const subtitleElement = button.querySelector('.post-subtitle');
+            
+            if (titleElement && subtitleElement) {
+                // Clear existing content
+                button.innerHTML = '';
+                
+                // Create new structure
+                const bookInfo = document.createElement('div');
+                bookInfo.className = 'book-info';
+                
+                const titleAuthorRow = document.createElement('div');
+                titleAuthorRow.className = 'title-author-row';
+                titleAuthorRow.appendChild(titleElement.cloneNode(true));
+                titleAuthorRow.appendChild(subtitleElement.cloneNode(true));
+                
+                const starRating = document.createElement('div');
+                starRating.className = 'star-rating';
+                
+                // Generate 10 empty stars
+                for (let i = 1; i <= 10; i++) {
+                    const star = document.createElement('span');
+                    star.textContent = '★';
+                    star.className = 'star star-empty';
+                    starRating.appendChild(star);
+                }
+                
+                bookInfo.appendChild(titleAuthorRow);
+                bookInfo.appendChild(starRating);
+                button.appendChild(bookInfo);
+                
+                // If the button has a dropdown arrow (books with notes), add it back
+                if (button.hasAttribute('data-file')) {
+                    button.style.display = 'flex';
+                    button.style.alignItems = 'flex-start';
+                    // The CSS ::after pseudo-element will handle the arrow
+                }
+            }
+        });
+    }
+    
+    // Run star generation on page load
+    generateStarRatings();
+
     // handle inline and block math
     const blockMathExtension = {
         name: 'blockMath',
