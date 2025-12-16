@@ -1,0 +1,1 @@
+I've always thought literary critics like to abuse the term "tour de force", but I think it's actually fitting for this book. Honestly I don't really know the definition; I suppose it's just the way the term sounds. "Tour de force" has a heaviness, like a powerful hand that guides you, inexorably, to some distant place. Much like the novel itself. 
