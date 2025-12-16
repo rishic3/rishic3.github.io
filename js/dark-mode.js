@@ -6,8 +6,8 @@
 (function() {
     'use strict';
     
-    // Get stored theme preference or default to light mode
-    const storedTheme = localStorage.getItem('theme') || 'light';
+    // Get stored theme preference or default to dark mode
+    const storedTheme = localStorage.getItem('theme') || 'dark';
     
     // Apply theme immediately to prevent flash
     document.documentElement.setAttribute('data-theme', storedTheme);

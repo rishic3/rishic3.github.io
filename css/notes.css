@@ -11,6 +11,40 @@
     overflow: hidden;
 }
 
+/* Standout books with colored border */
+.file-item:has(.file-toggle[data-standout="true"]) {
+    border: 2px solid #4338ca;
+}
+
+/* Dark mode color for standout book borders */
+[data-theme="dark"] .file-item:has(.file-toggle[data-standout="true"]) {
+    border-color: #818cf8;
+}
+
+/* Legend styling */
+.legend {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.legend-box {
+    display: inline-block;
+    width: 16px;
+    height: 12px;
+    border: 2px solid #4338ca;
+    border-radius: 2px;
+}
+
+/* Dark mode color for legend box */
+[data-theme="dark"] .legend-box {
+    border-color: #818cf8;
+}
+
 .file-toggle {
     width: 100%;
     padding: 1rem;
