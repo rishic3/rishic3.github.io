@@ -1,4 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Generate standout stars for books
+    function generateStandoutStars() {
+        document.querySelectorAll('.file-toggle[data-standout="true"]').forEach(button => {
+            const titleElement = button.querySelector('.post-title');
+            if (titleElement && !titleElement.querySelector('.standout-star')) {
+                const star = document.createElement('span');
+                star.className = 'standout-star';
+                star.textContent = '✦';
+                titleElement.appendChild(star);
+            }
+        });
+    }
+    
+    // Run star generation on page load
+    generateStandoutStars();
+
     // handle inline and block math
     const blockMathExtension = {
         name: 'blockMath',

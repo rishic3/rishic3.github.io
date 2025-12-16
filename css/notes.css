@@ -48,6 +48,17 @@
     color: #DC143C;
 }
 
+.standout-star {
+    color: #e11d48;
+    margin-left: 0.3rem;
+    font-size: 0.9em;
+}
+
+/* Dark mode color for standout star */
+[data-theme="dark"] .standout-star {
+    color: #818cf8;
+}
+
 /* Only show dropdown arrow for books with notes (those with data-file attribute) */
 .file-toggle[data-file]::after {
     content: '▼';
