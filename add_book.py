@@ -5,12 +5,14 @@ from typing import Optional
 HTML_FILE_PATH = "reading-notes.html"
 
 
-def generate_book_entry(title: str, author: str, post_file_path: Optional[str] = None):
+def generate_book_entry(title: str, author: str, post_file_path: Optional[str] = None, standout: bool = False):
     """
     Generate HTML entry for a book.
     """
     button_class = '"file-toggle no-notes"'
     optional_file_content = ""
+    standout_attr = ' data-standout="true"' if standout else ''
+    
     if post_file_path:
         assert post_file_path.endswith(
             ".md"
@@ -18,11 +20,13 @@ def generate_book_entry(title: str, author: str, post_file_path: Optional[str] =
         if not os.path.exists(post_file_path):
             raise FileNotFoundError(f"Post file {post_file_path} not found")
 
-        button_class = f'"file-toggle" data-file="{post_file_path}"'
+        button_class = f'"file-toggle" data-file="{post_file_path}"{standout_attr}'
         optional_file_content = """
                 <div class="file-content">
                     <div class="markdown-body markdown-content"></div>
                 </div>"""
+    else:
+        button_class = f'"file-toggle no-notes"{standout_attr}'
 
     entry = f"""            <li class="file-item">
                 <button class={button_class}>
@@ -39,12 +43,13 @@ def add_book(
     author: str,
     year: int,
     post_file_path: Optional[str] = None,
+    standout: bool = False,
     html_file_path: str = HTML_FILE_PATH,
 ):
     """
     Add a book to the reading notes HTML file.
     """
-    book_entry = generate_book_entry(title, author, post_file_path)
+    book_entry = generate_book_entry(title, author, post_file_path, standout)
 
     with open(html_file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -96,7 +101,8 @@ def add_book(
     with open(html_file_path, "w", encoding="utf-8") as f:
         f.writelines(lines)
 
-    print(f"Added '{title}' by {author} ({year}) to {html_file_path}")
+    standout_msg = " (standout)" if standout else ""
+    print(f"Added '{title}' by {author} ({year}){standout_msg} to {html_file_path}")
     return book_entry
 
 
@@ -106,6 +112,7 @@ if __name__ == "__main__":
     parser.add_argument("-a", "--author", type=str, help="Book author", required=True)
     parser.add_argument("-y", "--year", type=int, help="Year read", required=True)
     parser.add_argument("-f", "--post-file-path", type=str, help="Path to post file (optional)", required=False)
+    parser.add_argument("-s", "--standout", action="store_true", help="Mark book as standout (colored border)", required=False)
     args = parser.parse_args()
 
-    add_book(args.title, args.author, args.year, args.post_file_path)
+    add_book(args.title, args.author, args.year, args.post_file_path, args.standout)
