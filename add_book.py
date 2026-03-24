@@ -5,35 +5,38 @@ from typing import Optional
 HTML_FILE_PATH = "reading-notes.html"
 
 
-def generate_book_entry(title: str, author: str, post_file_path: Optional[str] = None, standout: bool = False):
-    """
-    Generate HTML entry for a book.
-    """
-    button_class = '"file-toggle no-notes"'
-    optional_file_content = ""
-    standout_attr = ' data-standout="true"' if standout else ''
-    
+def generate_book_entry(
+    title: str,
+    author: str,
+    post_file_path: Optional[str] = None,
+    standout: bool = False,
+):
+    li_class = "book-item standout" if standout else "book-item"
+
     if post_file_path:
-        assert post_file_path.endswith(
-            ".md"
-        ), f"Post file must be markdown: {post_file_path}"
+        assert post_file_path.endswith(".md"), f"Post file must be markdown: {post_file_path}"
         if not os.path.exists(post_file_path):
             raise FileNotFoundError(f"Post file {post_file_path} not found")
 
-        button_class = f'"file-toggle" data-file="{post_file_path}"{standout_attr}'
-        optional_file_content = """
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>"""
+        entry = (
+            f'                <li class="{li_class}">\n'
+            f'                    <button class="book-toggle has-notes" data-file="{post_file_path}">\n'
+            f'                        <span class="book-title">{title}</span>\n'
+            f'                        <span class="book-author">{author}</span>\n'
+            f'                        <span class="book-chevron">▾</span>\n'
+            f'                    </button>\n'
+            f'                    <div class="book-content"><div class="post-content"></div></div>\n'
+            f'                </li>'
+        )
     else:
-        button_class = f'"file-toggle no-notes"{standout_attr}'
-
-    entry = f"""            <li class="file-item">
-                <button class={button_class}>
-                    <span class="post-title"><i>{title}</i></span>
-                    <span class="post-subtitle">{author}</span>
-                </button>{optional_file_content}
-            </li>"""
+        entry = (
+            f'                <li class="{li_class}">\n'
+            f'                    <button class="book-toggle">'
+            f'<span class="book-title">{title}</span>'
+            f'<span class="book-author">{author}</span>'
+            f'</button>\n'
+            f'                </li>'
+        )
 
     return entry
 
@@ -46,9 +49,6 @@ def add_book(
     standout: bool = False,
     html_file_path: str = HTML_FILE_PATH,
 ):
-    """
-    Add a book to the reading notes HTML file.
-    """
     book_entry = generate_book_entry(title, author, post_file_path, standout)
 
     with open(html_file_path, "r", encoding="utf-8") as f:
@@ -59,41 +59,40 @@ def add_book(
 
     for i, line in enumerate(lines):
         if year_heading in line:
-            for j in range(i + 1, len(lines)):
-                if '<li class="file-item">' in lines[j]:
-                    insertion_index = j
-                    break
+            # Insert right after the year heading
+            insertion_index = i + 1
             break
 
     if insertion_index is None:
-        # Year heading not found, find where to insert a new year section
-        # We'll insert after the most recent year that's older than our target year
+        # Year heading not found — insert a new year section before the first
+        # year that is older than our target year
+        inserted = False
         for i, line in enumerate(lines):
             if '<li class="year-heading">' in line:
                 try:
-                    existing_year = int(line.split(">")[1].split("<")[0])
+                    existing_year = int(line.strip().split(">")[1].split("<")[0])
                     if existing_year < year:
-                        # Insert new year section here
-                        year_section = (
-                            f'            <li class="year-heading">{year}</li>\n'
+                        new_section = (
+                            f'                <!-- {year} -->\n'
+                            f'                <li class="year-heading">{year}</li>\n'
+                            + book_entry + "\n\n"
                         )
-                        year_section += f"            <!-- {year} READS -->\n"
-                        year_section += book_entry + "\n"
-                        year_section += "            \n"
-                        lines.insert(i, year_section)
+                        lines.insert(i, new_section)
+                        inserted = True
                         break
                 except (ValueError, IndexError):
                     continue
-        else:
+
+        if not inserted:
+            # All existing years are newer — append at the end of the book list
             for i, line in enumerate(lines):
-                if '<ul class="file-list"' in line:
-                    year_section = f'            <li class="year-heading">{year}</li>\n'
-                    year_section += f"            <!-- {year} READS -->\n"
-                    year_section += book_entry + "\n"
-                    year_section += "            \n"
-                    lines.insert(
-                        i + 2, year_section
-                    )  # +2 to skip the ul tag and first item
+                if '<ul class="book-list"' in line or 'id="book-list"' in line:
+                    new_section = (
+                        f'                <!-- {year} -->\n'
+                        f'                <li class="year-heading">{year}</li>\n'
+                        + book_entry + "\n"
+                    )
+                    lines.insert(i + 1, new_section)
                     break
     else:
         lines.insert(insertion_index, book_entry + "\n")
@@ -102,17 +101,24 @@ def add_book(
         f.writelines(lines)
 
     standout_msg = " (standout)" if standout else ""
-    print(f"Added '{title}' by {author} ({year}){standout_msg} to {html_file_path}")
+    notes_msg = f" with notes ({post_file_path})" if post_file_path else ""
+    print(f"Added '{title}' by {author} ({year}){standout_msg}{notes_msg} to {html_file_path}")
     return book_entry
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--title", type=str, help="Book title", required=True)
-    parser.add_argument("-a", "--author", type=str, help="Book author", required=True)
-    parser.add_argument("-y", "--year", type=int, help="Year read", required=True)
-    parser.add_argument("-f", "--post-file-path", type=str, help="Path to post file (optional)", required=False)
-    parser.add_argument("-s", "--standout", action="store_true", help="Mark book as standout (colored border)", required=False)
+    parser = argparse.ArgumentParser(description="Add a book to reading-notes.html")
+    parser.add_argument("-t", "--title", type=str, required=True, help="Book title")
+    parser.add_argument("-a", "--author", type=str, required=True, help="Book author")
+    parser.add_argument("-y", "--year", type=int, required=True, help="Year read")
+    parser.add_argument(
+        "-f", "--post-file-path", type=str, required=False,
+        help="Path to notes markdown file (e.g. notes/books/2024/sapiens.md)",
+    )
+    parser.add_argument(
+        "-s", "--standout", action="store_true", required=False,
+        help="Mark as a personal standout (accent border)",
+    )
     args = parser.parse_args()
 
     add_book(args.title, args.author, args.year, args.post_file_path, args.standout)

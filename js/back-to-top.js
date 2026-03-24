@@ -1,75 +1,24 @@
-// Back to Top Button Functionality
+(function () {
+    'use strict';
 
-(function() {
-    // Create the back to top button
-    function createBackToTopButton() {
-        const button = document.createElement('button');
-        button.className = 'back-to-top';
-        button.innerHTML = '↑';
-        button.setAttribute('aria-label', 'Back to top');
-        button.setAttribute('title', 'Back to top');
-        
-        // Add click event listener
-        button.addEventListener('click', scrollToTop);
-        
-        // Add to body
-        document.body.appendChild(button);
-        
-        return button;
-    }
-    
-    // Smooth scroll to top function
-    function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    }
-    
-    // Show/hide button based on scroll position
-    function toggleButtonVisibility(button) {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const threshold = 300; // Show button after scrolling 300px
-        
-        if (scrollTop > threshold) {
-            button.classList.add('visible');
-        } else {
-            button.classList.remove('visible');
-        }
-    }
-    
-    // Initialize the back to top functionality
-    function init() {
-        // Only add the button if it doesn't already exist
-        if (document.querySelector('.back-to-top')) {
-            return;
-        }
-        
-        const button = createBackToTopButton();
-        
-        // Add scroll event listener with throttling for better performance
+    document.addEventListener('DOMContentLoaded', () => {
+        if (document.querySelector('.back-to-top')) return;
+
+        const btn = document.createElement('button');
+        btn.className = 'back-to-top';
+        btn.innerHTML = '↑';
+        btn.setAttribute('aria-label', 'Back to top');
+        btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        document.body.appendChild(btn);
+
         let ticking = false;
-        
-        function handleScroll() {
-            if (!ticking) {
-                requestAnimationFrame(function() {
-                    toggleButtonVisibility(button);
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        }
-        
-        window.addEventListener('scroll', handleScroll);
-        
-        // Initial check
-        toggleButtonVisibility(button);
-    }
-    
-    // Initialize when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-})(); 
+        window.addEventListener('scroll', () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(() => {
+                btn.classList.toggle('visible', window.scrollY > 300);
+                ticking = false;
+            });
+        });
+    });
+})();

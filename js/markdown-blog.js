@@ -1,464 +1,285 @@
-// Markdown Blog System
-// Handles parsing markdown files with YAML frontmatter and rendering them as blog posts
+(function () {
+    'use strict';
 
-class MarkdownBlog {
-    constructor() {
-        this.posts = [];
-        this.currentPost = null;
-        this._initAnnotationListeners();
+    /* ------------------------------------------------
+       YAML Front-matter Parser
+       ------------------------------------------------ */
+    function parseFrontmatter(raw) {
+        const m = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/);
+        if (!m) return { meta: {}, body: raw };
+
+        const meta = {};
+        for (const line of m[1].split('\n')) {
+            const t = line.trim();
+            if (!t || t.startsWith('#')) continue;
+            const idx = t.indexOf(':');
+            if (idx === -1) continue;
+            const key = t.slice(0, idx).trim();
+            let val = t.slice(idx + 1).trim();
+            if ((val.startsWith('"') && val.endsWith('"')) ||
+                (val.startsWith("'") && val.endsWith("'")))
+                val = val.slice(1, -1);
+            if (val.startsWith('[') && val.endsWith(']'))
+                val = val.slice(1, -1).split(',').map(s => s.trim().replace(/['"]/g, ''));
+            meta[key] = val;
+        }
+        return { meta, body: m[2] };
     }
 
-    _initAnnotationListeners() {
-        document.addEventListener('click', (e) => {
-            const annotation = e.target.closest('.annotation');
-            const existingTooltip = document.querySelector('.annotation-tooltip');
+    /* ------------------------------------------------
+       Image path fixer
+       ------------------------------------------------ */
+    function fixRelativeImages(md, basePath) {
+        md = md.replace(
+            /!\[([^\]]*)\]\((?!https?:\/\/)([^)]+)\)/g,
+            `![$1](${basePath}$2)`
+        );
+        md = md.replace(
+            /<img([^>]*)\ssrc=["'](?!https?:\/\/)([^"']+)["']([^>]*)>/g,
+            `<img$1 src="${basePath}$2"$3>`
+        );
+        return md;
+    }
 
-            if (!annotation) {
-                if (existingTooltip && !e.target.closest('.annotation-tooltip')) {
-                    existingTooltip.remove();
-                    document.querySelectorAll('.annotation.active').forEach(a => a.classList.remove('active'));
-                }
-                return;
+    /* ------------------------------------------------
+       Markdown → HTML  (with math + annotation protection)
+       ------------------------------------------------ */
+    function renderMarkdown(md) {
+        const annotations = [];
+        let ai = 0;
+        md = md.replace(/\[([^\]]+)\]\{"([^"]*?)"\}/g, (_, text, comment) => {
+            const ph = `%%ANNOT${ai}%%`;
+            annotations[ai++] = { text, comment };
+            return ph;
+        });
+
+        const mathBlocks = [];
+        let mi = 0;
+
+        // Display math $$...$$
+        md = md.replace(/\$\$([\s\S]*?)\$\$/g, (_, inner) => {
+            const ph = `%%MATH${mi}%%`;
+            mathBlocks[mi++] = { display: true, tex: inner };
+            return ph;
+        });
+
+        // Inline math $...$
+        md = md.replace(/\$([^\$\n]+?)\$/g, (match, inner) => {
+            if (/^[\d\s$]/.test(inner) && !/[a-zA-Z\\{]/.test(inner)) return match;
+            const ph = `%%MATH${mi}%%`;
+            mathBlocks[mi++] = { display: false, tex: inner };
+            return ph;
+        });
+
+        marked.setOptions({ breaks: false, gfm: true });
+        let html = marked.parse(md);
+
+        // Restore math → render with KaTeX
+        for (let i = 0; i < mathBlocks.length; i++) {
+            const { display, tex } = mathBlocks[i];
+            let rendered;
+            try {
+                rendered = katex.renderToString(tex.trim(), {
+                    displayMode: display,
+                    throwOnError: false,
+                    trust: true,
+                    strict: false,
+                    macros: {
+                        "\\implies": "\\Rightarrow",
+                        "\\iff": "\\Leftrightarrow"
+                    }
+                });
+            } catch (e) {
+                rendered = `<span class="katex-error" title="${e.message}">${display ? '$$' : '$'}${tex}${display ? '$$' : '$'}</span>`;
+            }
+            if (display) {
+                rendered = `<div class="katex-display">${rendered}</div>`;
+                // Display math on its own line gets wrapped in <p> by marked; unwrap it
+                html = html.replace(`<p>%%MATH${i}%%</p>`, rendered);
+            }
+            html = html.replace(`%%MATH${i}%%`, rendered);
+        }
+
+        // Restore annotations
+        for (let i = 0; i < annotations.length; i++) {
+            const { text, comment } = annotations[i];
+            const esc = comment.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            html = html.replace(
+                `%%ANNOT${i}%%`,
+                `<span class="annotation" data-comment="${esc}">${text}</span>`
+            );
+        }
+
+        return html;
+    }
+
+    /* ------------------------------------------------
+       Code-block post-processing (language labels, copy)
+       ------------------------------------------------ */
+    function enhanceCodeBlocks(container) {
+        container.querySelectorAll('pre > code').forEach(codeEl => {
+            const pre = codeEl.parentElement;
+            if (pre.querySelector('.code-block-header')) return;
+
+            const langClass = [...codeEl.classList].find(c => c.startsWith('language-'));
+            const lang = langClass ? langClass.replace('language-', '') : '';
+
+            if (lang) {
+                const header = document.createElement('div');
+                header.className = 'code-block-header';
+
+                const langLabel = document.createElement('span');
+                langLabel.textContent = lang;
+
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'code-copy-btn';
+                copyBtn.textContent = 'Copy';
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(codeEl.textContent).then(() => {
+                        copyBtn.textContent = 'Copied!';
+                        setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+                    });
+                });
+
+                header.appendChild(langLabel);
+                header.appendChild(copyBtn);
+                pre.insertBefore(header, codeEl);
             }
 
-            // Toggle off if clicking the same annotation
-            if (existingTooltip && existingTooltip._source === annotation) {
-                existingTooltip.remove();
-                annotation.classList.remove('active');
-                return;
-            }
+            if (typeof hljs !== 'undefined') hljs.highlightElement(codeEl);
+        });
+    }
 
-            // Remove any existing tooltip
-            if (existingTooltip) existingTooltip.remove();
+    /* ------------------------------------------------
+       Annotation tooltip system
+       ------------------------------------------------ */
+    function initAnnotations() {
+        let hideTimer = null;
+
+        function showTooltip(ann) {
+            clearTimeout(hideTimer);
+            const existing = document.querySelector('.annotation-tooltip');
+            if (existing) existing.remove();
             document.querySelectorAll('.annotation.active').forEach(a => a.classList.remove('active'));
 
-            const tooltip = document.createElement('div');
-            tooltip.className = 'annotation-tooltip';
-            tooltip.textContent = annotation.dataset.comment;
-            tooltip._source = annotation;
-            document.body.appendChild(tooltip);
-            annotation.classList.add('active');
+            const tip = document.createElement('div');
+            tip.className = 'annotation-tooltip';
+            tip.textContent = ann.dataset.comment;
+            document.body.appendChild(tip);
+            ann.classList.add('active');
 
-            // Position below the annotation, centered horizontally
-            const rect = annotation.getBoundingClientRect();
-            const tipW = tooltip.offsetWidth;
-            const tipH = tooltip.offsetHeight;
-            const pad = 10;
-
+            const rect = ann.getBoundingClientRect();
+            const tw = tip.offsetWidth;
+            const th = tip.offsetHeight;
             let top = rect.bottom + window.scrollY + 8;
-            let left = rect.left + window.scrollX + (rect.width / 2) - (tipW / 2);
+            let left = rect.left + window.scrollX + (rect.width / 2) - (tw / 2);
+            if (left < 10) left = 10;
+            if (left + tw > window.innerWidth - 10) left = window.innerWidth - tw - 10;
+            if (rect.bottom + th + 16 > window.innerHeight) top = rect.top + window.scrollY - th - 8;
+            tip.style.top = `${top}px`;
+            tip.style.left = `${left}px`;
 
-            if (left < pad) left = pad;
-            if (left + tipW > window.innerWidth - pad) left = window.innerWidth - tipW - pad;
+            tip.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+            tip.addEventListener('mouseleave', () => scheduleHide(ann));
+        }
 
-            // Flip above the annotation if it would overflow the viewport
-            if (rect.bottom + tipH + 16 > window.innerHeight) {
-                top = rect.top + window.scrollY - tipH - 8;
-            }
+        function scheduleHide(ann) {
+            hideTimer = setTimeout(() => {
+                const tip = document.querySelector('.annotation-tooltip');
+                if (tip) tip.remove();
+                if (ann) ann.classList.remove('active');
+            }, 150);
+        }
 
-            tooltip.style.top = `${top}px`;
-            tooltip.style.left = `${left}px`;
+        document.addEventListener('mouseover', (e) => {
+            const ann = e.target.closest('.annotation');
+            if (ann) showTooltip(ann);
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            const ann = e.target.closest('.annotation');
+            if (ann) scheduleHide(ann);
         });
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                const tooltip = document.querySelector('.annotation-tooltip');
-                if (tooltip) tooltip.remove();
+                clearTimeout(hideTimer);
+                const tip = document.querySelector('.annotation-tooltip');
+                if (tip) tip.remove();
                 document.querySelectorAll('.annotation.active').forEach(a => a.classList.remove('active'));
             }
         });
     }
 
-    // Generate a consistent color for a tag based on its name
-    generateTagColor(tagName) {
-        // Simple hash function to convert string to number
-        let hash = 0;
-        for (let i = 0; i < tagName.length; i++) {
-            const char = tagName.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash; // Convert to 32-bit integer
+    /* ------------------------------------------------
+       Tag color mapping (Notion-style, collision-avoidant)
+       ------------------------------------------------ */
+    const TAG_COLORS = ['blue', 'green', 'purple', 'orange', 'red', 'yellow', 'pink'];
+    const _tagColorCache = new Map();
+
+    function tagColor(tag) {
+        if (_tagColorCache.has(tag)) return _tagColorCache.get(tag);
+
+        let hash = 5381;
+        for (let i = 0; i < tag.length; i++) {
+            hash = ((hash << 5) + hash + tag.charCodeAt(i)) | 0;
         }
-        
-        // Convert hash to positive number and use it to generate HSL color
-        const positiveHash = Math.abs(hash);
-        
-        // Generate hue (0-360), keeping saturation and lightness consistent for readability
-        const hue = positiveHash % 360;
-        const saturation = 65; // Good saturation for readability
-        const lightness = 85; // Light background
-        
-        const backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-        
-        // Generate a darker color for text (same hue, higher saturation, lower lightness)
-        const textLightness = 25; // Dark text
-        const textSaturation = 80; // Higher saturation for text
-        const textColor = `hsl(${hue}, ${textSaturation}%, ${textLightness}%)`;
-        
-        return {
-            backgroundColor,
-            color: textColor
-        };
+
+        const usedColors = new Set(_tagColorCache.values());
+        let idx = Math.abs(hash) % TAG_COLORS.length;
+        let color = TAG_COLORS[idx];
+
+        if (usedColors.has(color) && usedColors.size < TAG_COLORS.length) {
+            for (let j = 1; j < TAG_COLORS.length; j++) {
+                const candidate = TAG_COLORS[(idx + j) % TAG_COLORS.length];
+                if (!usedColors.has(candidate)) { color = candidate; break; }
+            }
+        }
+
+        _tagColorCache.set(tag, color);
+        return color;
     }
 
-    // Parse YAML frontmatter from markdown content
-    parseFrontmatter(content) {
-        const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
-        const match = content.match(frontmatterRegex);
-        
-        if (!match) {
-            return {
-                frontmatter: {},
-                content: content
-            };
-        }
+    /* ------------------------------------------------
+       Public API
+       ------------------------------------------------ */
+    window.Blog = {
+        parseFrontmatter,
+        fixRelativeImages,
+        renderMarkdown,
+        enhanceCodeBlocks,
+        initAnnotations,
+        tagColor,
 
-        const frontmatterText = match[1];
-        const markdownContent = match[2];
-        
-        // Simple YAML parser for our frontmatter
-        const frontmatter = {};
-        const lines = frontmatterText.split('\n');
-        
-        for (const line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed || trimmed.startsWith('#')) continue;
-            
-            const colonIndex = trimmed.indexOf(':');
-            if (colonIndex === -1) continue;
-            
-            const key = trimmed.substring(0, colonIndex).trim();
-            let value = trimmed.substring(colonIndex + 1).trim();
-            
-            // Remove quotes if present
-            if ((value.startsWith('"') && value.endsWith('"')) || 
-                (value.startsWith("'") && value.endsWith("'"))) {
-                value = value.slice(1, -1);
-            }
-            
-            // Handle arrays (tags)
-            if (value.startsWith('[') && value.endsWith(']')) {
-                value = value.slice(1, -1).split(',').map(item => 
-                    item.trim().replace(/['"]/g, '')
-                );
-            }
-            
-            frontmatter[key] = value;
-        }
-        
-        return {
-            frontmatter,
-            content: markdownContent
-        };
-    }
-
-    // Load and parse a markdown file
-    async loadPost(path) {
-        try {
-            const response = await fetch(path);
-            if (!response.ok) {
-                throw new Error(`Failed to load ${path}: ${response.status}`);
-            }
-            
-            const content = await response.text();
-            const { frontmatter, content: markdownContent } = this.parseFrontmatter(content);
-            
-            // Convert relative image paths to absolute paths
+        async fetchPost(path) {
+            const resp = await fetch(path);
+            if (!resp.ok) throw new Error(`Failed to load ${path}: ${resp.status}`);
+            const raw = await resp.text();
+            const { meta, body } = parseFrontmatter(raw);
             const basePath = path.substring(0, path.lastIndexOf('/') + 1);
-            let processedContent = markdownContent;
+            const content = fixRelativeImages(body, basePath);
+            return { path, meta, content, basePath };
+        },
 
-            // Process markdown-style images: ![alt](path)
-            processedContent = processedContent.replace(
-                /!\[([^\]]*)\]\((?!https?:\/\/)([^)]+)\)/g,
-                `![$1](${basePath}$2)`
+        async fetchAllPosts(paths) {
+            const posts = await Promise.all(
+                paths.map(p => this.fetchPost(p).catch(err => {
+                    console.error(`Failed to load ${p}:`, err);
+                    return null;
+                }))
             );
+            return posts
+                .filter(Boolean)
+                .sort((a, b) => new Date(b.meta.date || 0) - new Date(a.meta.date || 0));
+        },
 
-            // Process HTML img tags: <img src="path" ...>
-            processedContent = processedContent.replace(
-                /<img([^>]*)\ssrc=["'](?!https?:\/\/)([^"']+)["']([^>]*)>/g,
-                `<img$1 src="${basePath}$2"$3>`
-            );
-            
-            return {
-                path,
-                frontmatter,
-                content: processedContent,
-                basePath
-            };
-        } catch (error) {
-            console.error('Error loading post:', error);
-            throw error;
+        formatDate(dateStr) {
+            if (!dateStr) return '';
+            return new Date(dateStr).toLocaleDateString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
         }
-    }
+    };
 
-    // Render markdown to HTML using marked.js
-    renderMarkdown(content) {
-        if (typeof marked === 'undefined') {
-            console.error('marked.js library not loaded');
-            return content;
-        }
-        
-        // Protect annotation syntax [text]{"comment"} from markdown processing
-        const annotations = [];
-        let annotationIndex = 0;
-        content = content.replace(/\[([^\]]+)\]\{"([^"]*?)"\}/g, (match, text, comment) => {
-            const placeholder = `<!--ANNOTATION${annotationIndex}-->`;
-            annotations[annotationIndex] = { text, comment };
-            annotationIndex++;
-            return placeholder;
-        });
-
-        // Store math blocks temporarily to protect them from markdown processing
-        const mathBlocks = [];
-        let mathIndex = 0;
-        
-        // Protect display math ($$...$$)
-        content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, mathContent) => {
-            const placeholder = `<!--MATHBLOCK${mathIndex}-->`;
-            mathBlocks[mathIndex] = `$$${mathContent}$$`;
-            mathIndex++;
-            return placeholder;
-        });
-        
-        // Protect inline math ($...$) - but be careful not to match single $ in text
-        content = content.replace(/\$([^\$\n]+?)\$/g, (match, mathContent) => {
-            // Simple check to avoid matching things like "$5" or "$USD"
-            if (/^[\d\s$]/.test(mathContent) && !/[a-zA-Z\\]/.test(mathContent)) {
-                return match; // Don't treat as math
-            }
-            const placeholder = `<!--MATHBLOCK${mathIndex}-->`;
-            mathBlocks[mathIndex] = `$${mathContent}$`;
-            mathIndex++;
-            return placeholder;
-        });
-        
-        // Configure marked options
-        marked.setOptions({
-            breaks: true,
-            gfm: true,
-            headerIds: true,
-            mangle: false
-        });
-        
-        // Process markdown
-        let htmlContent = marked.parse(content);
-        
-        // Restore math blocks
-        for (let i = 0; i < mathBlocks.length; i++) {
-            const placeholder = `<!--MATHBLOCK${i}-->`;
-            htmlContent = htmlContent.replace(new RegExp(placeholder, 'g'), mathBlocks[i]);
-        }
-
-        // Restore annotation placeholders as interactive spans
-        for (let i = 0; i < annotations.length; i++) {
-            const placeholder = `<!--ANNOTATION${i}-->`;
-            const { text, comment } = annotations[i];
-            const escaped = comment.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            htmlContent = htmlContent.replace(
-                new RegExp(placeholder, 'g'),
-                `<span class="annotation" data-comment="${escaped}">${text}</span>`
-            );
-        }
-        
-        return htmlContent;
-    }
-
-    // Generate blog post HTML
-    generatePostHTML(post) {
-        const { frontmatter, content } = post;
-        const htmlContent = this.renderMarkdown(content);
-        
-        // Format date
-        const date = frontmatter.date ? new Date(frontmatter.date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        }) : '';
-        
-        // Generate tags HTML with dynamic colors
-        const tagsHTML = frontmatter.tags ? 
-            frontmatter.tags.map(tag => {
-                const colors = this.generateTagColor(tag);
-                return `<span class="tag" style="background-color: ${colors.backgroundColor}; color: ${colors.color};">${tag}</span>`;
-            }).join('') : '';
-        
-        return `
-            <article class="blog-post">
-                <header class="post-header">
-                    <h1 class="post-title">${frontmatter.title || 'Untitled'}</h1>
-                    <div class="post-meta">
-                        ${date ? `<time class="post-date">${date}</time>` : ''}
-                    </div>
-                    ${frontmatter.description ? `<p class="post-description">${frontmatter.description}</p>` : ''}
-                    ${tagsHTML ? `<div class="post-tags">${tagsHTML}</div>` : ''}
-                </header>
-                <div class="post-content tex2jax_process">
-                    ${htmlContent}
-                </div>
-            </article>
-        `;
-    }
-
-    // Render a single post to the page
-    async renderPost(path, containerId = 'blog-content') {
-        try {
-            const post = await this.loadPost(path);
-            this.currentPost = post;
-            
-            const container = document.getElementById(containerId);
-            if (!container) {
-                throw new Error(`Container with id '${containerId}' not found`);
-            }
-            
-            container.innerHTML = this.generatePostHTML(post);
-            
-            // Re-render MathJax if available
-            if (window.MathJax && window.MathJax.typesetPromise) {
-                await window.MathJax.typesetPromise([container]);
-            }
-            
-            // Trigger syntax highlighting
-            if (window.Prism) {
-                window.Prism.highlightAllUnder(container);
-            }
-            
-            return post;
-        } catch (error) {
-            console.error('Error rendering post:', error);
-            throw error;
-        }
-    }
-
-    // Generate post list for index page
-    generatePostListHTML(posts) {
-        return posts.map(post => {
-            const { frontmatter, path } = post;
-            const date = frontmatter.date ? new Date(frontmatter.date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            }) : '';
-            
-            const tagsHTML = frontmatter.tags ? 
-                frontmatter.tags.slice(0, 3).map(tag => {
-                    const colors = this.generateTagColor(tag);
-                    return `<span class="tag" style="background-color: ${colors.backgroundColor}; color: ${colors.color};">${tag}</span>`;
-                }).join('') : '';
-            
-            return `
-                <li class="notes-item">
-                    <a href="javascript:void(0)" onclick="loadBlogPost('${path}')">
-                        <div class="note-title">${frontmatter.title || 'Untitled'}</div>
-                        ${frontmatter.description ? `<div class="note-description">${frontmatter.description}</div>` : ''}
-                        <div class="note-meta">
-                            ${date ? `<span class="note-date">${date}</span>` : ''}
-                        </div>
-                        ${tagsHTML ? `<div class="note-tags">${tagsHTML}</div>` : ''}
-                    </a>
-                </li>
-            `;
-        }).join('');
-    }
-
-    // Load multiple posts for index
-    async loadPosts(paths) {
-        const posts = [];
-        for (const path of paths) {
-            try {
-                const post = await this.loadPost(path);
-                posts.push(post);
-            } catch (error) {
-                console.error(`Failed to load post ${path}:`, error);
-            }
-        }
-        
-        // Sort by date (newest first)
-        posts.sort((a, b) => {
-            const dateA = new Date(a.frontmatter.date || '1970-01-01');
-            const dateB = new Date(b.frontmatter.date || '1970-01-01');
-            return dateB - dateA;
-        });
-        
-        this.posts = posts;
-        return posts;
-    }
-}
-
-// Global instance
-window.markdownBlog = new MarkdownBlog();
-
-// Global function to load a blog post
-window.loadBlogPost = async function(path) {
-    try {
-        // Hide the notes list and show blog content
-        const notesList = document.querySelector('.notes-list');
-        const header = document.querySelector('.header');
-        
-        if (notesList) notesList.style.display = 'none';
-        if (header) header.style.display = 'none';
-        
-        // Create or show blog content container
-        let blogContainer = document.getElementById('blog-content');
-        if (!blogContainer) {
-            blogContainer = document.createElement('div');
-            blogContainer.id = 'blog-content';
-            blogContainer.className = 'blog-content';
-            document.querySelector('.container').appendChild(blogContainer);
-        }
-        
-        // Show the blog container
-        blogContainer.style.display = 'block';
-        
-        // Show loading state
-        blogContainer.innerHTML = '<div class="loading">Loading...</div>';
-        
-        // Load and render the post
-        const post = await window.markdownBlog.loadPost(path);
-        window.markdownBlog.currentPost = post;
-        
-        // Generate the complete blog content with back button
-        const backButtonHTML = '<div class="blog-nav"><button onclick="showPostList()" class="back-button">← Back to Writing</button></div>';
-        const postHTML = window.markdownBlog.generatePostHTML(post);
-        
-        blogContainer.innerHTML = backButtonHTML + postHTML;
-        
-        // Re-render MathJax if available
-        if (window.MathJax && window.MathJax.typesetPromise) {
-            await window.MathJax.typesetPromise([blogContainer]);
-        }
-        
-        // Trigger syntax highlighting
-        if (window.Prism) {
-            window.Prism.highlightAllUnder(blogContainer);
-        }
-        
-        // Update page title
-        if (post && post.frontmatter.title) {
-            document.title = `${post.frontmatter.title} - Rishi Chandra`;
-        }
-        
-    } catch (error) {
-        console.error('Error loading blog post:', error);
-        const blogContainer = document.getElementById('blog-content');
-        if (blogContainer) {
-            blogContainer.innerHTML = `<div class="error">Error loading post: ${error.message}</div>`;
-        }
-    }
-};
-
-// Global function to show post list
-window.showPostList = function() {
-    const notesList = document.querySelector('.notes-list');
-    const header = document.querySelector('.header');
-    const blogContent = document.getElementById('blog-content');
-    
-    // Clean up any open annotation tooltip
-    const tooltip = document.querySelector('.annotation-tooltip');
-    if (tooltip) tooltip.remove();
-
-    if (notesList) notesList.style.display = 'block';
-    if (header) header.style.display = 'block';
-    if (blogContent) blogContent.style.display = 'none';
-    
-    // Reset page title
-    document.title = 'Rishi Chandra';
-}; 
+    initAnnotations();
+})();

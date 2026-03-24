@@ -1,164 +1,170 @@
 # Adding New Books to Reading Notes
 
-This guide provides step-by-step instructions for adding new books to the reading notes page.
+Step-by-step guide for adding new books to the Reading page.
 
 ## Overview
 
-The reading notes page displays books in a chronological list organized by year. Books can be added with or without notes:
-- **Books with notes**: Display with a dropdown arrow and expandable content
-- **Books without notes**: Display as simple, non-interactive entries
+The reading page displays books in a chronological list organized by year:
+- **Books without notes** — non-interactive entries showing title and author
+- **Books with notes** — clickable entries that expand to show rendered Markdown content
+- **Standout books** — highlighted with an accent border via the `standout` class
 
-## Step 1: Determine Book Type
+## Step 1: Choose the Entry Type
 
-First, decide whether you want to add:
-- **A book with notes**: You have written notes/review that you want to display
-- **A book without notes**: Just listing the book you've read
+Decide whether the book will have:
+- **No notes** — just a listing (title + author)
+- **Notes** — a Markdown file that renders in an expandable dropdown
 
 ## Step 2: Adding a Book WITHOUT Notes
 
-### 2.1 Edit the HTML file
-Open `reading-notes.html` and locate the appropriate year section.
-
-### 2.2 Add the book entry
-Add a new `<li>` element in the correct chronological position:
+Open `reading-notes.html` and add a `<li>` in the correct year section:
 
 ```html
-<li class="file-item">
-    <button class="file-toggle no-notes">
-        <span class="post-title"><i>Book Title</i></span>
-        <span class="post-subtitle">Author Name</span>
+<li class="book-item">
+    <button class="book-toggle">
+        <span class="book-title">Book Title</span>
+        <span class="book-author">Author Name</span>
     </button>
 </li>
 ```
 
-### 2.3 Key points
-- Use `<i>` tags around the book title for italics
-- Add the `no-notes` class to the button
-- Do NOT include a `data-file` attribute
-- Do NOT include a `<div class="file-content">` section
+To mark it as a personal standout, add the `standout` class to the `<li>`:
+
+```html
+<li class="book-item standout">
+    <button class="book-toggle">
+        <span class="book-title">Book Title</span>
+        <span class="book-author">Author Name</span>
+    </button>
+</li>
+```
+
+Key points:
+- Do **not** add the `has-notes` class to the button
+- Do **not** include a `data-file` attribute
+- Do **not** include a `<div class="book-content">` section
 
 ## Step 3: Adding a Book WITH Notes
 
-### 3.1 Create the markdown file
-Create a new markdown file in the appropriate year folder:
+### 3.1 Create the Markdown file
 ```
 notes/books/YYYY/book-title.md
 ```
+Example: `notes/books/2024/sapiens.md`
 
-Example path: `notes/books/2024/book-title.md`
-
-### 3.2 Add frontmatter to the markdown file
-Start your markdown file with YAML frontmatter:
+### 3.2 Write the Markdown content
+Standard Markdown is supported. You can optionally include YAML frontmatter:
 
 ```yaml
 ---
 title: "Book Title"
 author: "Author Name"
-date: "YYYY-MM-DD"
-rating: "X/5"
-category: "fiction" # or "non-fiction", "biography", etc.
-tags: ["tag1", "tag2", "tag3"]
 ---
+```
 
-# Your notes content here
+Then write your notes:
 
-Write your book notes, thoughts, and review here using standard markdown formatting.
+```markdown
+# Key Takeaways
 
-## Key Takeaways
 - Point 1
 - Point 2
 
 ## Favorite Quotes
-> "Quote here"
+
+> "A quote from the book."
 
 ## My Thoughts
-Your review and thoughts...
+
+Your review here...
 ```
 
-### 3.3 Edit the HTML file
-Open `reading-notes.html` and locate the appropriate year section.
+Math (via KaTeX) is also supported if needed.
 
-### 3.4 Add the book entry with dropdown
-Add a new `<li>` element in the correct chronological position:
+### 3.3 Add the HTML entry
+In `reading-notes.html`, add the entry in the correct year section:
 
 ```html
-<li class="file-item">
-    <button class="file-toggle" data-file="notes/books/YYYY/book-title.md">
-        <span class="post-title"><i>Book Title</i></span>
-        <span class="post-subtitle">Author Name</span>
+<li class="book-item">
+    <button class="book-toggle has-notes" data-file="notes/books/YYYY/book-title.md">
+        <span class="book-title">Book Title</span>
+        <span class="book-author">Author Name</span>
+        <span class="book-chevron">▾</span>
     </button>
-    <div class="file-content">
-        <div class="markdown-body markdown-content"></div>
-    </div>
+    <div class="book-content"><div class="post-content"></div></div>
 </li>
 ```
 
-### 3.5 Key points
-- Do NOT add the `no-notes` class
-- Include the `data-file` attribute pointing to your markdown file
-- Include the `<div class="file-content">` section for the dropdown content
+For a standout book with notes:
+
+```html
+<li class="book-item standout">
+    <button class="book-toggle has-notes" data-file="notes/books/YYYY/book-title.md">
+        <span class="book-title">Book Title</span>
+        <span class="book-author">Author Name</span>
+        <span class="book-chevron">▾</span>
+    </button>
+    <div class="book-content"><div class="post-content"></div></div>
+</li>
+```
+
+Key points:
+- The button **must** have the `has-notes` class and a `data-file` attribute
+- Include the `<span class="book-chevron">▾</span>` for the expand/collapse arrow
+- Include the `<div class="book-content"><div class="post-content"></div></div>` for content
 
 ## Step 4: Organizing by Year
 
-### 4.1 Adding a new year section
-If you're adding the first book for a new year, create a new year heading:
+### Adding a new year section
+Years are listed in descending order (newest first). For a new year:
 
 ```html
-<li class="year-heading">YYYY</li>
-<!-- Books for this year go here -->
+<li class="year-heading">2027</li>
+<!-- Books go here, most recent first -->
 ```
 
-### 4.2 Chronological order
-- Years are listed in descending order (newest first)
-- Within each year, books are typically listed in the order you read them (most recent first)
+### Ordering
+Within each year, list books in reverse chronological order (most recently read first).
 
 ## Step 5: Testing
 
-### 5.1 For books without notes
-- The book should appear as a non-interactive entry
-- No dropdown arrow should be visible
-- Clicking should do nothing
+1. Start a local server: `python -m http.server 7000`
+2. Open `http://localhost:7000/reading-notes.html`
 
-### 5.2 For books with notes
-- The book should display with a dropdown arrow (▼)
-- Clicking should expand/collapse the notes content
-- The arrow should rotate when expanded
+**For books without notes:**
+- Entry appears as a flat row (title left, author right)
+- No chevron, no hover cursor
+- Clicking does nothing
 
-## Example: Complete Book Entry with Notes
+**For books with notes:**
+- Entry shows a chevron (▾) and pointer cursor on hover
+- Clicking expands the dropdown with rendered Markdown
+- Chevron rotates when expanded
+- Clicking again collapses
 
-```html
-<li class="file-item">
-    <button class="file-toggle" data-file="notes/books/2024/sapiens.md">
-        <span class="post-title"><i>Sapiens</i></span>
-        <span class="post-subtitle">Yuval Noah Harari</span>
-    </button>
-    <div class="file-content">
-        <div class="markdown-body markdown-content"></div>
-    </div>
-</li>
-```
+**For standout books:**
+- Entry has an accent-colored border
 
-## Example: Complete Book Entry without Notes
+## Class Reference
 
-```html
-<li class="file-item">
-    <button class="file-toggle no-notes">
-        <span class="post-title"><i>Never Let Me Go</i></span>
-        <span class="post-subtitle">Kazuo Ishiguro</span>
-    </button>
-</li>
-```
-
-## Tips
-
-1. **File naming**: Use lowercase, hyphen-separated names for markdown files (e.g., `the-great-gatsby.md`)
-2. **Consistency**: Keep author name formatting consistent
-3. **Chronology**: Add new books at the top of their respective year section
-4. **Testing**: Always test the dropdown functionality after adding books with notes
-5. **Images**: If your notes include images, place them in `notes/books/YYYY/images/` folder
+| Class | Element | Purpose |
+|-------|---------|---------|
+| `book-item` | `<li>` | Wrapper for each book entry |
+| `book-item standout` | `<li>` | Highlighted book with accent border |
+| `book-toggle` | `<button>` | The clickable row (or static row if no notes) |
+| `book-toggle has-notes` | `<button>` | Indicates the book has expandable notes |
+| `book-title` | `<span>` | Book title (italicized via CSS) |
+| `book-author` | `<span>` | Author name (secondary color, right-aligned) |
+| `book-chevron` | `<span>` | Expand/collapse arrow indicator |
+| `book-content` | `<div>` | Dropdown container (hidden by default) |
+| `post-content` | `<div>` | Inner container where Markdown is rendered |
 
 ## Troubleshooting
 
-- **Dropdown not working**: Check that the `data-file` path is correct and the markdown file exists
-- **No arrow showing**: Ensure the button has the `data-file` attribute and does NOT have the `no-notes` class
-- **Styling issues**: Verify the HTML structure matches the examples exactly 
+| Problem | Fix |
+|---------|-----|
+| Dropdown not working | Verify `has-notes` class and correct `data-file` path |
+| No chevron showing | Ensure `<span class="book-chevron">▾</span>` is present |
+| Author misaligned | Check that `book-title` and `book-author` spans are siblings inside `book-toggle` |
+| Notes not rendering | Check that the Markdown file exists at the `data-file` path |
+| Standout border missing | Add `standout` class to the `<li class="book-item">` element |

@@ -3,150 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rishi Chandra</title>
-    
-    <!-- Favicon -->
+    <title>Writing - Rishi Chandra</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="icon" type="image/x-icon" href="favicon.svg">
-    
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/blog.css">
-    <!-- Prism.js for syntax highlighting -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
-    <!-- Load markdown parser -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$']],
-                displayMath: [['$$', '$$']],
-                processEscapes: true,
-                processEnvironments: true,
-                packages: ['base', 'ams', 'noerrors', 'noundefined'],
-                macros: {
-                    // Add any custom macros here if needed
-                }
-            },
-            options: {
-                processHtmlClass: 'tex2jax_process',
-                ignoreHtmlClass: 'tex2jax_ignore',
-                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-            },
-            startup: {
-                pageReady: () => {
-                    return MathJax.startup.defaultPageReady().then(() => {
-                        console.log('MathJax loaded and ready');
-                    });
-                }
-            }
-        };
-    </script>
-    <script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <!-- Highlight.js -->
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <!-- Marked -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+    <script src="js/dark-mode.js"></script>
 </head>
-<body class="writing-page">
-    <div class="container">
-        <nav class="nav-bar">
-            <a href="index.html" class="site-title">Rishi Chandra</a>
+<body>
+    <div class="page-wrapper">
+        <nav class="nav">
+            <div class="nav-inner">
+                <a href="index.html" class="nav-title">Rishi Chandra</a>
+                <div class="nav-links">
+                    <a href="reading-notes.html" class="nav-link">Reading</a>
+                    <a href="math-notes.html" class="nav-link active">Writing</a>
+                    <button class="dark-mode-toggle" aria-label="Toggle dark mode"></button>
+                </div>
+            </div>
         </nav>
-        
-        <div class="header">
-            <h1>Writing</h1>
-            <p class="subtitle">Written miscellany, mainly notes.</p>
-        </div>
-        <ul class="notes-list" id="notes-list">
-            <!-- Notes will be dynamically loaded here -->
-        </ul>
-        
-        <!-- Blog content container (hidden initially) -->
-        <div id="blog-content" class="blog-content" style="display: none;">
-            <!-- Individual blog posts will be rendered here -->
-        </div>
+
+        <main class="page-content">
+            <!-- List view -->
+            <div id="list-view">
+                <div class="page-header">
+                    <h1>Writing</h1>
+                    <p class="subtitle">Written miscellany, mainly notes.</p>
+                </div>
+                <ul class="post-list" id="post-list">
+                    <li class="loading">Loading posts...</li>
+                </ul>
+            </div>
+
+            <!-- Post view (hidden initially) -->
+            <div id="post-view" style="display:none;">
+                <div class="post-wrapper" id="post-wrapper"></div>
+            </div>
+        </main>
+
+        <footer class="social-links">
+            <a href="https://github.com/rishic3" target="_blank" class="social-link" aria-label="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            </a>
+            <a href="https://linkedin.com/in/chandrarishi" target="_blank" class="social-link" aria-label="LinkedIn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="mailto:rishichandra159@gmail.com" class="social-link" aria-label="Email">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </a>
+        </footer>
     </div>
 
-    <footer class="social-links">
-        <a href="https://github.com/rishic3" target="_blank" aria-label="GitHub">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-            </svg>
-        </a>
-        <a href="https://linkedin.com/in/chandrarishi" target="_blank" aria-label="LinkedIn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                <rect x="2" y="9" width="4" height="12"></rect>
-                <circle cx="4" cy="4" r="2"></circle>
-            </svg>
-        </a>
-        <a href="mailto:rishichandra159@gmail.com" aria-label="Email">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-        </a>
-    </footer>
-    
-    <!-- Load dark mode functionality -->
-    <script src="js/dark-mode.js"></script>
-    
-    <!-- Prism.js for syntax highlighting -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-    <!-- Load the markdown blog system -->
     <script src="js/markdown-blog.js"></script>
-    <!-- Load back to top functionality -->
     <script src="js/back-to-top.js"></script>
     <script>
-        // Initialize the blog system when the page loads
-        document.addEventListener('DOMContentLoaded', async function() {
+        const NOTE_PATHS = [
+            'notes/technical/memory-virtualization/memory-virtualization.md',
+            'notes/technical/torch-compile/torch-compile.md',
+            'notes/technical/gbdt/gbdt.md',
+            'notes/technical/svd/svd.md',
+            'notes/technical/umap/umap.md'
+        ];
+
+        let postsCache = null;
+
+        function slugFromPath(path) {
+            const name = path.split('/').pop().replace('.md', '');
+            return name;
+        }
+
+        function pathFromSlug(slug) {
+            return NOTE_PATHS.find(p => slugFromPath(p) === slug) || null;
+        }
+
+        function showList() {
+            document.getElementById('list-view').style.display = '';
+            document.getElementById('post-view').style.display = 'none';
+            document.title = 'Writing - Rishi Chandra';
+            window.scrollTo({ top: 0 });
+        }
+
+        async function showPost(slug) {
+            const path = pathFromSlug(slug);
+            if (!path) { showList(); return; }
+
+            document.getElementById('list-view').style.display = 'none';
+            document.getElementById('post-view').style.display = '';
+
+            const wrapper = document.getElementById('post-wrapper');
+            wrapper.innerHTML = '<div class="loading">Loading...</div>';
+
             try {
-                // Define the paths to your markdown files
-                const notePaths = [
-                    'notes/technical/gbdt/gbdt.md',
-                    'notes/technical/torch-compile/torch-compile.md',
-                    'notes/technical/svd/svd.md',
-                    'notes/technical/umap/umap.md',
-                    'notes/technical/memory-virtualization/memory-virtualization.md'
-                ];
-                
-                // Load all posts
-                const posts = await window.markdownBlog.loadPosts(notePaths);
-                
-                // Generate and display the notes list
-                const notesList = document.getElementById('notes-list');
-                if (notesList) {
-                    notesList.innerHTML = window.markdownBlog.generatePostListHTML(posts);
-                }
-                
-                console.log('Blog system initialized with', posts.length, 'posts');
-            } catch (error) {
-                console.error('Error initializing blog system:', error);
-                
-                // Fallback to static content if there's an error
-                const notesList = document.getElementById('notes-list');
-                if (notesList) {
-                    notesList.innerHTML = `
-                        <li class="notes-item">
-                            <a href="javascript:void(0)" onclick="loadBlogPost('notes/technical/gbdt/gbdt.md')">
-                                <div class="note-title">Decision Trees and Gradient Boosting</div>
-                            </a>
-                        </li>
-                        <li class="notes-item">
-                            <a href="javascript:void(0)" onclick="loadBlogPost('notes/technical/torch-compile/torch-compile.md')">
-                                <div class="note-title">Torch Compiler</div>
-                            </a>
-                        </li>
-                        <li class="notes-item">
-                            <a href="javascript:void(0)" onclick="loadBlogPost('notes/technical/svd/svd.md')">
-                                <div class="note-title">SVD and Low-Rank Approximation</div>
-                            </a>
-                        </li>
-                        <li class="notes-item">
-                            <a href="javascript:void(0)" onclick="loadBlogPost('notes/technical/umap/umap.md')">
-                                <div class="note-title">UMAP</div>
-                            </a>
-                        </li>
-                    `;
-                }
+                const post = await Blog.fetchPost(path);
+                const date = Blog.formatDate(post.meta.date);
+                const tagsHTML = (post.meta.tags || [])
+                    .map(t => `<span class="tag" data-color="${Blog.tagColor(t)}">${t}</span>`).join('');
+
+                const html = Blog.renderMarkdown(post.content);
+
+                wrapper.innerHTML = `
+                    <a class="post-back" href="math-notes.html">← Back to Writing</a>
+                    <header class="post-header">
+                        <h1 class="post-title">${post.meta.title || 'Untitled'}</h1>
+                        <div class="post-meta">
+                            ${date ? `<span class="post-date">${date}</span>` : ''}
+                        </div>
+                        ${post.meta.description ? `<p class="post-description">${post.meta.description}</p>` : ''}
+                        ${tagsHTML ? `<div class="post-tags">${tagsHTML}</div>` : ''}
+                    </header>
+                    <div class="post-content">${html}</div>
+                `;
+
+                Blog.enhanceCodeBlocks(wrapper);
+                document.title = `${post.meta.title || 'Post'} - Rishi Chandra`;
+                window.scrollTo({ top: 0 });
+            } catch (err) {
+                wrapper.innerHTML = `<div class="error">Error loading post: ${err.message}</div>`;
             }
+        }
+
+        function renderPostList(posts) {
+            const list = document.getElementById('post-list');
+            if (!posts.length) {
+                list.innerHTML = '<li class="loading">No posts found.</li>';
+                return;
+            }
+            list.innerHTML = posts.map(post => {
+                const slug = slugFromPath(post.path);
+                const date = Blog.formatDate(post.meta.date);
+                const tagsHTML = (post.meta.tags || []).slice(0, 3)
+                    .map(t => `<span class="tag" data-color="${Blog.tagColor(t)}">${t}</span>`).join('');
+                return `
+                    <li class="post-list-item">
+                        <a class="post-list-link" href="#/post/${slug}">
+                            <div class="post-list-title">${post.meta.title || 'Untitled'}</div>
+                            ${post.meta.description ? `<div class="post-list-description">${post.meta.description}</div>` : ''}
+                            <div class="post-list-meta">
+                                ${date ? `<span class="post-list-date">${date}</span>` : ''}
+                                ${tagsHTML ? `<span class="post-list-tags">${tagsHTML}</span>` : ''}
+                            </div>
+                        </a>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        function route() {
+            const hash = window.location.hash;
+            const postMatch = hash.match(/^#\/post\/(.+)$/);
+            if (postMatch) {
+                showPost(decodeURIComponent(postMatch[1]));
+            } else {
+                showList();
+            }
+        }
+
+        window.addEventListener('hashchange', route);
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            postsCache = await Blog.fetchAllPosts(NOTE_PATHS);
+            renderPostList(postsCache);
+            route();
         });
     </script>
 </body>

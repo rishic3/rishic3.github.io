@@ -3,467 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Notes - Rishi Chandra</title>
-    
-    <!-- Favicon -->
+    <title>Reading - Rishi Chandra</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="icon" type="image/x-icon" href="favicon.svg">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/notes.css">
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <!-- Marked -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+    <script src="js/dark-mode.js"></script>
 </head>
-<body data-notes-type="reading">
-    <div class="container">
-        <nav class="nav-bar">
-            <a href="index.html" class="site-title">Rishi Chandra</a>
-        </nav>
-        
-        <div class="header">
-            <h1>Reading</h1>
-            <p class="subtitle">Books I've read, some with notes.</p>
-            <div class="legend">
-                <span class="legend-box"></span> = personal standout
+<body>
+    <div class="page-wrapper">
+        <nav class="nav">
+            <div class="nav-inner">
+                <a href="index.html" class="nav-title">Rishi Chandra</a>
+                <div class="nav-links">
+                    <a href="reading-notes.html" class="nav-link active">Reading</a>
+                    <a href="math-notes.html" class="nav-link">Writing</a>
+                    <button class="dark-mode-toggle" aria-label="Toggle dark mode"></button>
+                </div>
             </div>
-        </div>
+        </nav>
 
-        <ul class="file-list" id="fileList">
-            <li class="year-heading">2026</li>
-            <!-- 2026 READS -->
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Colorless Tsukuru Tazaki and His Years of Pilgrimage</i></span>
-                    <span class="post-subtitle">Haruki Murakami</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Slaughterhouse-Five</i></span>
-                    <span class="post-subtitle">Kurt Vonnegut</span>
-                </button>
-            </li>
-            
-            <li class="year-heading">2025</li>
-            <!-- 2025 READS -->
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>1Q84</i></span>
-                    <span class="post-subtitle">Haruki Murakami</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Anxiety: A Philosophical Guide</i></span>
-                    <span class="post-subtitle">Samir Chopra</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Devotion of Suspect X</i></span>
-                    <span class="post-subtitle">Keigo Higashino</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes" data-standout="true">
-                    <span class="post-title"><i>Under the Midnight Sun</i></span>
-                    <span class="post-subtitle">Keigo Higashino</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Zero to One</i></span>
-                    <span class="post-subtitle">Peter Thiel</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Genius: The Life and Science of Richard Feynman</i></span>
-                    <span class="post-subtitle">James Gleick</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes" data-standout="true">
-                    <span class="post-title"><i>Cat's Cradle</i></span>
-                    <span class="post-subtitle">Kurt Vonnegut</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Novelist as a Vocation</i></span>
-                    <span class="post-subtitle">Haruki Murakami</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The City and its Uncertain Walls</i></span>
-                    <span class="post-subtitle">Haruki Murakami</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Einstein: His Life and Universe</i></span>
-                    <span class="post-subtitle">Walter Isaacson</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes" data-standout="true">
-                    <span class="post-title"><i>Kokoro</i></span>
-                    <span class="post-subtitle">Natsume Sōseki</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>What I Talk About When I Talk About Running</i></span>
-                    <span class="post-subtitle">Haruki Murakami</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The NVIDIA Way</i></span>
-                    <span class="post-subtitle">Tae Kim</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="notes/books/2025/wind-up-bird-chronicle.md" data-standout="true">
-                    <span class="post-title"><i>The Wind-Up Bird Chronicle</i></span>
-                    <span class="post-subtitle">Haruki Murakami</span>
-                </button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
+        <main class="page-content">
+            <div class="page-header">
+                <h1>Reading</h1>
+                <p class="subtitle">Books I've read, some with notes.</p>
+                <div class="reading-legend">
+                    <span class="legend-swatch"></span> = personal standout
                 </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Ultralearning</i></span>
-                    <span class="post-subtitle">Scott H. Young</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Vegetarian</i></span>
-                    <span class="post-subtitle">Han Kang</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Norweigan Wood</i></span>
-                    <span class="post-subtitle">Haruki Murakami</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Innovators</i></span>
-                    <span class="post-subtitle">Walter Isaacson</span>
-                </button>
-            </li>
-            
-            <li class="year-heading">2024</li>
-            <!-- 2024 READS -->
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Never Let Me Go</i></span>
-                    <span class="post-subtitle">Kazuo Ishiguro</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="notes/books/2024/tyranny-of-merit.md" data-standout="true">
-                    <span class="post-title"><i>The Tyranny of Merit</i></span>
-                    <span class="post-subtitle">Michael J. Sandel</span>
-                </button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes" data-standout="true">
-                    <span class="post-title"><i>Kafka on the Shore</i></span>
-                    <span class="post-subtitle">Haruki Murakami</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Code Breaker</i></span>
-                    <span class="post-subtitle">Walter Isaacson</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>A Thousand Brains</i></span>
-                    <span class="post-subtitle">Jeff Hawkins</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="notes/books/2024/sapiens.md" data-standout="true">
-                    <span class="post-title"><i>Sapiens</i></span>
-                    <span class="post-subtitle">Yuval Noah Harari</span>
-                </button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>All Systems Red</i></span>
-                    <span class="post-subtitle">Martha Wells</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Surely You're Joking, Mr. Feynman!</i></span>
-                    <span class="post-subtitle">Richard P. Feynman</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Chaos</i></span>
-                    <span class="post-subtitle">James Gleick</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Man's Search for Meaning</i></span>
-                    <span class="post-subtitle">Viktor Frankl</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>What Money Can't Buy</i></span>
-                    <span class="post-subtitle">Michael J. Sandel</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="notes/books/2024/plague.md" data-standout="true">
-                    <span class="post-title"><i>The Plague</i></span>
-                    <span class="post-subtitle">Albert Camus</span>
-                </button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Alignment Problem</i></span>
-                    <span class="post-subtitle">Brian Christian</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Animal Farm</i></span>
-                    <span class="post-subtitle">George Orwell</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Probable Impossibilities</i></span>
-                    <span class="post-subtitle">Alan Lightman</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Foundation</i></span>
-                    <span class="post-subtitle">Isaac Asimov</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes" data-standout="true">
-                    <span class="post-title"><i>The Information: A History, a Theory, a Flood</i></span>
-                    <span class="post-subtitle">James Gleick</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Black Swan</i></span>
-                    <span class="post-subtitle">Nassim Nicholas Taleb</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Project Hail Mary</i></span>
-                    <span class="post-subtitle">Andy Weir</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Free Will</i></span>
-                    <span class="post-subtitle">Mark Balaguer</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="notes/books/2024/stories-of-your-life.md" data-standout="true">
-                    <span class="post-title"><i>Stories of Your Life and Others</i></span>
-                    <span class="post-subtitle">Ted Chiang</span>
-                </button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Elon Musk</i></span>
-                    <span class="post-subtitle">Walter Isaacson</span>
-                </button>
-            </li>
-            
-            <li class="year-heading">2023</li>
-            <!-- 2023 READS -->
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Algorithms to Live By</i></span>
-                    <span class="post-subtitle">Brian Christian</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Master of Go</i></span>
-                    <span class="post-subtitle">Yasunari Kawabata</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle" data-file="notes/books/2023/exhalation.md" data-standout="true">
-                    <span class="post-title"><i>Exhalation</i></span>
-                    <span class="post-subtitle">Ted Chiang</span>
-                </button>
-                <div class="file-content">
-                    <div class="markdown-body markdown-content"></div>
-                </div>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Four Thousand Weeks</i></span>
-                    <span class="post-subtitle">Oliver Burkeman</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes" data-standout="true">
-                    <span class="post-title"><i>Siddhartha</i></span>
-                    <span class="post-subtitle">Hermann Hesse</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes" data-standout="true">
-                    <span class="post-title"><i>The Beginning of Infinity</i></span>
-                    <span class="post-subtitle">David Deutsch</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Do Androids Dream of Electric Sheep?</i></span>
-                    <span class="post-subtitle">Philip K. Dick</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Remains of the Day</i></span>
-                    <span class="post-subtitle">Kazuo Ishiguro</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Klara and the Sun</i></span>
-                    <span class="post-subtitle">Kazuo Ishiguro</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Poppy War</i></span>
-                    <span class="post-subtitle">R. F. Kuang</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Death's End</i></span>
-                    <span class="post-subtitle">Cixin Liu</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Dark Forest</i></span>
-                    <span class="post-subtitle">Cixin Liu</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes" data-standout="true">
-                    <span class="post-title"><i>The Three-Body Problem</i></span>
-                    <span class="post-subtitle">Cixin Liu</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The God Equation</i></span>
-                    <span class="post-subtitle">Michio Kaku</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes" data-standout="true">
-                    <span class="post-title"><i>The Selfish Gene</i></span>
-                    <span class="post-subtitle">Richard Dawkins</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>Inferno</i></span>
-                    <span class="post-subtitle">Dante Alighieri</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Man Who Mistook His Wife for a Hat</i></span>
-                    <span class="post-subtitle">Oliver Sacks</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Art of War</i></span>
-                    <span class="post-subtitle">Sun Tzu</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>No Longer Human</i></span>
-                    <span class="post-subtitle">Osamu Dazai</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes">
-                    <span class="post-title"><i>The Sailor Who Fell from Grace with the Sea</i></span>
-                    <span class="post-subtitle">Yukio Mishima</span>
-                </button>
-            </li>
-            <li class="file-item">
-                <button class="file-toggle no-notes" data-standout="true">
-                    <span class="post-title"><i>The Stranger</i></span>
-                    <span class="post-subtitle">Albert Camus</span>
-                </button>
-            </li>
-        </ul>
+            </div>
+
+            <ul class="book-list" id="book-list">
+                <!-- 2026 -->
+                <li class="year-heading">2026</li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Colorless Tsukuru Tazaki and His Years of Pilgrimage</span><span class="book-author">Haruki Murakami</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Slaughterhouse-Five</span><span class="book-author">Kurt Vonnegut</span></button>
+                </li>
+
+                <!-- 2025 -->
+                <li class="year-heading">2025</li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">1Q84</span><span class="book-author">Haruki Murakami</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Anxiety: A Philosophical Guide</span><span class="book-author">Samir Chopra</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Devotion of Suspect X</span><span class="book-author">Keigo Higashino</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle"><span class="book-title">Under the Midnight Sun</span><span class="book-author">Keigo Higashino</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Zero to One</span><span class="book-author">Peter Thiel</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Genius: The Life and Science of Richard Feynman</span><span class="book-author">James Gleick</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle"><span class="book-title">Cat's Cradle</span><span class="book-author">Kurt Vonnegut</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Novelist as a Vocation</span><span class="book-author">Haruki Murakami</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The City and its Uncertain Walls</span><span class="book-author">Haruki Murakami</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Einstein: His Life and Universe</span><span class="book-author">Walter Isaacson</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle"><span class="book-title">Kokoro</span><span class="book-author">Natsume Sōseki</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">What I Talk About When I Talk About Running</span><span class="book-author">Haruki Murakami</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The NVIDIA Way</span><span class="book-author">Tae Kim</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle has-notes" data-file="notes/books/2025/wind-up-bird-chronicle.md">
+                        <span class="book-title">The Wind-Up Bird Chronicle</span>
+                        <span class="book-author">Haruki Murakami</span>
+                        <span class="book-chevron">▾</span>
+                    </button>
+                    <div class="book-content"><div class="post-content"></div></div>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Ultralearning</span><span class="book-author">Scott H. Young</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Vegetarian</span><span class="book-author">Han Kang</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Norweigan Wood</span><span class="book-author">Haruki Murakami</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Innovators</span><span class="book-author">Walter Isaacson</span></button>
+                </li>
+
+                <!-- 2024 -->
+                <li class="year-heading">2024</li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Never Let Me Go</span><span class="book-author">Kazuo Ishiguro</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle has-notes" data-file="notes/books/2024/tyranny-of-merit.md">
+                        <span class="book-title">The Tyranny of Merit</span>
+                        <span class="book-author">Michael J. Sandel</span>
+                        <span class="book-chevron">▾</span>
+                    </button>
+                    <div class="book-content"><div class="post-content"></div></div>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle"><span class="book-title">Kafka on the Shore</span><span class="book-author">Haruki Murakami</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Code Breaker</span><span class="book-author">Walter Isaacson</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">A Thousand Brains</span><span class="book-author">Jeff Hawkins</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle has-notes" data-file="notes/books/2024/sapiens.md">
+                        <span class="book-title">Sapiens</span>
+                        <span class="book-author">Yuval Noah Harari</span>
+                        <span class="book-chevron">▾</span>
+                    </button>
+                    <div class="book-content"><div class="post-content"></div></div>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">All Systems Red</span><span class="book-author">Martha Wells</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Surely You're Joking, Mr. Feynman!</span><span class="book-author">Richard P. Feynman</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Chaos</span><span class="book-author">James Gleick</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Man's Search for Meaning</span><span class="book-author">Viktor Frankl</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">What Money Can't Buy</span><span class="book-author">Michael J. Sandel</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle has-notes" data-file="notes/books/2024/plague.md">
+                        <span class="book-title">The Plague</span>
+                        <span class="book-author">Albert Camus</span>
+                        <span class="book-chevron">▾</span>
+                    </button>
+                    <div class="book-content"><div class="post-content"></div></div>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Alignment Problem</span><span class="book-author">Brian Christian</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Animal Farm</span><span class="book-author">George Orwell</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Probable Impossibilities</span><span class="book-author">Alan Lightman</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Foundation</span><span class="book-author">Isaac Asimov</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle"><span class="book-title">The Information: A History, a Theory, a Flood</span><span class="book-author">James Gleick</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Black Swan</span><span class="book-author">Nassim Nicholas Taleb</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Project Hail Mary</span><span class="book-author">Andy Weir</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Free Will</span><span class="book-author">Mark Balaguer</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle has-notes" data-file="notes/books/2024/stories-of-your-life.md">
+                        <span class="book-title">Stories of Your Life and Others</span>
+                        <span class="book-author">Ted Chiang</span>
+                        <span class="book-chevron">▾</span>
+                    </button>
+                    <div class="book-content"><div class="post-content"></div></div>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Elon Musk</span><span class="book-author">Walter Isaacson</span></button>
+                </li>
+
+                <!-- 2023 -->
+                <li class="year-heading">2023</li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Algorithms to Live By</span><span class="book-author">Brian Christian</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Master of Go</span><span class="book-author">Yasunari Kawabata</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle has-notes" data-file="notes/books/2023/exhalation.md">
+                        <span class="book-title">Exhalation</span>
+                        <span class="book-author">Ted Chiang</span>
+                        <span class="book-chevron">▾</span>
+                    </button>
+                    <div class="book-content"><div class="post-content"></div></div>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Four Thousand Weeks</span><span class="book-author">Oliver Burkeman</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle"><span class="book-title">Siddhartha</span><span class="book-author">Hermann Hesse</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle"><span class="book-title">The Beginning of Infinity</span><span class="book-author">David Deutsch</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Do Androids Dream of Electric Sheep?</span><span class="book-author">Philip K. Dick</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Remains of the Day</span><span class="book-author">Kazuo Ishiguro</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Klara and the Sun</span><span class="book-author">Kazuo Ishiguro</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Poppy War</span><span class="book-author">R. F. Kuang</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Death's End</span><span class="book-author">Cixin Liu</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Dark Forest</span><span class="book-author">Cixin Liu</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle"><span class="book-title">The Three-Body Problem</span><span class="book-author">Cixin Liu</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The God Equation</span><span class="book-author">Michio Kaku</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle"><span class="book-title">The Selfish Gene</span><span class="book-author">Richard Dawkins</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">Inferno</span><span class="book-author">Dante Alighieri</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Man Who Mistook His Wife for a Hat</span><span class="book-author">Oliver Sacks</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Art of War</span><span class="book-author">Sun Tzu</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">No Longer Human</span><span class="book-author">Osamu Dazai</span></button>
+                </li>
+                <li class="book-item">
+                    <button class="book-toggle"><span class="book-title">The Sailor Who Fell from Grace with the Sea</span><span class="book-author">Yukio Mishima</span></button>
+                </li>
+                <li class="book-item standout">
+                    <button class="book-toggle"><span class="book-title">The Stranger</span><span class="book-author">Albert Camus</span></button>
+                </li>
+            </ul>
+        </main>
+
+        <footer class="social-links">
+            <a href="https://github.com/rishic3" target="_blank" class="social-link" aria-label="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            </a>
+            <a href="https://linkedin.com/in/chandrarishi" target="_blank" class="social-link" aria-label="LinkedIn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="mailto:rishichandra159@gmail.com" class="social-link" aria-label="Email">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </a>
+        </footer>
     </div>
 
-    <footer class="social-links">
-        <a href="https://github.com/rishic3" target="_blank" aria-label="GitHub">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-            </svg>
-        </a>
-        <a href="https://linkedin.com/in/chandrarishi" target="_blank" aria-label="LinkedIn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                <rect x="2" y="9" width="4" height="12"></rect>
-                <circle cx="4" cy="4" r="2"></circle>
-            </svg>
-        </a>
-        <a href="mailto:rishichandra159@gmail.com" aria-label="Email">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-        </a>
-    </footer>
-
-    <!-- Load dark mode functionality -->
-    <script src="js/dark-mode.js"></script>
-    
-    <script src="js/notes.js"></script>
-    <!-- Load back to top functionality -->
+    <script src="js/markdown-blog.js"></script>
     <script src="js/back-to-top.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.book-toggle.has-notes').forEach(toggle => {
+                const filePath = toggle.getAttribute('data-file');
+                const contentDiv = toggle.nextElementSibling;
+                const markdownDiv = contentDiv.querySelector('.post-content');
+
+                toggle.addEventListener('click', async () => {
+                    toggle.classList.toggle('active');
+                    contentDiv.classList.toggle('active');
+
+                    if (toggle.classList.contains('active') && !markdownDiv.innerHTML.trim()) {
+                        try {
+                            const resp = await fetch(filePath);
+                            if (!resp.ok) throw new Error(`Could not load ${filePath}`);
+                            let md = await resp.text();
+
+                            const baseDir = filePath.substring(0, filePath.lastIndexOf('/'));
+                            md = md.replace(
+                                /!\[([^\]]*)\]\((images\/[^)]+)\)/g,
+                                (_, alt, img) => `![${alt}](${baseDir}/${img})`
+                            );
+                            md = md.replace(
+                                /<img([^>]*)src="images\/([^"]+)"([^>]*)>/g,
+                                (_, pre, img, post) => `<img${pre}src="${baseDir}/images/${img}"${post}>`
+                            );
+
+                            markdownDiv.innerHTML = Blog.renderMarkdown(md);
+                        } catch (err) {
+                            markdownDiv.innerHTML = `<p class="error">Error loading content: ${err.message}</p>`;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

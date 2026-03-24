@@ -201,7 +201,7 @@ In other words, a huge page can be identified via a much coarser identifier (i.e
 
 An ideal use case for huge pages is the DBMS, which stores a database index that is large and randomly accessed (thus it can make much better use of the TLB, and the initial demand paging lag is far shorter). 
 
-Huge pages have drawbacks: one is internal fragmentation, where the page is allocated but sparsely used (thus memory is wasted *internal* to the allocation). Swapping also performs poorly with huge pages, given the much amplified disk I/O. 
+Huge pages have drawbacks: one is internal fragmentation, where the page is allocated but sparsely used (thus memory is wasted *internal* to the allocation). [Swapping also performs poorly with huge pages, given the much amplified disk I/O]{"For this reason, huge pages are typically in pinned memory (i.e., cannot be swapped), a rule sometimes enforced by the OS."}. 
 
 ### Swapping to Disk
 
