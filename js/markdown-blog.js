@@ -241,6 +241,107 @@
     }
 
     /* ------------------------------------------------
+       Table of Contents (hover-to-reveal)
+       ------------------------------------------------ */
+    function slugify(text) {
+        return text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
+    }
+
+    function generateTOC(contentEl) {
+        const headings = contentEl.querySelectorAll('h1, h2, h3, h4');
+        if (headings.length < 3) return null;
+
+        const usedIds = new Set();
+        const items = [];
+        const triggerLines = [];
+
+        headings.forEach((h, i) => {
+            let id = slugify(h.textContent);
+            if (!id) id = 'heading';
+            if (usedIds.has(id)) {
+                let c = 2;
+                while (usedIds.has(`${id}-${c}`)) c++;
+                id = `${id}-${c}`;
+            }
+            usedIds.add(id);
+            h.id = id;
+
+            const level = h.tagName.toLowerCase();
+            items.push(`<li class="toc-${level}"><a href="#${id}">${h.textContent}</a></li>`);
+            triggerLines.push(`<span class="toc-line toc-line-${level}" data-idx="${i}"></span>`);
+        });
+
+        return `<div class="toc-wrapper">
+            <div class="toc-trigger">${triggerLines.join('')}</div>
+            <nav class="toc-panel">
+                <div class="toc-title">Contents</div>
+                <ul>${items.join('')}</ul>
+            </nav>
+        </div>`;
+    }
+
+    function initTOC(wrapper) {
+        const tocWrapper = wrapper.querySelector('.toc-wrapper');
+        if (!tocWrapper) return () => {};
+
+        const panel = tocWrapper.querySelector('.toc-panel');
+        const contentEl = wrapper.querySelector('.post-content');
+        let hideTimer = null;
+
+        function show() {
+            clearTimeout(hideTimer);
+            tocWrapper.classList.add('active');
+        }
+
+        function scheduleHide() {
+            hideTimer = setTimeout(() => tocWrapper.classList.remove('active'), 200);
+        }
+
+        tocWrapper.addEventListener('mouseenter', show);
+        tocWrapper.addEventListener('mouseleave', scheduleHide);
+
+        panel.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const id = link.getAttribute('href').slice(1);
+                const target = document.getElementById(id);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    setTimeout(() => tocWrapper.classList.remove('active'), 300);
+                }
+            });
+        });
+
+        const headings = contentEl.querySelectorAll('h1[id], h2[id], h3[id], h4[id]');
+        const tocLinks = panel.querySelectorAll('a');
+        const triggerLines = tocWrapper.querySelectorAll('.toc-line');
+        const linkByHref = new Map();
+        tocLinks.forEach((a, i) => linkByHref.set(a.getAttribute('href').slice(1), { link: a, idx: i }));
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    tocLinks.forEach(a => a.classList.remove('active'));
+                    triggerLines.forEach(l => l.classList.remove('active'));
+                    const match = linkByHref.get(entry.target.id);
+                    if (match) {
+                        match.link.classList.add('active');
+                        if (triggerLines[match.idx]) triggerLines[match.idx].classList.add('active');
+                    }
+                }
+            });
+        }, { rootMargin: '0px 0px -70% 0px', threshold: 0 });
+
+        headings.forEach(h => observer.observe(h));
+
+        return () => {
+            observer.disconnect();
+            tocWrapper.removeEventListener('mouseenter', show);
+            tocWrapper.removeEventListener('mouseleave', scheduleHide);
+        };
+    }
+
+    /* ------------------------------------------------
        Public API
        ------------------------------------------------ */
     window.Blog = {
@@ -250,6 +351,8 @@
         enhanceCodeBlocks,
         initAnnotations,
         tagColor,
+        generateTOC,
+        initTOC,
 
         async fetchPost(path) {
             const resp = await fetch(path);

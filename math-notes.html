@@ -82,6 +82,7 @@
         }
 
         function showList() {
+            if (window._tocCleanup) { window._tocCleanup(); window._tocCleanup = null; }
             document.getElementById('list-view').style.display = '';
             document.getElementById('post-view').style.display = 'none';
             document.title = 'Writing - Rishi Chandra';
@@ -120,6 +121,14 @@
                 `;
 
                 Blog.enhanceCodeBlocks(wrapper);
+
+                if (window._tocCleanup) { window._tocCleanup(); window._tocCleanup = null; }
+                const tocHTML = Blog.generateTOC(wrapper.querySelector('.post-content'));
+                if (tocHTML) {
+                    wrapper.insertAdjacentHTML('beforeend', tocHTML);
+                    window._tocCleanup = Blog.initTOC(wrapper);
+                }
+
                 document.title = `${post.meta.title || 'Post'} - Rishi Chandra`;
                 window.scrollTo({ top: 0 });
             } catch (err) {
