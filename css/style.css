@@ -96,6 +96,10 @@ body:not(.home-page) {
     padding: 2rem 1rem;
 }
 
+body.writing-page {
+    max-width: 1400px;
+}
+
 .container {
     width: 100%;
     flex: 1;

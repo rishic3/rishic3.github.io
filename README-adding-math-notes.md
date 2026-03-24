@@ -145,15 +145,36 @@ Select 3-6 tags that best describe your content. Each tag will get a unique colo
 - Be specific but not overly narrow
 - Reuse existing tags when appropriate for consistency
 
-## Step 5: Testing Your Post
+## Step 5: Register the Post
 
-### 5.1 Check the post list
+New posts are **not** auto-discovered from the filesystem. You must add the
+path to the `notePaths` array in `math-notes.html`:
+
+```html
+<script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        try {
+            const notePaths = [
+                'notes/technical/gbdt/gbdt.md',
+                'notes/technical/torch-compile/torch-compile.md',
+                'notes/technical/svd/svd.md',
+                'notes/technical/umap/umap.md',
+                'notes/technical/your-topic-name/your-topic-name.md'   // ← add here
+            ];
+```
+
+Without this step the post will not appear in the list even though the file
+exists on disk.
+
+## Step 6: Testing Your Post
+
+### 6.1 Check the post list
 1. Open `math-notes.html` in your browser
 2. Verify your post appears in the list
 3. Check that the description and tags display correctly
 4. Verify tag colors are applied
 
-### 5.2 Check the individual post
+### 6.2 Check the individual post
 1. Click on your post title
 2. Verify all content renders correctly
 3. Test mathematical formulas
@@ -203,20 +224,33 @@ def gradient_descent(f, grad_f, x0, alpha=0.01, max_iter=1000):
 The image above shows how gradient descent navigates the loss landscape...
 ```
 
-## Step 6: Advanced Features
+## Step 7: Advanced Features
 
-### 6.1 Complex mathematical notation
+### 7.1 Annotations (click-to-reveal tooltips)
+
+You can attach hidden comments to any piece of text using the annotation
+syntax:
+
+```markdown
+The algorithm uses [amortized analysis]{"This means we average the cost over a sequence of operations rather than looking at worst-case per-operation cost."} to achieve O(1) per operation.
+```
+
+The text between `[...]` renders with a dashed underline. Clicking it opens a
+tooltip containing the comment from `{"..."}`. Clicking outside or pressing
+Escape closes the tooltip.
+
+### 7.2 Complex mathematical notation
 The system supports full LaTeX math notation:
 - Matrices: `\begin{pmatrix} a & b \\ c & d \end{pmatrix}`
 - Integrals: `\int_{-\infty}^{\infty} e^{-x^2} dx`
 - Summations: `\sum_{i=1}^{n} x_i`
 
-### 6.2 Image optimization
+### 7.3 Image optimization
 - Use web-optimized formats (PNG, JPG, WebP)
 - Keep file sizes reasonable for web loading
 - Use descriptive filenames
 
-### 6.3 Cross-referencing
+### 7.4 Cross-referencing
 You can link to other posts or external resources:
 ```markdown
 See my previous post on [Linear Algebra](../linear-algebra/linear-algebra.md) for background.
@@ -225,7 +259,7 @@ See my previous post on [Linear Algebra](../linear-algebra/linear-algebra.md) fo
 ## Troubleshooting
 
 ### Common issues:
-- **Post not appearing**: Check frontmatter syntax and file location
+- **Post not appearing**: Ensure the path is registered in the `notePaths` array in `math-notes.html`, and check frontmatter syntax and file location
 - **Math not rendering**: Verify LaTeX syntax and dollar sign placement
 - **Images not loading**: Check file paths and ensure images exist
 - **Tags not colored**: Verify tags are in array format in frontmatter

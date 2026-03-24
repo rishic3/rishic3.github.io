@@ -5,6 +5,68 @@ class MarkdownBlog {
     constructor() {
         this.posts = [];
         this.currentPost = null;
+        this._initAnnotationListeners();
+    }
+
+    _initAnnotationListeners() {
+        document.addEventListener('click', (e) => {
+            const annotation = e.target.closest('.annotation');
+            const existingTooltip = document.querySelector('.annotation-tooltip');
+
+            if (!annotation) {
+                if (existingTooltip && !e.target.closest('.annotation-tooltip')) {
+                    existingTooltip.remove();
+                    document.querySelectorAll('.annotation.active').forEach(a => a.classList.remove('active'));
+                }
+                return;
+            }
+
+            // Toggle off if clicking the same annotation
+            if (existingTooltip && existingTooltip._source === annotation) {
+                existingTooltip.remove();
+                annotation.classList.remove('active');
+                return;
+            }
+
+            // Remove any existing tooltip
+            if (existingTooltip) existingTooltip.remove();
+            document.querySelectorAll('.annotation.active').forEach(a => a.classList.remove('active'));
+
+            const tooltip = document.createElement('div');
+            tooltip.className = 'annotation-tooltip';
+            tooltip.textContent = annotation.dataset.comment;
+            tooltip._source = annotation;
+            document.body.appendChild(tooltip);
+            annotation.classList.add('active');
+
+            // Position below the annotation, centered horizontally
+            const rect = annotation.getBoundingClientRect();
+            const tipW = tooltip.offsetWidth;
+            const tipH = tooltip.offsetHeight;
+            const pad = 10;
+
+            let top = rect.bottom + window.scrollY + 8;
+            let left = rect.left + window.scrollX + (rect.width / 2) - (tipW / 2);
+
+            if (left < pad) left = pad;
+            if (left + tipW > window.innerWidth - pad) left = window.innerWidth - tipW - pad;
+
+            // Flip above the annotation if it would overflow the viewport
+            if (rect.bottom + tipH + 16 > window.innerHeight) {
+                top = rect.top + window.scrollY - tipH - 8;
+            }
+
+            tooltip.style.top = `${top}px`;
+            tooltip.style.left = `${left}px`;
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const tooltip = document.querySelector('.annotation-tooltip');
+                if (tooltip) tooltip.remove();
+                document.querySelectorAll('.annotation.active').forEach(a => a.classList.remove('active'));
+            }
+        });
     }
 
     // Generate a consistent color for a tag based on its name
@@ -135,6 +197,16 @@ class MarkdownBlog {
             return content;
         }
         
+        // Protect annotation syntax [text]{"comment"} from markdown processing
+        const annotations = [];
+        let annotationIndex = 0;
+        content = content.replace(/\[([^\]]+)\]\{"([^"]*?)"\}/g, (match, text, comment) => {
+            const placeholder = `<!--ANNOTATION${annotationIndex}-->`;
+            annotations[annotationIndex] = { text, comment };
+            annotationIndex++;
+            return placeholder;
+        });
+
         // Store math blocks temporarily to protect them from markdown processing
         const mathBlocks = [];
         let mathIndex = 0;
@@ -174,6 +246,17 @@ class MarkdownBlog {
         for (let i = 0; i < mathBlocks.length; i++) {
             const placeholder = `<!--MATHBLOCK${i}-->`;
             htmlContent = htmlContent.replace(new RegExp(placeholder, 'g'), mathBlocks[i]);
+        }
+
+        // Restore annotation placeholders as interactive spans
+        for (let i = 0; i < annotations.length; i++) {
+            const placeholder = `<!--ANNOTATION${i}-->`;
+            const { text, comment } = annotations[i];
+            const escaped = comment.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            htmlContent = htmlContent.replace(
+                new RegExp(placeholder, 'g'),
+                `<span class="annotation" data-comment="${escaped}">${text}</span>`
+            );
         }
         
         return htmlContent;
@@ -368,6 +451,10 @@ window.showPostList = function() {
     const header = document.querySelector('.header');
     const blogContent = document.getElementById('blog-content');
     
+    // Clean up any open annotation tooltip
+    const tooltip = document.querySelector('.annotation-tooltip');
+    if (tooltip) tooltip.remove();
+
     if (notesList) notesList.style.display = 'block';
     if (header) header.style.display = 'block';
     if (blogContent) blogContent.style.display = 'none';

@@ -1,9 +1,9 @@
 /* Blog Styles */
 
 .blog-content {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 20px 40px;
     line-height: 1.6;
 }
 
@@ -88,7 +88,7 @@
 }
 
 .post-content {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.7;
     color: var(--text-color);
 }
@@ -248,6 +248,43 @@
 .post-content a:visited:hover {
     color: var(--link-hover-color);
     text-decoration-color: var(--text-secondary);
+}
+
+/* Annotation tooltips */
+.annotation {
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-decoration-color: var(--text-secondary);
+    text-underline-offset: 3px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background-color 0.2s ease;
+}
+
+.annotation:hover,
+.annotation.active {
+    background-color: var(--code-bg);
+}
+
+.annotation-tooltip {
+    position: absolute;
+    z-index: 1000;
+    max-width: 350px;
+    padding: 12px 16px;
+    background-color: var(--bg-color);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 4px 16px var(--shadow-color);
+    font-size: 13px;
+    line-height: 1.5;
+    font-style: italic;
+    animation: tooltipFadeIn 0.15s ease;
+}
+
+@keyframes tooltipFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Enhanced notes list for blog format */
