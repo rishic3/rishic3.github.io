@@ -130,7 +130,13 @@
                 }
 
                 document.title = `${post.meta.title || 'Post'} - Rishi Chandra`;
-                window.scrollTo({ top: 0 });
+                const savedY = sessionStorage.getItem('scroll:' + slug);
+                if (savedY && !window._navClick) {
+                    requestAnimationFrame(() => window.scrollTo(0, parseInt(savedY)));
+                } else {
+                    window.scrollTo({ top: 0 });
+                }
+                window._navClick = false;
             } catch (err) {
                 wrapper.innerHTML = `<div class="error">Error loading post: ${err.message}</div>`;
             }
@@ -172,7 +178,21 @@
             }
         }
 
-        window.addEventListener('hashchange', route);
+        window.addEventListener('hashchange', () => {
+            window._navClick = true;
+            route();
+        });
+
+        let _scrollTick = false;
+        window.addEventListener('scroll', () => {
+            if (_scrollTick) return;
+            _scrollTick = true;
+            requestAnimationFrame(() => {
+                _scrollTick = false;
+                const m = window.location.hash.match(/^#\/post\/(.+)$/);
+                if (m) sessionStorage.setItem('scroll:' + decodeURIComponent(m[1]), window.scrollY);
+            });
+        });
 
         document.addEventListener('DOMContentLoaded', async () => {
             postsCache = await Blog.fetchAllPosts(NOTE_PATHS);

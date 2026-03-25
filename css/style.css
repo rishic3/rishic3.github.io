@@ -913,7 +913,7 @@ img {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 2.5px;
+    gap: 10px;
     cursor: pointer;
     border-radius: var(--radius-sm);
     transition: background-color var(--transition);
