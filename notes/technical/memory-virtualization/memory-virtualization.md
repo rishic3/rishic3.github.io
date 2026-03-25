@@ -6,7 +6,7 @@ tags: [notes, "operating-systems"]
 description: "Notes on memory virtualization in the OS."
 ---
 
-These is a whirlwhind summary of chapters 12-24 of *Operating Systems: Three Easy Pieces* by the Arpaci-Dusseaus.
+This is a condensed summary of chapters 12-24 of *Operating Systems: Three Easy Pieces* by the Arpaci-Dusseaus. It includes everything I thought was most interesting, and in some cases, additional tidbits I was curious about.
 
 # Memory Virtualization
 
@@ -262,7 +262,7 @@ The page fault handler must disambiguate the reason for the page fault:
 
 The OS first checks case (3) by performing a lookup in the VMA (discussed later). If it is illegal — the VPN is not in any VMA boundary — the OS throws a segfault. 
 
-For entries with `present == 0`, note that the PFN is meaningless to the hardware. The OS is smart, and takes those otherwise ununsed bits to store the **disk address**, if the page was swapped. 
+For entries with `present == 0`, note that the PFN is meaningless to the hardware. The OS is smart, and takes those otherwise unused bits to store the **disk address**, if the page was swapped. 
 
 ![Screenshot 2026-03-23 at 1.04.45 PM.png](images/Screenshot_2026-03-23_at_1.04.45_PM.png)
 
@@ -280,7 +280,7 @@ When the OS notices there are $< LW$ page frames available, a background thread 
 
 If the OS fetches a swapped page from disk, it may need to evict an existing page to make space. The most common eviction policy is **LRU.**
 
-The problem is that *exact LRU is hard to implement*. Exact LRU would require storing accessed pages in some data structure (e.g., a linked list). Upon *every memory reference*, the reference page would need to be moved to the front of the list.
+The problem is that *exact LRU is expensive to implement*. Exact LRU would require storing accessed pages in some data structure (e.g., a linked list). Upon *every memory reference*, the reference page would need to be moved to the front of the list.
 
 LRU can be approximated via the **clock algorithm**. The idea is:
 
@@ -290,7 +290,7 @@ $$
 
 This makes use of the **reference bit**, which recall, is set to 1 when a page is accessed.
 
-First, the hardware stores a pointer (”clock hand”) to a particular page table entry. When a page needs to be evicted:
+First, the hardware stores a pointer (”clock hand”) to a particular page table entry — initially, it does not matter which. When a page needs to be evicted:
 
 - The hardware iterates over the page table entries, in order (rotating back to the start if it reaches the end).
     - If it sees `present == 1` , it sets `present = 0` , marking the page as un-referenced, and advances the clock hand.
@@ -316,11 +316,11 @@ The memory descriptor contains:
 
 The **Virtual Memory Areas** (stored in Linux as the `vm_area_struct`) stores all the VMAs for a process. Each VMA is a *single contiguous block of virtual addresses* with the *exact same permissions and backing store.* It is created upon each `mmap` call issued from user-space.
 
-E.g., the stack is a VMA, the heap is a VMA, the shared C .so library is a VMA.
+E.g., for a running process, its stack is a VMA, its heap is a VMA, and the shared C .so library is a VMA.
 
 The VMA enables **demand paging**. When a process makes an allocation request, the OS simply allocates or extends a VMA (effectively, “giving” this range to the process). During this phase, the OS can coalesce adjacent VMAs (barring permission differences) for efficiency.
 
-The VMA is also used during **page fault disambiguation**. The OS searches the VMA search tree (red-black or maple tree) to find the faulting virtual address and determine if the address is in a valid VMA. 
+The VMA is also used during **page fault disambiguation**. The OS searches the VMA search tree (implemented as a [red-black or maple tree]{"See https://docs.kernel.org/core-api/maple_tree.html"}) to find the faulting virtual address and determine if the address is in a valid VMA. 
 
 #### Virtual Address Segments
 
@@ -339,15 +339,13 @@ Free space at the OS/hardware-level is simple: the hardware has fixed-size pages
 
 But free space needs to be managed at the **user-level** (virtual address space) by the software memory allocation library (e.g., malloc). This prevents *virtual fragmentation*, where there isn’t a large enough contiguous segment of *virtual addresses* to store a piece of memory. (After all, we need to make sure the addresses *look* contiguous for pointer arithmetic, etc.). 
 
-`malloc` needs to speak in terms of *virtual pages* to the OS, but provide the illusion of variable-sized memory segments to the user.
+`malloc` needs to speak in terms of virtual pages to the OS, while providing the illusion of variable-sized memory segments to the user.
 
 It uses a **free list**, describing the free space remaining in the heap.
 
 ![Screenshot 2026-03-22 at 8.34.16 AM.png](images/Screenshot_2026-03-22_at_8.34.16_AM.png)
 
 ![The free list for the heap above.](images/Screenshot_2026-03-22_at_8.34.23_AM.png)
-
-The free list for the heap above.
 
 ### Free Space Management
 
@@ -359,8 +357,6 @@ The first will be returned to the caller, the second will remain on the list.
 
 ![After allocating 1 byte.](images/Screenshot_2026-03-22_at_8.37.16_AM.png)
 
-After allocating 1 byte.
-
 **Coalescing**
 
 Say we want to free the 10 byte segment in the middle of the heap.
@@ -369,8 +365,6 @@ When we return the free chunk to memory, `malloc` will look at the nearby chunks
 ![Screenshot 2026-03-22 at 8.40.09 AM.png](images/Screenshot_2026-03-22_at_8.40.09_AM.png)
 
 ![After returning 10 bytes and coalescing.](images/Screenshot_2026-03-22_at_8.40.01_AM.png)
-
-After returning 10 bytes and coalescing.
 
 ### **Embedding the free list**
 
@@ -408,9 +402,9 @@ The stack uses a **bump allocator** — i.e., every stack allocation is just *po
 
 Because the stack only moves in a straight line, the stack moves over the exact same set of contiguous virtual pages, which `malloc` can reserve up front. 
 
-Thus stack usage operates like a **high-water mark**. We reserve a number of pages upon process startup for the stack (e.g. 8MB, or 2048 pages). As the stack allocates more memory, these pages are actually *given* to the process via demand-paging. But when that memory goes out of scope, it is *never given back* to the OS. 
+Thus stack usage operates like a **high-water mark**. We reserve a number of pages upon process startup for the stack (e.g. 8MB, or 2048 pages). As the stack starts allocates memory, the OS actually goes and finds physical page frames for the stack via demand-paging. But when that memory goes out of scope, it is *never given back* to the OS. 
 
-This means that stack memory is always mapped directly to physical pages, so we never run in to page faults (beyond the initial cold misses). 
+So in addition to very fast allocation, this means that stack memory is always mapped directly to physical pages, so we never run in to page faults (beyond the initial cold misses). 
 
 #### **The Heap**
 
@@ -426,4 +420,6 @@ When we put everything in terms of pages, inter-process communication (IPC) is a
 
 Thus, we can oversimplify by saying:
 
-- All IPC boils down to either 1) two processes **sharing the same physical page** (*direct access*), or 2) two processes writing to distinct pages with communication mediated by the OS kernel (*buffered access*).
+- All IPC boils down to either
+  - (1) two processes **sharing the same physical page** (*direct access*), or
+  - (2) two processes writing to distinct pages with communication mediated by the OS kernel (*buffered access*).
