@@ -295,9 +295,9 @@ First, the hardware stores a pointer (”clock hand”) to a particular page tab
 - The hardware iterates over the page table entries, in order (rotating back to the start if it reaches the end).
     - If it sees `present == 1` , it sets `present = 0` , marking the page as un-referenced, and advances the clock hand.
     - If it sees `present == 0` , it chooses this page to evict, advances the clock hand once more, and stops.
-- The clock hand positions is remembered for the next run.
+- The clock hand position is remembered for the next run.
 
-In effect, a page can “save itself” by being referenced between evictions, and hence recently used pages end up staying in memory.
+In effect, a page can “save itself” by being referenced between evictions, hence recently used pages end up staying in memory.
 
 ### Virtual Memory Areas (VMAs)
 
@@ -413,13 +413,3 @@ The heap is what requires free space management described above, needing a free 
 `malloc` needs to look at the global head pointer and walk over the free list to find a free chunk that fits the allocation. Similarly, it needs to do coalescing and give pages back to the OS upon deallocation. 
 
 Heap paging is random by nature, since `malloc` is hopping over virtual memory space to find free chunks, and frequently accessing *cold, unmapped virtual pages*, such that the OS needs to frequently page fault and map new physical pages. 
-
-## Inter-Process Communication
-
-When we put everything in terms of pages, inter-process communication (IPC) is actually not so scary. We know fundamentally, all data exchange needs to boil down somehow to physical pages. 
-
-Thus, we can oversimplify by saying:
-
-- All IPC boils down to either
-  - (1) two processes **sharing the same physical page** (*direct access*), or
-  - (2) two processes writing to distinct pages with communication mediated by the OS kernel (*buffered access*).
