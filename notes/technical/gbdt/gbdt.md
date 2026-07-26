@@ -2,8 +2,9 @@
 title: "Decision Trees and Gradient Boosting"
 date: "2025-02-26"
 layout: "post"
+type: "note"
 category: "machine-learning"
-tags: ["notes", "machine-learning"]
+tags: ["machine-learning"]
 description: "Building up the intuition behind Gradient Boosted Decision Trees (GBDTs) like XGBoost."
 ---
 

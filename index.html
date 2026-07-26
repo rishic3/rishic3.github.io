@@ -9,16 +9,33 @@
     <script src="js/dark-mode.js"></script>
 </head>
 <body>
-    <div class="home-container">
-        <div class="home-header">
-            <h1>Rishi Chandra</h1>
-            <p class="home-subtitle">My website.</p>
-        </div>
-        <nav class="home-nav">
-            <a href="reading-notes.html" class="home-nav-link">Reading</a>
-            <a href="math-notes.html" class="home-nav-link">Writing</a>
+    <div class="page-wrapper">
+        <nav class="nav">
+            <div class="nav-inner">
+                <a href="index.html" class="nav-title">Rishi Chandra</a>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link active">Home</a>
+                    <a href="reading.html" class="nav-link">Reading</a>
+                    <a href="writing.html" class="nav-link">Writing</a>
+                    <button class="dark-mode-toggle" aria-label="Toggle dark mode"></button>
+                </div>
+            </div>
         </nav>
-        <div class="social-links">
+
+        <main class="page-content">
+            <section class="home-content">
+                <div class="about-body">
+                    <p>I'm Rishi. I am a software engineer at NVIDIA, working broadly on big data processing and machine learning.
+                        Most of my work is on <a href="https://github.com/rishic3">Github</a>.
+                        Previously, I was a student at Johns Hopkins University, where I did some <a href="https://scholar.google.com/citations?user=CpiZb3kAAAAJ&hl=en&authuser=1">research</a> in the area of approximation algorithms.
+                    </p>
+                    <p>I currently live in the bay area:</p>
+                </div>
+                <img class="about-image" src="images/home.jpeg" alt="San Francisco skyline at sunset">
+            </section>
+        </main>
+
+        <footer class="social-links">
             <a href="https://github.com/rishic3" target="_blank" class="social-link" aria-label="GitHub">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
             </a>
@@ -28,8 +45,7 @@
             <a href="mailto:rishichandra159@gmail.com" class="social-link" aria-label="Email">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             </a>
-        </div>
-        <button class="dark-mode-toggle" aria-label="Toggle dark mode"></button>
+        </footer>
     </div>
 </body>
 </html>

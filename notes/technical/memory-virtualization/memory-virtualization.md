@@ -2,7 +2,8 @@
 title: "Memory Virtualization"
 date: "2026-03-23"
 layout: "post"
-tags: [notes, "operating-systems"]
+type: "note"
+tags: ["operating-systems"]
 description: "Notes on memory virtualization in the OS."
 ---
 

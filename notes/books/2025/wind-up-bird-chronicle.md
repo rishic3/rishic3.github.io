@@ -1,1 +1,1 @@
-I've always thought literary critics like to throw around the term "tour de force", but I think it's actually fitting for this book. It's like a tour through the dark, sunless basement of Murakami's mind, where you have no choice but to be pulled along. 
+Not for everyone but I loved it.

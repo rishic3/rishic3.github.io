@@ -6,8 +6,8 @@ Personal website with Reading and Writing sections, hosted on GitHub Pages.
 
 ```
 ├── index.html              Home page
-├── math-notes.html         Writing section (technical blog posts)
-├── reading-notes.html      Reading section (book list with expandable notes)
+├── writing.html            Writing section (technical blog posts)
+├── reading.html            Reading section (book list with expandable notes)
 ├── css/
 │   └── style.css           Unified stylesheet (Notion-inspired design system)
 ├── js/

@@ -2,7 +2,7 @@ import argparse
 import os
 from typing import Optional
 
-HTML_FILE_PATH = "reading-notes.html"
+HTML_FILE_PATH = "reading.html"
 
 
 def generate_book_entry(
@@ -107,7 +107,7 @@ def add_book(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Add a book to reading-notes.html")
+    parser = argparse.ArgumentParser(description="Add a book to reading.html")
     parser.add_argument("-t", "--title", type=str, required=True, help="Book title")
     parser.add_argument("-a", "--author", type=str, required=True, help="Book author")
     parser.add_argument("-y", "--year", type=int, required=True, help="Year read")

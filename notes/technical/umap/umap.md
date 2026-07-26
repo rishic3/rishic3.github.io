@@ -2,8 +2,9 @@
 title: "UMAP"
 date: "2024-11-03"
 layout: "post"
+type: "note"
 category: "machine-learning"
-tags: ["notes", "machine-learning"]
+tags: ["machine-learning"]
 description: "Notes on how UMAP works."
 ---
 

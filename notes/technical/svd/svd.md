@@ -2,8 +2,9 @@
 title: "SVD and Low-Rank Approximation"
 date: "2025-01-25"
 layout: "post"
+type: "note"
 category: "linear-algebra"
-tags: ["notes", "linear-algebra", "machine-learning"]
+tags: ["linear-algebra", "machine-learning"]
 description: "Intuition for SVD and PCA."
 ---
 

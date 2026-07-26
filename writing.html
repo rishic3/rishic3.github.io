@@ -21,8 +21,9 @@
             <div class="nav-inner">
                 <a href="index.html" class="nav-title">Rishi Chandra</a>
                 <div class="nav-links">
-                    <a href="reading-notes.html" class="nav-link">Reading</a>
-                    <a href="math-notes.html" class="nav-link active">Writing</a>
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="reading.html" class="nav-link">Reading</a>
+                    <a href="writing.html" class="nav-link active">Writing</a>
                     <button class="dark-mode-toggle" aria-label="Toggle dark mode"></button>
                 </div>
             </div>
@@ -34,10 +35,33 @@
                 <div class="page-header">
                     <h1>Writing</h1>
                     <p class="subtitle">Written miscellany, mainly notes.</p>
+                    <div class="writing-filter" id="label-filter">
+                        <span>Filter by</span>
+                        <button
+                            class="filter-trigger"
+                            id="label-filter-trigger"
+                            type="button"
+                            aria-haspopup="menu"
+                            aria-expanded="false"
+                            aria-controls="label-filter-menu"
+                        >label</button>
+                        <div class="filter-menu" id="label-filter-menu" role="menu" hidden></div>
+                    </div>
                 </div>
-                <ul class="post-list" id="post-list">
-                    <li class="loading">Loading posts...</li>
-                </ul>
+
+                <section class="writing-section">
+                    <h2 class="writing-section-title">Posts</h2>
+                    <ul class="post-list" id="posts-list">
+                        <li class="loading">Loading posts...</li>
+                    </ul>
+                </section>
+
+                <section class="writing-section">
+                    <h2 class="writing-section-title">Notes</h2>
+                    <ul class="post-list" id="notes-list">
+                        <li class="loading">Loading notes...</li>
+                    </ul>
+                </section>
             </div>
 
             <!-- Post view (hidden initially) -->
@@ -62,7 +86,7 @@
     <script src="js/markdown-blog.js"></script>
     <script src="js/back-to-top.js"></script>
     <script>
-        const NOTE_PATHS = [
+        const WRITING_PATHS = [
             'notes/technical/memory-virtualization/memory-virtualization.md',
             'notes/technical/torch-compile/torch-compile.md',
             'notes/technical/gbdt/gbdt.md',
@@ -71,6 +95,7 @@
         ];
 
         let postsCache = null;
+        let activeLabel = '';
 
         function slugFromPath(path) {
             const name = path.split('/').pop().replace('.md', '');
@@ -78,7 +103,7 @@
         }
 
         function pathFromSlug(slug) {
-            return NOTE_PATHS.find(p => slugFromPath(p) === slug) || null;
+            return WRITING_PATHS.find(p => slugFromPath(p) === slug) || null;
         }
 
         function showList() {
@@ -108,7 +133,7 @@
                 const html = Blog.renderMarkdown(post.content);
 
                 wrapper.innerHTML = `
-                    <a class="post-back" href="math-notes.html">← Back to Writing</a>
+                    <a class="post-back" href="writing.html">← Back to Writing</a>
                     <header class="post-header">
                         <h1 class="post-title">${post.meta.title || 'Untitled'}</h1>
                         <div class="post-meta">
@@ -142,16 +167,24 @@
             }
         }
 
-        function renderPostList(posts) {
-            const list = document.getElementById('post-list');
+        function labelsFor(post) {
+            if (Array.isArray(post.meta.tags)) return post.meta.tags;
+            return post.meta.tags ? [post.meta.tags] : [];
+        }
+
+        function isNote(post) {
+            return String(post.meta.type || '').toLowerCase() === 'note';
+        }
+
+        function renderPostList(list, posts, emptyMessage) {
             if (!posts.length) {
-                list.innerHTML = '<li class="loading">No posts found.</li>';
+                list.innerHTML = `<li class="post-list-empty">${emptyMessage}</li>`;
                 return;
             }
             list.innerHTML = posts.map(post => {
                 const slug = slugFromPath(post.path);
                 const date = Blog.formatDate(post.meta.date);
-                const tagsHTML = (post.meta.tags || []).slice(0, 3)
+                const tagsHTML = labelsFor(post).slice(0, 3)
                     .map(t => `<span class="tag" data-color="${Blog.tagColor(t)}">${t}</span>`).join('');
                 return `
                     <li class="post-list-item">
@@ -166,6 +199,111 @@
                     </li>
                 `;
             }).join('');
+        }
+
+        function renderWritingSections() {
+            const visible = activeLabel
+                ? postsCache.filter(post => labelsFor(post).includes(activeLabel))
+                : postsCache;
+
+            renderPostList(
+                document.getElementById('posts-list'),
+                visible.filter(post => !isNote(post)),
+                'No posts yet.'
+            );
+            renderPostList(
+                document.getElementById('notes-list'),
+                visible.filter(isNote),
+                'No notes yet.'
+            );
+        }
+
+        function initLabelFilter(posts) {
+            const filter = document.getElementById('label-filter');
+            const trigger = document.getElementById('label-filter-trigger');
+            const menu = document.getElementById('label-filter-menu');
+            const labels = [...new Set(posts.flatMap(labelsFor))]
+                .sort((a, b) => a.localeCompare(b));
+
+            function closeMenu(focusTrigger = false) {
+                menu.hidden = true;
+                trigger.setAttribute('aria-expanded', 'false');
+                if (focusTrigger) trigger.focus();
+            }
+
+            function openMenu() {
+                menu.hidden = false;
+                trigger.setAttribute('aria-expanded', 'true');
+                const selected = menu.querySelector('[aria-checked="true"]');
+                (selected || menu.querySelector('.filter-option'))?.focus();
+            }
+
+            function selectLabel(label) {
+                activeLabel = label;
+                trigger.setAttribute(
+                    'aria-label',
+                    label ? `Filter by label, current label: ${label}` : 'Filter by label'
+                );
+                menu.querySelectorAll('.filter-option').forEach(option => {
+                    option.setAttribute('aria-checked', String(option.dataset.label === label));
+                });
+                renderWritingSections();
+                closeMenu(true);
+            }
+
+            [{ value: '', text: 'All' }, ...labels.map(label => ({ value: label, text: label }))]
+                .forEach(({ value, text }) => {
+                    const option = document.createElement('button');
+                    option.className = 'filter-option';
+                    option.type = 'button';
+                    option.setAttribute('role', 'menuitemradio');
+                    option.dataset.label = value;
+                    option.textContent = text;
+                    option.setAttribute('aria-checked', String(value === activeLabel));
+                    option.addEventListener('click', () => selectLabel(value));
+                    menu.appendChild(option);
+                });
+
+            trigger.addEventListener('click', () => {
+                if (menu.hidden) openMenu();
+                else closeMenu();
+            });
+
+            trigger.addEventListener('keydown', event => {
+                if (event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    openMenu();
+                }
+            });
+
+            menu.addEventListener('keydown', event => {
+                const options = [...menu.querySelectorAll('.filter-option')];
+                const index = options.indexOf(document.activeElement);
+                let nextIndex = null;
+
+                if (event.key === 'ArrowDown') nextIndex = (index + 1) % options.length;
+                if (event.key === 'ArrowUp') nextIndex = (index - 1 + options.length) % options.length;
+                if (event.key === 'Home') nextIndex = 0;
+                if (event.key === 'End') nextIndex = options.length - 1;
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+                    closeMenu(true);
+                    return;
+                }
+
+                if (nextIndex !== null) {
+                    event.preventDefault();
+                    options[nextIndex].focus();
+                }
+            });
+
+            document.addEventListener('click', event => {
+                if (!filter.contains(event.target)) closeMenu();
+            });
+
+            filter.addEventListener('focusout', event => {
+                if (!filter.contains(event.relatedTarget)) closeMenu();
+            });
         }
 
         function route() {
@@ -195,8 +333,9 @@
         });
 
         document.addEventListener('DOMContentLoaded', async () => {
-            postsCache = await Blog.fetchAllPosts(NOTE_PATHS);
-            renderPostList(postsCache);
+            postsCache = await Blog.fetchAllPosts(WRITING_PATHS);
+            initLabelFilter(postsCache);
+            renderWritingSections();
             route();
         });
     </script>

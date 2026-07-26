@@ -17,7 +17,7 @@ Decide whether the book will have:
 
 ## Step 2: Adding a Book WITHOUT Notes
 
-Open `reading-notes.html` and add a `<li>` in the correct year section:
+Open `reading.html` and add a `<li>` in the correct year section:
 
 ```html
 <li class="book-item">
@@ -82,7 +82,7 @@ Your review here...
 Math (via KaTeX) is also supported if needed.
 
 ### 3.3 Add the HTML entry
-In `reading-notes.html`, add the entry in the correct year section:
+In `reading.html`, add the entry in the correct year section:
 
 ```html
 <li class="book-item">
@@ -129,7 +129,7 @@ Within each year, list books in reverse chronological order (most recently read 
 ## Step 5: Testing
 
 1. Start a local server: `python -m http.server 7000`
-2. Open `http://localhost:7000/reading-notes.html`
+2. Open `http://localhost:7000/reading.html`
 
 **For books without notes:**
 - Entry appears as a flat row (title left, author right)

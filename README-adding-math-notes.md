@@ -37,6 +37,7 @@ Every post starts with frontmatter between `---` delimiters:
 ---
 title: "Your Post Title"
 date: "YYYY-MM-DD"
+type: "note"
 tags: ["tag1", "tag2", "tag3"]
 description: "A brief 1-2 sentence summary shown in the post list."
 ---
@@ -47,6 +48,7 @@ description: "A brief 1-2 sentence summary shown in the post list."
 |-------|----------|-------------|
 | `title` | Yes | Display title |
 | `date` | Yes | `YYYY-MM-DD` format, used for sort order |
+| `type` | Yes | `note` or `post`, used to choose the Writing section |
 | `tags` | No | Array of tags — each gets a unique Notion-style color automatically |
 | `description` | No | Summary shown beneath the title in the post list |
 
@@ -109,11 +111,11 @@ The bracketed text renders with a dotted underline. Hovering reveals the tooltip
 
 ## Step 4: Register the Post
 
-Posts are **not** auto-discovered. You must add the path to the `NOTE_PATHS` array in `math-notes.html`:
+Entries are **not** auto-discovered. You must add the path to the `WRITING_PATHS` array in `writing.html`:
 
 ```html
 <script>
-    const NOTE_PATHS = [
+    const WRITING_PATHS = [
         'notes/technical/memory-virtualization/memory-virtualization.md',
         'notes/technical/torch-compile/torch-compile.md',
         'notes/technical/gbdt/gbdt.md',
@@ -128,7 +130,7 @@ Without this step the post will not appear.
 ## Step 5: Testing
 
 1. Start a local server: `python -m http.server 7000`
-2. Open `http://localhost:7000/math-notes.html`
+2. Open `http://localhost:7000/writing.html`
 3. Verify:
    - Post appears in the list with correct title, description, date, and colored tags
    - Clicking the post navigates to `#/post/your-topic-name`
@@ -142,8 +144,9 @@ Without this step the post will not appear.
 
 - Use lowercase, hyphenated names: `linear-algebra`, `machine-learning`
 - Reuse existing tags for consistency
+- Use the `type` field, rather than a tag, to classify an entry as a note or post
 - Each tag gets a unique color automatically (collision-avoidant up to 7 tags)
-- Common tags: `linear-algebra`, `machine-learning`, `deep-learning`, `optimization`, `python`, `pytorch`, `algorithms`, `statistics`, `gpu`, `notes`
+- Common tags: `linear-algebra`, `machine-learning`, `deep-learning`, `optimization`, `python`, `pytorch`, `algorithms`, `statistics`, `gpu`
 
 ## Example: Complete Post
 
@@ -151,6 +154,7 @@ Without this step the post will not appear.
 ---
 title: "Understanding Gradient Descent"
 date: "2024-03-15"
+type: "post"
 tags: ["optimization", "machine-learning", "calculus"]
 description: "An intuitive explanation of gradient descent with derivations and Python code."
 ---
@@ -180,7 +184,7 @@ def gradient_descent(f, grad_f, x0, alpha=0.01, max_iter=1000):
 
 | Problem | Fix |
 |---------|-----|
-| Post not appearing | Ensure path is in `NOTE_PATHS` in `math-notes.html` |
+| Post not appearing | Ensure path is in `WRITING_PATHS` in `writing.html` |
 | Math not rendering | Check LaTeX syntax; verify `$` delimiters aren't ambiguous |
 | Images not loading | Check relative path; images should be in `images/` subfolder |
 | Tags all gray | Verify tags field is an array in frontmatter: `["a", "b"]` |

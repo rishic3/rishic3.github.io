@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    const stored = localStorage.getItem('theme') || 'dark';
+    const stored = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', stored);
 
     document.addEventListener('DOMContentLoaded', () => {
