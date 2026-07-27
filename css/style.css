@@ -190,38 +190,45 @@ img {
 
 /* --- Dark Mode Toggle --- */
 .dark-mode-toggle {
-    position: relative;
-    width: 36px;
-    height: 20px;
-    border-radius: 10px;
-    border: 1.5px solid var(--border-strong);
-    background: var(--bg-secondary);
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
     cursor: pointer;
-    transition: all var(--transition);
+    transition: background-color var(--transition);
     appearance: none;
-    outline: none;
     flex-shrink: 0;
 }
 
-.dark-mode-toggle::after {
+.dark-mode-toggle::before {
     content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 12px;
-    height: 12px;
+    width: 15px;
+    height: 15px;
     border-radius: 50%;
-    background: var(--text-secondary);
-    transition: all var(--transition);
+    border: 1.5px solid var(--text-secondary);
+    background: linear-gradient(90deg, var(--text-secondary) 50%, transparent 50%);
+    transition: transform 0.35s ease, border-color var(--transition);
 }
 
-.dark-mode-toggle.dark::after {
-    transform: translateX(16px);
-    background: var(--text-primary);
+.dark-mode-toggle.dark::before {
+    transform: rotate(180deg);
 }
 
 .dark-mode-toggle:hover {
-    border-color: var(--text-secondary);
+    background: var(--bg-hover);
+}
+
+.dark-mode-toggle:hover::before {
+    border-color: var(--text-primary);
+}
+
+.dark-mode-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 /* --- Social Links --- */
