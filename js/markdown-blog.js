@@ -272,7 +272,7 @@
         });
 
         return `<div class="toc-wrapper">
-            <div class="toc-trigger">${triggerLines.join('')}</div>
+            <button class="toc-trigger" type="button" aria-label="Open table of contents" aria-expanded="false">${triggerLines.join('')}</button>
             <nav class="toc-panel">
                 <div class="toc-title">Contents</div>
                 <ul>${items.join('')}</ul>
@@ -285,20 +285,57 @@
         if (!tocWrapper) return () => {};
 
         const panel = tocWrapper.querySelector('.toc-panel');
+        const trigger = tocWrapper.querySelector('.toc-trigger');
         const contentEl = wrapper.querySelector('.post-content');
+        const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
         let hideTimer = null;
 
         function show() {
             clearTimeout(hideTimer);
             tocWrapper.classList.add('active');
+            trigger.setAttribute('aria-expanded', 'true');
+            trigger.setAttribute('aria-label', 'Close table of contents');
+        }
+
+        function hide() {
+            clearTimeout(hideTimer);
+            tocWrapper.classList.remove('active');
+            trigger.setAttribute('aria-expanded', 'false');
+            trigger.setAttribute('aria-label', 'Open table of contents');
         }
 
         function scheduleHide() {
-            hideTimer = setTimeout(() => tocWrapper.classList.remove('active'), 200);
+            hideTimer = setTimeout(hide, 200);
         }
 
-        tocWrapper.addEventListener('mouseenter', show);
-        tocWrapper.addEventListener('mouseleave', scheduleHide);
+        function toggle() {
+            if (tocWrapper.classList.contains('active')) hide();
+            else show();
+        }
+
+        function handleTriggerClick(event) {
+            if (supportsHover && event.detail > 0) show();
+            else toggle();
+        }
+
+        function handleDocumentClick(event) {
+            if (!tocWrapper.contains(event.target)) hide();
+        }
+
+        function handleKeydown(event) {
+            if (event.key === 'Escape' && tocWrapper.classList.contains('active')) {
+                hide();
+                trigger.focus();
+            }
+        }
+
+        if (supportsHover) {
+            tocWrapper.addEventListener('mouseenter', show);
+            tocWrapper.addEventListener('mouseleave', scheduleHide);
+        }
+        trigger.addEventListener('click', handleTriggerClick);
+        document.addEventListener('click', handleDocumentClick);
+        document.addEventListener('keydown', handleKeydown);
 
         panel.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', (e) => {
@@ -307,7 +344,6 @@
                 const target = document.getElementById(id);
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    setTimeout(() => tocWrapper.classList.remove('active'), 300);
                 }
             });
         });
@@ -336,8 +372,13 @@
 
         return () => {
             observer.disconnect();
-            tocWrapper.removeEventListener('mouseenter', show);
-            tocWrapper.removeEventListener('mouseleave', scheduleHide);
+            if (supportsHover) {
+                tocWrapper.removeEventListener('mouseenter', show);
+                tocWrapper.removeEventListener('mouseleave', scheduleHide);
+            }
+            trigger.removeEventListener('click', handleTriggerClick);
+            document.removeEventListener('click', handleDocumentClick);
+            document.removeEventListener('keydown', handleKeydown);
         };
     }
 

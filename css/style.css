@@ -918,11 +918,17 @@ img {
 }
 
 .book-chevron {
-    color: var(--text-tertiary);
-    font-size: 0.75rem;
-    transition: transform var(--transition);
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1;
+    transition: color var(--transition), transform var(--transition);
     margin-left: 0.5rem;
     flex-shrink: 0;
+}
+
+.book-toggle.has-notes:hover .book-chevron {
+    color: var(--text-primary);
 }
 
 .book-toggle.active .book-chevron {
@@ -1013,12 +1019,21 @@ img {
     flex-direction: column;
     align-items: flex-end;
     gap: 10px;
+    color: inherit;
+    font: inherit;
+    background: transparent;
+    border: none;
     cursor: pointer;
     border-radius: var(--radius-sm);
     transition: background-color var(--transition);
     padding: 6px 7px;
     max-height: calc(100vh - 8rem);
     overflow: hidden;
+}
+
+.toc-trigger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .toc-line {
@@ -1125,7 +1140,54 @@ img {
 .toc-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
 @media (max-width: 1100px) {
-    .toc-wrapper { display: none; }
+    .toc-wrapper {
+        right: 2rem;
+        top: auto;
+        bottom: 4.75rem;
+        transform: none;
+    }
+
+    .toc-trigger {
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        max-height: none;
+        padding: 0;
+        overflow: visible;
+        color: var(--text-secondary);
+        background: var(--bg);
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+    }
+
+    .toc-trigger::before {
+        content: '';
+        width: 16px;
+        height: 12px;
+        background:
+            linear-gradient(currentColor, currentColor) 0 0 / 16px 1.5px no-repeat,
+            linear-gradient(currentColor, currentColor) 0 5px / 12px 1.5px no-repeat,
+            linear-gradient(currentColor, currentColor) 0 10px / 8px 1.5px no-repeat;
+    }
+
+    .toc-line {
+        display: none;
+    }
+
+    .toc-panel {
+        right: 0;
+        bottom: calc(100% + 0.5rem);
+        top: auto;
+        width: min(280px, calc(100vw - 2 * var(--page-padding)));
+        max-height: min(60vh, 420px);
+        transform: translateY(8px);
+    }
+
+    .toc-wrapper.active .toc-panel {
+        transform: translateY(0);
+    }
 }
 
 /* --- Responsive --- */
@@ -1164,6 +1226,10 @@ img {
 
     .back-to-top {
         bottom: 1.25rem;
+        right: 1.25rem;
+    }
+
+    .toc-wrapper {
         right: 1.25rem;
     }
 }
