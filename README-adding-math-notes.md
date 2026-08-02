@@ -105,9 +105,20 @@ HTML `<img>` tags also work. Relative paths are resolved automatically.
 ### 3.5 Annotations (hover tooltips)
 Attach hidden commentary to any text:
 ```markdown
-The algorithm uses [amortized analysis]{"We average the cost over a sequence of operations rather than looking at worst-case per-operation cost."} to achieve O(1).
+The algorithm uses [amortized analysis]{"We average the cost over a sequence of operations. See [this overview](https://en.wikipedia.org/wiki/Amortized_analysis) for more context."} to achieve O(1).
 ```
-The bracketed text renders with a dotted underline. Hovering reveals the tooltip. Moving the mouse away (or pressing Escape) dismisses it.
+The bracketed text renders with a dotted underline. Annotation text supports Markdown-style hyperlinks using `[link text](URL)`, and newlines or blank lines inside the quoted comment are preserved. Hovering reveals the tooltip. Moving the mouse away (or pressing Escape) dismisses it.
+
+### 3.6 Footnotes
+Add a reference with `[^1]`, then define it anywhere in the document:
+
+```markdown
+Pinned memory avoids an extra copy during data transfer.[^1]
+
+[^1]: See the [CUDA documentation](https://docs.nvidia.com/cuda/) for more detail.
+```
+
+Footnotes are collected at the bottom of the post. Each footnote includes a `↩` link back to its reference in the text.
 
 ## Step 4: Register the Post
 

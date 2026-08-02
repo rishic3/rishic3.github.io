@@ -44,10 +44,68 @@
     /* ------------------------------------------------
        Markdown → HTML  (with math + annotation protection)
        ------------------------------------------------ */
+    function extractFootnoteDefinitions(md) {
+        const definitions = new Map();
+        const output = [];
+        const lines = md.split('\n');
+        let inFence = false;
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+
+            if (/^\s*(```|~~~)/.test(line)) {
+                inFence = !inFence;
+                output.push(line);
+                continue;
+            }
+
+            const match = !inFence && line.match(/^\[\^([^\]]+)\]:\s*(.*)$/);
+            if (!match) {
+                output.push(line);
+                continue;
+            }
+
+            const content = [match[2]];
+            while (i + 1 < lines.length) {
+                const continuation = lines[i + 1].match(/^(?: {2,}|\t)(.*)$/);
+                if (!continuation) break;
+                content.push(continuation[1]);
+                i++;
+            }
+            definitions.set(match[1], content.join('\n').trim());
+        }
+
+        return { markdown: output.join('\n'), definitions };
+    }
+
     function renderMarkdown(md) {
+        const { markdown, definitions: footnoteDefinitions } = extractFootnoteDefinitions(md);
+        md = markdown;
+
+        const footnotesByLabel = new Map();
+        const footnoteReferences = [];
+        md = md.replace(/\[\^([^\]]+)\]/g, (match, label) => {
+            if (!footnoteDefinitions.has(label)) return match;
+
+            if (!footnotesByLabel.has(label)) {
+                footnotesByLabel.set(label, {
+                    number: footnotesByLabel.size + 1,
+                    definition: footnoteDefinitions.get(label),
+                    referenceIds: []
+                });
+            }
+
+            const footnote = footnotesByLabel.get(label);
+            const occurrence = footnote.referenceIds.length + 1;
+            const referenceId = `fnref-${footnote.number}${occurrence > 1 ? `-${occurrence}` : ''}`;
+            footnote.referenceIds.push(referenceId);
+            footnoteReferences.push({ number: footnote.number, referenceId });
+            return `%%FOOTREF${footnoteReferences.length - 1}%%`;
+        });
+
         const annotations = [];
         let ai = 0;
-        md = md.replace(/\[([^\]]+)\]\{"([^"]*?)"\}/g, (_, text, comment) => {
+        md = md.replace(/\[([^\]]+)\]\{"([\s\S]*?)"\}/g, (_, text, comment) => {
             const ph = `%%ANNOT${ai}%%`;
             annotations[ai++] = { text, comment };
             return ph;
@@ -110,6 +168,27 @@
             );
         }
 
+        for (let i = 0; i < footnoteReferences.length; i++) {
+            const { number, referenceId } = footnoteReferences[i];
+            html = html.replace(
+                `%%FOOTREF${i}%%`,
+                `<sup class="footnote-ref" id="${referenceId}"><a href="#fn-${number}" aria-label="Footnote ${number}">${number}</a></sup>`
+            );
+        }
+
+        if (footnotesByLabel.size) {
+            const items = [...footnotesByLabel.values()].map(footnote => {
+                const content = marked.parseInline(footnote.definition);
+                const backReferences = footnote.referenceIds.map((referenceId, index) => {
+                    const suffix = footnote.referenceIds.length > 1 ? ` ${index + 1}` : '';
+                    return `<a class="footnote-backref" href="#${referenceId}" aria-label="Back to reference ${footnote.number}${suffix}">↩</a>`;
+                }).join(' ');
+                return `<li id="fn-${footnote.number}">${content} ${backReferences}</li>`;
+            }).join('');
+
+            html += `<section class="footnotes" aria-label="Footnotes"><hr><ol>${items}</ol></section>`;
+        }
+
         return html;
     }
 
@@ -153,6 +232,36 @@
     /* ------------------------------------------------
        Annotation tooltip system
        ------------------------------------------------ */
+    function renderAnnotationContent(container, comment) {
+        const linkPattern = /\[([^\]]+)\]\(([^)\s]+)\)/g;
+        let lastIndex = 0;
+        let match;
+
+        while ((match = linkPattern.exec(comment)) !== null) {
+            container.appendChild(document.createTextNode(comment.slice(lastIndex, match.index)));
+
+            try {
+                const url = new URL(match[2], window.location.href);
+                if (!['http:', 'https:', 'mailto:'].includes(url.protocol)) throw new Error('Unsupported URL');
+
+                const link = document.createElement('a');
+                link.href = match[2];
+                link.textContent = match[1];
+                if (url.origin !== window.location.origin && ['http:', 'https:'].includes(url.protocol)) {
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                }
+                container.appendChild(link);
+            } catch {
+                container.appendChild(document.createTextNode(match[0]));
+            }
+
+            lastIndex = linkPattern.lastIndex;
+        }
+
+        container.appendChild(document.createTextNode(comment.slice(lastIndex)));
+    }
+
     function initAnnotations() {
         let hideTimer = null;
 
@@ -164,7 +273,7 @@
 
             const tip = document.createElement('div');
             tip.className = 'annotation-tooltip';
-            tip.textContent = ann.dataset.comment;
+            renderAnnotationContent(tip, ann.dataset.comment);
             document.body.appendChild(tip);
             ann.classList.add('active');
 
@@ -383,6 +492,39 @@
     }
 
     /* ------------------------------------------------
+       Footnote navigation (preserves hash-based routes)
+       ------------------------------------------------ */
+    function initFootnotes(container) {
+        let highlightTimer = null;
+
+        function handleClick(event) {
+            const link = event.target.closest('.footnote-ref a, .footnote-backref');
+            if (!link || !container.contains(link)) return;
+
+            const href = link.getAttribute('href');
+            if (!href || !href.startsWith('#')) return;
+
+            const target = container.querySelector(href);
+            if (!target) return;
+
+            event.preventDefault();
+            clearTimeout(highlightTimer);
+            container.querySelectorAll('.footnote-highlight')
+                .forEach(element => element.classList.remove('footnote-highlight'));
+            target.classList.add('footnote-highlight');
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            highlightTimer = setTimeout(() => target.classList.remove('footnote-highlight'), 1200);
+        }
+
+        container.addEventListener('click', handleClick);
+
+        return () => {
+            clearTimeout(highlightTimer);
+            container.removeEventListener('click', handleClick);
+        };
+    }
+
+    /* ------------------------------------------------
        Public API
        ------------------------------------------------ */
     window.Blog = {
@@ -394,6 +536,7 @@
         tagColor,
         generateTOC,
         initTOC,
+        initFootnotes,
 
         async fetchPost(path) {
             const resp = await fetch(path);

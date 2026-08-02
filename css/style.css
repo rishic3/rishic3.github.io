@@ -620,7 +620,7 @@ img {
 }
 
 .post-content p {
-    margin: 0.5rem 0;
+    margin: 0.75rem 0;
 }
 
 .post-content ul,
@@ -651,6 +651,65 @@ img {
 
 .post-content a:hover {
     text-decoration-color: var(--text-primary);
+}
+
+/* Footnotes */
+.footnote-ref {
+    margin-left: 0.125em;
+    font-size: 0.75em;
+    font-weight: 600;
+    line-height: 0;
+    vertical-align: super;
+    scroll-margin-top: 1rem;
+    border-radius: 2px;
+}
+
+.post-content .footnote-ref a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.post-content .footnote-ref a:hover {
+    color: var(--accent);
+}
+
+.footnotes {
+    margin-top: 3rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+
+.post-content .footnotes hr {
+    margin-bottom: 1rem;
+}
+
+.post-content .footnotes ol {
+    margin: 0;
+}
+
+.post-content .footnotes li {
+    margin-bottom: 0.5rem;
+    scroll-margin-top: 1rem;
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition);
+}
+
+.footnote-ref:target,
+.footnote-ref.footnote-highlight,
+.post-content .footnotes li:target,
+.post-content .footnotes li.footnote-highlight {
+    background: var(--accent-light);
+}
+
+.post-content .footnote-backref {
+    margin-left: 0.375rem;
+    color: var(--text-tertiary);
+    text-decoration: none;
+}
+
+.post-content .footnote-backref:hover {
+    color: var(--accent);
 }
 
 /* Inline code */
@@ -780,7 +839,7 @@ img {
 
 /* Strong and em */
 .post-content strong {
-    font-weight: 600;
+    font-weight: 700;
 }
 
 /* Math */
@@ -828,8 +887,23 @@ img {
     box-shadow: var(--shadow-lg);
     font-size: 0.875rem;
     line-height: 1.5;
+    white-space: pre-line;
     animation: tooltip-fade-in 0.15s ease;
     pointer-events: auto;
+}
+
+.annotation-tooltip a {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--text-tertiary);
+    text-underline-offset: 2px;
+    transition: color var(--transition), text-decoration-color var(--transition);
+}
+
+.annotation-tooltip a:hover,
+.annotation-tooltip a:focus-visible {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
 }
 
 @keyframes tooltip-fade-in {
@@ -847,11 +921,10 @@ img {
     margin-top: 0.5rem;
 }
 
-.legend-swatch {
-    width: 14px;
-    height: 10px;
-    border: 2px solid var(--standout-border);
-    border-radius: 2px;
+.legend-star {
+    color: var(--standout-border);
+    font-size: 0.625rem;
+    line-height: 1;
 }
 
 .year-heading {
@@ -868,19 +941,16 @@ img {
 }
 
 .book-item {
+    position: relative;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     margin-bottom: 0.5rem;
-    overflow: hidden;
+    overflow: visible;
     transition: border-color var(--transition);
 }
 
-.book-item.standout {
-    border-color: var(--standout-border);
-    border-width: 1.5px;
-}
-
 .book-toggle {
+    position: relative;
     width: 100%;
     display: flex;
     align-items: center;
@@ -888,12 +958,28 @@ img {
     padding: 0.75rem 1rem;
     background: var(--bg);
     border: none;
+    border-radius: calc(var(--radius-md) - 1px);
     cursor: default;
     font-family: inherit;
     font-size: 0.9375rem;
     color: var(--text-primary);
     text-align: left;
     transition: background-color var(--transition);
+}
+
+.book-item.standout .book-toggle::after {
+    content: '★';
+    position: absolute;
+    right: calc(100% + 0.5rem);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--standout-border);
+    font-size: 0.625rem;
+    line-height: 1;
+}
+
+.book-toggle.active {
+    border-radius: calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px) 0 0;
 }
 
 .book-toggle.has-notes {
@@ -938,6 +1024,8 @@ img {
 .book-content {
     display: none;
     border-top: 1px solid var(--border);
+    border-radius: 0 0 calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px);
+    overflow: hidden;
     background: var(--bg);
 }
 
