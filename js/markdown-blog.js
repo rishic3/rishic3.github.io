@@ -1,6 +1,35 @@
 (function () {
     'use strict';
 
+    const SCROLL_DURATION_MS = 280;
+    let scrollAnimationFrame = null;
+
+    function smoothScrollTo(target) {
+        const destination = typeof target === 'number'
+            ? target
+            : target.getBoundingClientRect().top + window.scrollY;
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            window.scrollTo(0, destination);
+            return;
+        }
+
+        if (scrollAnimationFrame) cancelAnimationFrame(scrollAnimationFrame);
+        const start = window.scrollY;
+        const distance = destination - start;
+        const startTime = performance.now();
+
+        function step(now) {
+            const progress = Math.min((now - startTime) / SCROLL_DURATION_MS, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            window.scrollTo(0, start + distance * eased);
+            if (progress < 1) scrollAnimationFrame = requestAnimationFrame(step);
+            else scrollAnimationFrame = null;
+        }
+
+        scrollAnimationFrame = requestAnimationFrame(step);
+    }
+
     /* ------------------------------------------------
        YAML Front-matter Parser
        ------------------------------------------------ */
@@ -78,6 +107,130 @@
         return { markdown: output.join('\n'), definitions };
     }
 
+    function extractCustomBlocks(md) {
+        const blocks = [];
+        const output = [];
+        const lines = md.split('\n');
+        let inFence = false;
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+
+            if (/^\s*(```|~~~)/.test(line)) {
+                inFence = !inFence;
+                output.push(line);
+                continue;
+            }
+
+            const opening = !inFence && line.match(/^\s*:::\s+(indent)\s*$/);
+            if (!opening) {
+                output.push(line);
+                continue;
+            }
+
+            const content = [];
+            let blockFence = false;
+            let closed = false;
+
+            while (i + 1 < lines.length) {
+                const nextLine = lines[++i];
+                if (/^\s*(```|~~~)/.test(nextLine)) blockFence = !blockFence;
+                if (!blockFence && /^\s*:::\s*$/.test(nextLine)) {
+                    closed = true;
+                    break;
+                }
+                content.push(nextLine);
+            }
+
+            if (!closed) {
+                output.push(line, ...content);
+                continue;
+            }
+
+            const index = blocks.length;
+            blocks.push({ type: opening[1], content: content.join('\n') });
+            output.push(`%%CUSTOMBLOCK${index}%%`);
+        }
+
+        return { markdown: output.join('\n'), blocks };
+    }
+
+    function extractCaptions(md) {
+        const captions = [];
+        const output = [];
+        const lines = md.split('\n');
+        let inFence = false;
+
+        for (const line of lines) {
+            if (/^\s*(```|~~~)/.test(line)) {
+                inFence = !inFence;
+                output.push(line);
+                continue;
+            }
+
+            const match = !inFence && line.match(/^\s*\{caption:\s*(.*)\}\s*$/);
+            if (!match) {
+                output.push(line);
+                continue;
+            }
+
+            const index = captions.length;
+            captions.push(match[1]);
+            output.push('', `%%CAPTION${index}%%`, '');
+        }
+
+        return { markdown: output.join('\n'), captions };
+    }
+
+    function attachCaptions(html, captions) {
+        if (!captions.length) return html;
+
+        const template = document.createElement('template');
+        template.innerHTML = html;
+
+        captions.forEach((caption, index) => {
+            const placeholder = `%%CAPTION${index}%%`;
+            const captionParagraph = [...template.content.querySelectorAll('p')]
+                .find(paragraph => paragraph.textContent.trim() === placeholder);
+            const previous = captionParagraph?.previousElementSibling;
+
+            let type = null;
+            let content = null;
+            if (previous?.tagName === 'PRE') {
+                type = 'code';
+                content = previous;
+            } else if (previous?.tagName === 'IMG') {
+                type = 'image';
+                content = previous;
+            } else if (
+                previous?.tagName === 'P' &&
+                previous.children.length === 1 &&
+                previous.firstElementChild?.tagName === 'IMG' &&
+                previous.textContent.trim() === ''
+            ) {
+                type = 'image';
+                content = previous.firstElementChild;
+            }
+
+            if (!captionParagraph || !content) {
+                if (captionParagraph) captionParagraph.textContent = `{caption: ${caption}}`;
+                return;
+            }
+
+            const figure = document.createElement('figure');
+            figure.className = `captioned-block captioned-${type}`;
+            previous.replaceWith(figure);
+            figure.appendChild(content);
+
+            const figcaption = document.createElement('figcaption');
+            figcaption.innerHTML = marked.parseInline(caption);
+            figure.appendChild(figcaption);
+            captionParagraph.remove();
+        });
+
+        return template.innerHTML;
+    }
+
     function renderMarkdown(md) {
         const { markdown, definitions: footnoteDefinitions } = extractFootnoteDefinitions(md);
         md = markdown;
@@ -129,8 +282,24 @@
             return ph;
         });
 
+        const { markdown: markdownWithCaptions, captions } = extractCaptions(md);
+        md = markdownWithCaptions;
+
+        const { markdown: markdownWithBlocks, blocks: customBlocks } = extractCustomBlocks(md);
+        md = markdownWithBlocks;
+
         marked.setOptions({ breaks: false, gfm: true });
         let html = marked.parse(md);
+
+        for (let i = 0; i < customBlocks.length; i++) {
+            const block = customBlocks[i];
+            const rendered = marked.parse(block.content);
+            const blockHTML = `<div class="${block.type}-block">${rendered}</div>`;
+            html = html.replace(`<p>%%CUSTOMBLOCK${i}%%</p>`, blockHTML);
+            html = html.replace(`%%CUSTOMBLOCK${i}%%`, blockHTML);
+        }
+
+        html = attachCaptions(html, captions);
 
         // Restore math → render with KaTeX
         for (let i = 0; i < mathBlocks.length; i++) {
@@ -358,7 +527,6 @@
 
     function generateTOC(contentEl) {
         const headings = contentEl.querySelectorAll('h1, h2, h3, h4');
-        if (headings.length < 3) return null;
 
         const usedIds = new Set();
         const items = [];
@@ -379,6 +547,8 @@
             items.push(`<li class="toc-${level}"><a href="#${id}">${h.textContent}</a></li>`);
             triggerLines.push(`<span class="toc-line toc-line-${level}" data-idx="${i}"></span>`);
         });
+
+        if (headings.length < 3) return null;
 
         return `<div class="toc-wrapper">
             <button class="toc-trigger" type="button" aria-label="Open table of contents" aria-expanded="false">${triggerLines.join('')}</button>
@@ -452,7 +622,7 @@
                 const id = link.getAttribute('href').slice(1);
                 const target = document.getElementById(id);
                 if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    smoothScrollTo(target);
                 }
             });
         });
@@ -492,28 +662,130 @@
     }
 
     /* ------------------------------------------------
-       Footnote navigation (preserves hash-based routes)
+       Image lightbox
        ------------------------------------------------ */
-    function initFootnotes(container) {
+    function initImageLightbox() {
+        const imageSelector = '.post-content img';
+        let lightbox = null;
+        let previouslyFocused = null;
+
+        function prepareImages(root) {
+            const images = [];
+            if (root.matches && root.matches(imageSelector)) images.push(root);
+            if (root.querySelectorAll) images.push(...root.querySelectorAll(imageSelector));
+
+            images.forEach(image => {
+                if (!image.hasAttribute('tabindex')) image.tabIndex = 0;
+                if (!image.hasAttribute('role')) image.setAttribute('role', 'button');
+                if (!image.hasAttribute('aria-label')) {
+                    const description = image.alt ? `: ${image.alt}` : '';
+                    image.setAttribute('aria-label', `Expand image${description}`);
+                }
+            });
+        }
+
+        function closeLightbox() {
+            if (!lightbox) return;
+            lightbox.remove();
+            lightbox = null;
+            document.body.classList.remove('image-lightbox-open');
+            if (previouslyFocused) previouslyFocused.focus();
+            previouslyFocused = null;
+        }
+
+        function openLightbox(source) {
+            closeLightbox();
+            previouslyFocused = source;
+
+            lightbox = document.createElement('div');
+            lightbox.className = 'image-lightbox';
+            lightbox.setAttribute('role', 'dialog');
+            lightbox.setAttribute('aria-modal', 'true');
+            lightbox.setAttribute('aria-label', source.alt || 'Expanded image');
+
+            const image = document.createElement('img');
+            image.src = source.currentSrc || source.src;
+            image.alt = source.alt;
+
+            const closeButton = document.createElement('button');
+            closeButton.className = 'image-lightbox-close';
+            closeButton.type = 'button';
+            closeButton.setAttribute('aria-label', 'Close expanded image');
+            closeButton.textContent = '×';
+
+            lightbox.append(image, closeButton);
+            document.body.appendChild(lightbox);
+            document.body.classList.add('image-lightbox-open');
+            requestAnimationFrame(() => lightbox && lightbox.classList.add('active'));
+            closeButton.focus();
+
+            lightbox.addEventListener('click', event => {
+                if (event.target === lightbox || event.target === image ||
+                    event.target.closest('.image-lightbox-close')) {
+                    closeLightbox();
+                }
+            });
+        }
+
+        function handleClick(event) {
+            const image = event.target.closest(imageSelector);
+            if (!image) return;
+            event.preventDefault();
+            openLightbox(image);
+        }
+
+        function handleKeydown(event) {
+            if (event.key === 'Escape' && lightbox) {
+                closeLightbox();
+                return;
+            }
+
+            const image = event.target.closest && event.target.closest(imageSelector);
+            if (image && (event.key === 'Enter' || event.key === ' ')) {
+                event.preventDefault();
+                openLightbox(image);
+            }
+        }
+
+        prepareImages(document);
+        const observer = new MutationObserver(records => {
+            records.forEach(record => {
+                record.addedNodes.forEach(node => {
+                    if (node.nodeType === Node.ELEMENT_NODE) prepareImages(node);
+                });
+            });
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        document.addEventListener('click', handleClick);
+        document.addEventListener('keydown', handleKeydown);
+    }
+
+    /* ------------------------------------------------
+       In-post navigation (preserves hash-based routes)
+       ------------------------------------------------ */
+    function initInternalLinks(container) {
         let highlightTimer = null;
 
         function handleClick(event) {
-            const link = event.target.closest('.footnote-ref a, .footnote-backref');
-            if (!link || !container.contains(link)) return;
+            const link = event.target.closest('a[href^="#"]');
+            if (!link || !container.contains(link) || link.closest('.toc-wrapper')) return;
 
             const href = link.getAttribute('href');
-            if (!href || !href.startsWith('#')) return;
-
-            const target = container.querySelector(href);
-            if (!target) return;
+            const targetId = decodeURIComponent(href.slice(1));
+            const target = document.getElementById(targetId);
+            if (!target || !container.contains(target)) return;
 
             event.preventDefault();
             clearTimeout(highlightTimer);
             container.querySelectorAll('.footnote-highlight')
                 .forEach(element => element.classList.remove('footnote-highlight'));
-            target.classList.add('footnote-highlight');
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            highlightTimer = setTimeout(() => target.classList.remove('footnote-highlight'), 1200);
+            const isFootnote = target.matches('.footnote-ref, .footnotes li');
+            if (isFootnote) target.classList.add('footnote-highlight');
+            smoothScrollTo(target);
+            if (isFootnote) {
+                highlightTimer = setTimeout(() => target.classList.remove('footnote-highlight'), 1200);
+            }
         }
 
         container.addEventListener('click', handleClick);
@@ -536,7 +808,9 @@
         tagColor,
         generateTOC,
         initTOC,
-        initFootnotes,
+        initImageLightbox,
+        initInternalLinks,
+        smoothScrollTo,
 
         async fetchPost(path) {
             const resp = await fetch(path);
@@ -569,4 +843,5 @@
     };
 
     initAnnotations();
+    initImageLightbox();
 })();

@@ -8,7 +8,10 @@
         btn.className = 'back-to-top';
         btn.innerHTML = '↑';
         btn.setAttribute('aria-label', 'Back to top');
-        btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        btn.addEventListener('click', () => {
+            if (window.Blog?.smoothScrollTo) window.Blog.smoothScrollTo(0);
+            else window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
         document.body.appendChild(btn);
 
         let ticking = false;

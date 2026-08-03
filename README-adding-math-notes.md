@@ -102,14 +102,29 @@ Place images in the `images/` subfolder and reference with relative paths:
 ```
 HTML `<img>` tags also work. Relative paths are resolved automatically.
 
-### 3.5 Annotations (hover tooltips)
+### 3.5 Captions
+Place a caption marker immediately after an image or fenced code block:
+
+````markdown
+![Transfer timeline](images/transfer.png)
+{caption: Timeline of the asynchronous transfer.}
+
+```cpp
+cudaMemcpyAsync(...);
+```
+{caption: Starting an asynchronous CUDA transfer.}
+````
+
+Captions support inline Markdown such as links and emphasis.
+
+### 3.6 Annotations (hover tooltips)
 Attach hidden commentary to any text:
 ```markdown
 The algorithm uses [amortized analysis]{"We average the cost over a sequence of operations. See [this overview](https://en.wikipedia.org/wiki/Amortized_analysis) for more context."} to achieve O(1).
 ```
 The bracketed text renders with a dotted underline. Annotation text supports Markdown-style hyperlinks using `[link text](URL)`, and newlines or blank lines inside the quoted comment are preserved. Hovering reveals the tooltip. Moving the mouse away (or pressing Escape) dismisses it.
 
-### 3.6 Footnotes
+### 3.7 Footnotes
 Add a reference with `[^1]`, then define it anywhere in the document:
 
 ```markdown
@@ -119,6 +134,19 @@ Pinned memory avoids an extra copy during data transfer.[^1]
 ```
 
 Footnotes are collected at the bottom of the post. Each footnote includes a `↩` link back to its reference in the text.
+
+### 3.8 Indented blocks
+Wrap one or more paragraphs in an `indent` block:
+
+```markdown
+::: indent
+This text is indented without being styled as a quotation.
+
+Normal **Markdown formatting** works inside the block.
+:::
+```
+
+Keep the `indent` name in the opening marker so the block is self-documenting and remains distinct from future custom block types.
 
 ## Step 4: Register the Post
 
