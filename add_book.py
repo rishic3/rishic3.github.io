@@ -1,6 +1,8 @@
 import argparse
+import html
 import os
 from typing import Optional
+from urllib.parse import urlparse
 
 HTML_FILE_PATH = "reading.html"
 
@@ -8,33 +10,46 @@ HTML_FILE_PATH = "reading.html"
 def generate_book_entry(
     title: str,
     author: str,
+    goodreads_url: str,
     post_file_path: Optional[str] = None,
     standout: bool = False,
 ):
     li_class = "book-item standout" if standout else "book-item"
+    parsed_url = urlparse(goodreads_url)
+    if (
+        parsed_url.scheme != "https"
+        or parsed_url.netloc not in {"goodreads.com", "www.goodreads.com"}
+        or not parsed_url.path.startswith("/book/show/")
+    ):
+        raise ValueError(f"Not a Goodreads book URL: {goodreads_url}")
+
+    escaped_title = html.escape(title)
+    escaped_author = html.escape(author)
+    escaped_url = html.escape(goodreads_url, quote=True)
 
     if post_file_path:
         assert post_file_path.endswith(".md"), f"Post file must be markdown: {post_file_path}"
         if not os.path.exists(post_file_path):
             raise FileNotFoundError(f"Post file {post_file_path} not found")
+        escaped_post_path = html.escape(post_file_path, quote=True)
 
         entry = (
             f'                <li class="{li_class}">\n'
-            f'                    <button class="book-toggle has-notes" data-file="{post_file_path}">\n'
-            f'                        <span class="book-title">{title}</span>\n'
-            f'                        <span class="book-author">{author}</span>\n'
-            f'                        <span class="book-chevron">▾</span>\n'
-            f'                    </button>\n'
+            f'                    <div class="book-toggle has-notes" data-file="{escaped_post_path}">\n'
+            f'                        <a class="book-title" href="{escaped_url}" target="_blank" rel="noopener noreferrer">{escaped_title}</a>\n'
+            f'                        <span class="book-author">{escaped_author}</span>\n'
+            f'                        <button class="book-chevron" type="button" aria-label="Toggle notes for {escaped_title}" aria-expanded="false">▾</button>\n'
+            f'                    </div>\n'
             f'                    <div class="book-content"><div class="post-content"></div></div>\n'
             f'                </li>'
         )
     else:
         entry = (
             f'                <li class="{li_class}">\n'
-            f'                    <button class="book-toggle">'
-            f'<span class="book-title">{title}</span>'
-            f'<span class="book-author">{author}</span>'
-            f'</button>\n'
+            f'                    <div class="book-toggle">'
+            f'<a class="book-title" href="{escaped_url}" target="_blank" rel="noopener noreferrer">{escaped_title}</a>'
+            f'<span class="book-author">{escaped_author}</span>'
+            f'</div>\n'
             f'                </li>'
         )
 
@@ -44,12 +59,13 @@ def generate_book_entry(
 def add_book(
     title: str,
     author: str,
+    goodreads_url: str,
     year: int,
     post_file_path: Optional[str] = None,
     standout: bool = False,
     html_file_path: str = HTML_FILE_PATH,
 ):
-    book_entry = generate_book_entry(title, author, post_file_path, standout)
+    book_entry = generate_book_entry(title, author, goodreads_url, post_file_path, standout)
 
     with open(html_file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -110,6 +126,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Add a book to reading.html")
     parser.add_argument("-t", "--title", type=str, required=True, help="Book title")
     parser.add_argument("-a", "--author", type=str, required=True, help="Book author")
+    parser.add_argument(
+        "-g", "--goodreads-url", type=str, required=True,
+        help="Validated Goodreads book URL",
+    )
     parser.add_argument("-y", "--year", type=int, required=True, help="Year read")
     parser.add_argument(
         "-f", "--post-file-path", type=str, required=False,
@@ -121,4 +141,11 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    add_book(args.title, args.author, args.year, args.post_file_path, args.standout)
+    add_book(
+        args.title,
+        args.author,
+        args.goodreads_url,
+        args.year,
+        args.post_file_path,
+        args.standout,
+    )

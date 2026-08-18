@@ -5,7 +5,7 @@ Step-by-step guide for adding new books to the Reading page.
 ## Overview
 
 The reading page displays books in a chronological list organized by year:
-- **Books without notes** — non-interactive entries showing title and author
+- **Books without notes** — entries whose titles link to Goodreads
 - **Books with notes** — clickable entries that expand to show rendered Markdown content
 - **Standout books** — highlighted with an accent border via the `standout` class
 
@@ -15,16 +15,19 @@ Decide whether the book will have:
 - **No notes** — just a listing (title + author)
 - **Notes** — a Markdown file that renders in an expandable dropdown
 
+Find the book's direct `https://www.goodreads.com/book/show/...` page and verify
+that its title and author match before adding the entry.
+
 ## Step 2: Adding a Book WITHOUT Notes
 
 Open `reading.html` and add a `<li>` in the correct year section:
 
 ```html
 <li class="book-item">
-    <button class="book-toggle">
-        <span class="book-title">Book Title</span>
+    <div class="book-toggle">
+        <a class="book-title" href="https://www.goodreads.com/book/show/BOOK_ID" target="_blank" rel="noopener noreferrer">Book Title</a>
         <span class="book-author">Author Name</span>
-    </button>
+    </div>
 </li>
 ```
 
@@ -32,15 +35,15 @@ To mark it as a personal standout, add the `standout` class to the `<li>`:
 
 ```html
 <li class="book-item standout">
-    <button class="book-toggle">
-        <span class="book-title">Book Title</span>
+    <div class="book-toggle">
+        <a class="book-title" href="https://www.goodreads.com/book/show/BOOK_ID" target="_blank" rel="noopener noreferrer">Book Title</a>
         <span class="book-author">Author Name</span>
-    </button>
+    </div>
 </li>
 ```
 
 Key points:
-- Do **not** add the `has-notes` class to the button
+- Do **not** add the `has-notes` class to the row
 - Do **not** include a `data-file` attribute
 - Do **not** include a `<div class="book-content">` section
 
@@ -86,11 +89,11 @@ In `reading.html`, add the entry in the correct year section:
 
 ```html
 <li class="book-item">
-    <button class="book-toggle has-notes" data-file="notes/books/YYYY/book-title.md">
-        <span class="book-title">Book Title</span>
+    <div class="book-toggle has-notes" data-file="notes/books/YYYY/book-title.md">
+        <a class="book-title" href="https://www.goodreads.com/book/show/BOOK_ID" target="_blank" rel="noopener noreferrer">Book Title</a>
         <span class="book-author">Author Name</span>
-        <span class="book-chevron">▾</span>
-    </button>
+        <button class="book-chevron" type="button" aria-label="Toggle notes for Book Title" aria-expanded="false">▾</button>
+    </div>
     <div class="book-content"><div class="post-content"></div></div>
 </li>
 ```
@@ -99,19 +102,20 @@ For a standout book with notes:
 
 ```html
 <li class="book-item standout">
-    <button class="book-toggle has-notes" data-file="notes/books/YYYY/book-title.md">
-        <span class="book-title">Book Title</span>
+    <div class="book-toggle has-notes" data-file="notes/books/YYYY/book-title.md">
+        <a class="book-title" href="https://www.goodreads.com/book/show/BOOK_ID" target="_blank" rel="noopener noreferrer">Book Title</a>
         <span class="book-author">Author Name</span>
-        <span class="book-chevron">▾</span>
-    </button>
+        <button class="book-chevron" type="button" aria-label="Toggle notes for Book Title" aria-expanded="false">▾</button>
+    </div>
     <div class="book-content"><div class="post-content"></div></div>
 </li>
 ```
 
 Key points:
-- The button **must** have the `has-notes` class and a `data-file` attribute
-- Include the `<span class="book-chevron">▾</span>` for the expand/collapse arrow
+- The row **must** have the `has-notes` class and a `data-file` attribute
+- Include the `<button class="book-chevron">` for keyboard-accessible expand/collapse
 - Include the `<div class="book-content"><div class="post-content"></div></div>` for content
+- Clicking the title follows Goodreads; clicking elsewhere in the row toggles the notes
 
 ## Step 4: Organizing by Year
 
@@ -133,12 +137,13 @@ Within each year, list books in reverse chronological order (most recently read 
 
 **For books without notes:**
 - Entry appears as a flat row (title left, author right)
-- No chevron, no hover cursor
-- Clicking does nothing
+- No chevron or row hover cursor
+- Clicking the title opens its validated Goodreads page
 
 **For books with notes:**
 - Entry shows a chevron (▾) and pointer cursor on hover
-- Clicking expands the dropdown with rendered Markdown
+- Clicking anywhere except the title expands the dropdown with rendered Markdown
+- Clicking the title opens Goodreads without expanding the dropdown
 - Chevron rotates when expanded
 - Clicking again collapses
 
@@ -151,11 +156,11 @@ Within each year, list books in reverse chronological order (most recently read 
 |-------|---------|---------|
 | `book-item` | `<li>` | Wrapper for each book entry |
 | `book-item standout` | `<li>` | Highlighted book with accent border |
-| `book-toggle` | `<button>` | The clickable row (or static row if no notes) |
-| `book-toggle has-notes` | `<button>` | Indicates the book has expandable notes |
-| `book-title` | `<span>` | Book title (italicized via CSS) |
+| `book-toggle` | `<div>` | Book row |
+| `book-toggle has-notes` | `<div>` | Indicates the book has expandable notes |
+| `book-title` | `<a>` | Book title linking to Goodreads |
 | `book-author` | `<span>` | Author name (secondary color, right-aligned) |
-| `book-chevron` | `<span>` | Expand/collapse arrow indicator |
+| `book-chevron` | `<button>` | Expand/collapse arrow and keyboard control |
 | `book-content` | `<div>` | Dropdown container (hidden by default) |
 | `post-content` | `<div>` | Inner container where Markdown is rendered |
 
