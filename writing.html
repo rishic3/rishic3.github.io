@@ -91,7 +91,8 @@
             'notes/technical/torch-compile/torch-compile.md',
             'notes/technical/gbdt/gbdt.md',
             'notes/technical/svd/svd.md',
-            'notes/technical/umap/umap.md'
+            'notes/technical/umap/umap.md',
+            'notes/technical/deep-rl/deep-rl.md'
         ];
 
         let postsCache = null;
@@ -243,6 +244,10 @@
 
             function selectLabel(label) {
                 activeLabel = label;
+                trigger.textContent = label || 'label';
+                trigger.classList.toggle('tag', Boolean(label));
+                if (label) trigger.dataset.color = Blog.tagColor(label);
+                else delete trigger.dataset.color;
                 trigger.setAttribute(
                     'aria-label',
                     label ? `Filter by label, current label: ${label}` : 'Filter by label'
