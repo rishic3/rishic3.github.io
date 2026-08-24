@@ -81,7 +81,7 @@ $$
 
 E.g., for a 32-bit system (addressable space of $2^{32}$ bits = 4GB, ignoring space for the kernel itself) with 4KB pages and
 4 byte page table entries, the first term (i.e., the number of virtual pages) is 1,000,000, resulting in 4MB per page table.
-Note the naive linear page table [<em>must contain the maximum addressable virtual space</em>, even if the process doesn’t use most of it]{"Without the full range of VPNs, direct indexing (and therefore fast lookups) wouldn't be possible."}. 
+Note the naive linear page table <em>must contain the maximum addressable virtual space</em>, even if the process doesn’t use most of it[^linear-page-table].
 
 (This is wasteful, and will lead us to multi-level page tables described below). 
 
@@ -108,7 +108,7 @@ This enables a sparse address space (demand paging); if most pages are invalid (
 
 &rarr; **Reference bit:** this stores whether a page has been accessed, and is used for the page replacement policy for swapping, e.g., to implement an LRU eviction policy.
 
-&rarr; **Global bit:** this is set for pages that are globally shared among processes. Typically, [kernel pages have a global bit of 1, since they do not change during a context switch.]{"Jumping ahead, note that kernel pages sticking around in the TLB can crowd out program pages, causing TLB pollution. There are mitigating strategies, e.g. using huge pages for kernel pages, or a fixed ('wired') set of entries specifically reserved for the kernel."}.
+&rarr; **Global bit:** this is set for pages that are globally shared among processes. Typically, kernel pages have a global bit of 1, since they do not change during a context switch[^global-tlb].
 
 &rarr; **U/S bit:** this stands for user/supervisor bit, indicating whether the page can be accessed by user-space programs, or whether it requires kernel mode (again, kernel pages typically have a U/S bit of 0, where 0 is supervisor). 
 
@@ -122,7 +122,7 @@ Let's briefly define a little bit of page terminology, and understand interactio
 
 There are two scenarios where we have an *anonymous page* with a *dirty bit of 0*. 
 
-1. Newly allocated page. Any memory that has been malloc’ed but not written to (initialized) is mapped to the **zero page**, a <em>special, read-only page frame</em> that is [permanently filled with zeroes]{"This is for security — it ensures malloc’ed memory points to nothing. E.g., if a malicious process tried to read a newly malloc’ed memory region, it wouldn’t read some other program’s data."}. Many processes may unknowingly 'share' the zero page — this is another way the OS saves space.
+1. Newly allocated page. Any memory that has been malloc’ed but not written to (initialized) is mapped to the **zero page**, a <em>special, read-only page frame</em> that is permanently filled with zeroes[^zero-page-security]. Many processes may unknowingly 'share' the zero page — this is another way the OS saves space.
 2. Freshly swapped page. A page that was previously evicted (and written to swap space), and then brought back into main memory, will have a dirty bit of 0: it is a perfect copy of the corresponding page in swap space. 
 
 #### Page Sharing
@@ -147,7 +147,7 @@ The **Translation Lookaside Buffer** is a cache of frequently used virtual-to-ph
 
 Like CPU data caches, the TLB is stored much closer, directly on the CPU (and like the CPU cache, uses SRAM instead of DRAM), resulting in much faster lookups. 
 
-Modern operating systems have [<b>hardware-managed TLBs</b>]{"I.e., the hardware is responsible for handling the TLB miss, including walking the page table."}. The hardware stores a *page-table base register* in a special hardware register, pointing to where in main memory the page table is located. 
+Modern operating systems have <b>hardware-managed TLBs</b>[^hardware-managed-tlb]. The hardware stores a *page-table base register* in a special hardware register, pointing to where in main memory the page table is located.
 
 On a TLB miss, the hardware walks the page table, finds the page table entry, puts the entry into the TLB, and retries the instruction. 
 
@@ -243,7 +243,7 @@ In other words, a huge page can be identified via a much coarser page directory 
 
 > Aside: An ideal use case for huge pages is the DBMS, which stores a database index that is large and randomly accessed (thus it can make much better use of the TLB, and the initial demand-paging lag is far shorter). 
 
-Huge pages do have drawbacks: one is internal fragmentation, where the page is allocated but sparsely used (thus memory is wasted *internal* to the allocation). [Swapping also performs poorly with huge pages, given the much amplified disk I/O]{"For this reason, huge pages are typically in pinned memory (i.e., cannot be swapped), a rule sometimes enforced by the OS."}. 
+Huge pages do have drawbacks: one is internal fragmentation, where the page is allocated but sparsely used (thus memory is wasted *internal* to the allocation). Swapping also performs poorly with huge pages, given the much amplified disk I/O[^huge-page-swapping].
 
 ### Swapping to Disk
 
@@ -321,7 +321,7 @@ E.g., for a running process, its stack is a VMA, its heap is a VMA, and the shar
 
 The VMA enables **demand paging**. When a process makes an allocation request, the OS simply allocates or extends a VMA (effectively, “giving” this range to the process). During this phase, the OS can coalesce adjacent VMAs (barring permission differences) for efficiency.
 
-The VMA is also used during **page fault disambiguation**. The OS searches the VMA search tree (implemented as a [red-black or maple tree]{"See https://docs.kernel.org/core-api/maple_tree.html"}) to find the faulting virtual address and determine if the address is in a valid VMA. 
+The VMA is also used during **page fault disambiguation**. The OS searches the VMA search tree (implemented as a red-black or maple tree[^maple-tree]) to find the faulting virtual address and determine if the address is in a valid VMA.
 
 #### Virtual Address Segments
 
@@ -414,3 +414,15 @@ The heap is what requires free space management described above, needing a free 
 `malloc` needs to look at the global head pointer and walk over the free list to find a free chunk that fits the allocation. Similarly, it needs to do coalescing and give pages back to the OS upon deallocation. 
 
 Heap paging is random by nature, since `malloc` is hopping over virtual memory space to find free chunks, and frequently accessing *cold, unmapped virtual pages*, such that the OS needs to frequently page fault and map new physical pages. 
+
+[^linear-page-table]: Without the full range of VPNs, direct indexing (and therefore fast lookups) wouldn't be possible.
+
+[^global-tlb]: Jumping ahead, note that kernel pages sticking around in the TLB can crowd out program pages, causing TLB pollution. There are mitigating strategies, e.g. using huge pages for kernel pages, or a fixed ('wired') set of entries specifically reserved for the kernel.
+
+[^zero-page-security]: This is for security — it ensures malloc’ed memory points to nothing. E.g., if a malicious process tried to read a newly malloc’ed memory region, it wouldn’t read some other program’s data.
+
+[^hardware-managed-tlb]: I.e., the hardware is responsible for handling the TLB miss, including walking the page table.
+
+[^huge-page-swapping]: For this reason, huge pages are typically in pinned memory (i.e., cannot be swapped), a rule sometimes enforced by the OS.
+
+[^maple-tree]: See the [Linux kernel documentation](https://docs.kernel.org/core-api/maple_tree.html).

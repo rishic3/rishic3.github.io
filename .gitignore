@@ -1,3 +1,5 @@
 .DS_Store
 icons/
 todo.txt
+__pycache__/
+scratch/

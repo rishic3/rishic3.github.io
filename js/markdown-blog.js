@@ -490,6 +490,117 @@
     }
 
     /* ------------------------------------------------
+       Footnote previews
+       ------------------------------------------------ */
+    function initFootnotePreviews() {
+        let hideTimer = null;
+        let activeLink = null;
+        let previewCount = 0;
+
+        function removePreview() {
+            const preview = document.querySelector('.footnote-preview');
+            if (preview) preview.remove();
+            if (activeLink) activeLink.removeAttribute('aria-describedby');
+            activeLink = null;
+        }
+
+        function scheduleHide() {
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(removePreview, 150);
+        }
+
+        function findFootnote(link) {
+            const href = link.getAttribute('href');
+            const container = link.closest('.post-content');
+            if (!href || !href.startsWith('#fn-') || !container) return null;
+
+            const targetId = decodeURIComponent(href.slice(1));
+            return [...container.querySelectorAll('.footnotes li')]
+                .find(item => item.id === targetId);
+        }
+
+        function showPreview(link) {
+            clearTimeout(hideTimer);
+            const footnote = findFootnote(link);
+            if (!footnote) return;
+
+            removePreview();
+
+            const preview = document.createElement('div');
+            preview.className = 'footnote-preview';
+            preview.id = `footnote-preview-${++previewCount}`;
+            preview.setAttribute('role', 'tooltip');
+
+            const content = footnote.cloneNode(true);
+            content.querySelectorAll('.footnote-backref').forEach(backref => backref.remove());
+            while (content.firstChild) preview.appendChild(content.firstChild);
+
+            document.body.appendChild(preview);
+            activeLink = link;
+            link.setAttribute('aria-describedby', preview.id);
+
+            const rect = link.getBoundingClientRect();
+            const width = preview.offsetWidth;
+            const height = preview.offsetHeight;
+            const viewportLeft = window.scrollX + 10;
+            const viewportRight = window.scrollX + window.innerWidth - 10;
+            const viewportTop = window.scrollY + 10;
+            const viewportBottom = window.scrollY + window.innerHeight - 10;
+            let top = rect.bottom + window.scrollY + 8;
+            let left = rect.left + window.scrollX + (rect.width / 2) - (width / 2);
+
+            if (left < viewportLeft) left = viewportLeft;
+            if (left + width > viewportRight) left = viewportRight - width;
+
+            const topAbove = rect.top + window.scrollY - height - 8;
+            if (rect.bottom + height + 16 > window.innerHeight && topAbove >= window.scrollY + 10) {
+                top = topAbove;
+            }
+            if (top < viewportTop) top = viewportTop;
+            if (top + height > viewportBottom) {
+                top = Math.max(viewportTop, viewportBottom - height);
+            }
+
+            preview.style.top = `${top}px`;
+            preview.style.left = `${left}px`;
+            preview.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+            preview.addEventListener('mouseleave', scheduleHide);
+        }
+
+        document.addEventListener('mouseover', event => {
+            if (!window.matchMedia('(hover: hover)').matches) return;
+            const link = event.target.closest?.('.footnote-ref a');
+            if (link && !link.contains(event.relatedTarget)) showPreview(link);
+        });
+
+        document.addEventListener('mouseout', event => {
+            const link = event.target.closest?.('.footnote-ref a');
+            if (link && !link.contains(event.relatedTarget)) scheduleHide();
+        });
+
+        document.addEventListener('focusin', event => {
+            const link = event.target.closest?.('.footnote-ref a');
+            if (link) showPreview(link);
+        });
+
+        document.addEventListener('focusout', event => {
+            const link = event.target.closest?.('.footnote-ref a');
+            if (link) scheduleHide();
+        });
+
+        document.addEventListener('click', event => {
+            if (event.target.closest?.('.footnote-ref a')) removePreview();
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') {
+                clearTimeout(hideTimer);
+                removePreview();
+            }
+        });
+    }
+
+    /* ------------------------------------------------
        Tag color mapping (Notion-style, collision-avoidant)
        ------------------------------------------------ */
     const TAG_COLORS = ['blue', 'green', 'purple', 'orange', 'red', 'yellow', 'pink'];
@@ -805,6 +916,7 @@
         renderMarkdown,
         enhanceCodeBlocks,
         initAnnotations,
+        initFootnotePreviews,
         tagColor,
         generateTOC,
         initTOC,
@@ -843,5 +955,6 @@
     };
 
     initAnnotations();
+    initFootnotePreviews();
     initImageLightbox();
 })();

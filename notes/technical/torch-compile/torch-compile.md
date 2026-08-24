@@ -3,7 +3,7 @@ title: "Torch Compiler"
 date: "2025-03-24"
 layout: "post"
 type: "note"
-tags: ["deep-learning"]
+tags: ["deep-learning", "gpus"]
 description: "Notes on PyTorch compiler optimizations."
 ---
 

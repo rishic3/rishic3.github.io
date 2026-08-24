@@ -125,15 +125,20 @@ The algorithm uses [amortized analysis]{"We average the cost over a sequence of 
 The bracketed text renders with a dotted underline. Annotation text supports Markdown-style hyperlinks using `[link text](URL)`, and newlines or blank lines inside the quoted comment are preserved. Hovering reveals the tooltip. Moving the mouse away (or pressing Escape) dismisses it.
 
 ### 3.7 Footnotes
-Add a reference with `[^1]`, then define it anywhere in the document:
+Add a reference with a descriptive label such as `[^cuda-docs]`, then define it
+anywhere in the document:
 
 ```markdown
-Pinned memory avoids an extra copy during data transfer.[^1]
+Pinned memory avoids an extra copy during data transfer.[^cuda-docs]
 
-[^1]: See the [CUDA documentation](https://docs.nvidia.com/cuda/) for more detail.
+[^cuda-docs]: See the [CUDA documentation](https://docs.nvidia.com/cuda/) for more detail.
 ```
 
-Footnotes are collected at the bottom of the post. Each footnote includes a `↩` link back to its reference in the text.
+Footnotes are collected at the bottom of the post. Hovering over or focusing a
+footnote reference shows its content in a preview; clicking the reference still
+jumps to the full footnote. Each footnote includes a `↩` link back to its
+reference in the text. Labels stay readable in the Markdown source while the
+rendered post numbers footnotes by their first appearance.
 
 ### 3.8 Indented blocks
 Wrap one or more paragraphs in an `indent` block:
