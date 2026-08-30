@@ -1091,7 +1091,6 @@ img {
 
 .book-title {
     font-weight: 500;
-    flex: 1;
     min-width: 0;
     color: var(--text-primary);
     text-decoration: underline;
@@ -1114,6 +1113,7 @@ img {
     color: var(--text-secondary);
     font-size: 0.875rem;
     flex-shrink: 0;
+    margin-left: auto;
     padding-left: 1rem;
 }
 
