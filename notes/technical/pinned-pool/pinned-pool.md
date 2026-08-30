@@ -186,14 +186,10 @@ Is this a problem? If your application is hours long, probably not — who cares
 
 Let's take a closer look at step (2). `pin_user_pages()` walks the range and invokes a page fault to back each virtual page with a physical page frame. This is because a virtual address range returned by `malloc` or `mmap` may not have any physical backing, due to [demand paging](https://en.wikipedia.org/wiki/Demand_paging): pages are backed lazily. That is generally good for efficiency, but pinned memory — by definition — needs to be *physically fixed to a page frame* in order to be pinned.
 
-Lazily backing pages is generally good for efficiency, but it is not sufficient for pinned memory. After all, pinned memory : it needs a physical backing. Thus, `cudaHostAlloc` performs a few extra steps:
+Thus a trace of `cudaHostAlloc` looks something like this, with `pin_user_pages()` having to walk over each page:
 
-1. Back the `n`-byte virtual address range with physical pages.
-2. Tell the OS to pin the pages.
-3. Register the physical pages to an internal data structure in the CUDA driver  
-  (which essentially says, "these pages are ready for DMA.")
-
-We can see this happening in the open-source CUDA driver:
+![cudaHostAlloc: a rough timeline (details elided).](images/cudahostalloc-timeline.jpg)
+{caption: A crude drawing of cudaHostAlloc as a timeline (details elided).}
 
 [^pinned-vs-page-locked]: There is a related notion called 'page-locked' (see [mlock](https://man7.org/linux/man-pages/man2/mlock.2.html)), where the OS guarantees that the page is resident in a page frame, but can still move the page around. If your page is page-locked but not pinned, you might still pay for a '[soft page fault](https://lwn.net/Articles/600502/)', where the new location of a migrated page must be found and remembered. Pinning, in contrast, fixes the page in place. Unfortunately, the [CUDA docs](https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/understanding-memory.html#page-locked-host-memory) use 'page-locked' and 'pinned' interchangeably; for our purposes, they really mean 'pinned'.
 
