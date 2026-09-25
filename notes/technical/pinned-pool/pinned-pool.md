@@ -6,13 +6,13 @@ tags: ["operating-systems", "gpus"]
 description: "A deep dive into the role of pinned memory for GPUs and optimizing initialization time."
 ---
 
-A collection of learnings I discovered over the course of [cudf#23457](https://github.com/rapidsai/cudf/pull/23457) — an optimization of pinned memory initialization times in [cuDF](https://docs.rapids.ai/api/cudf/stable/) — prefaced with the basics of pinned memory.
+I was inspired to write this after working on [cudf#23457](https://github.com/rapidsai/cudf/pull/23457), an optimization of pinned memory initialization times in [cuDF](https://docs.rapids.ai/api/cudf/stable/). This PR required some digging into the guts of the Linux kernel, and I thought it would be fun to write about.
 
 # 1) Pinned Memory: Who Cares?
 
 ## Setting the Stage
 
-From a program's point of view, memory looks like a contiguous sequence of addresses. We request an arbitrary chunk of memory with `malloc(n)`, and the allocator will give us a buffer of `n` continuous memory addresses.
+From a program's point of view, memory looks like a continuous sequence of addresses. We request an arbitrary chunk of memory with `malloc(n)`, and the allocator gives us a buffer of `n` continuous memory addresses, each pointing to a byte.
 
 ```cpp
 unsigned char *p = malloc(5);
@@ -20,28 +20,28 @@ for (int i = 0; i < 5; ++i) printf((void *)(p))
 // 0x1011fdba0 0x1011fdba1 0x1011fdba2 0x1011fdba3 0x1011fdba4
 ```
 
-As one learns in an operating systems course, these are just *virtual addresses*, and their continuity is an illusion presented by the OS. Beneath this virtual address space, the operating system considers memory as a sequence of fixed-size chunks called *pages*. These virtual pages are mapped to *physical page frames* somewhere in RAM, which hold the actual bytes.
+As one learns in an operating systems course, these are just *virtual addresses*, and their continuity is an illusion created by the OS. Beneath this virtual address space, the operating system considers memory as a sequence of fixed-size chunks called *pages*. These virtual pages are mapped to *physical page frames* somewhere in RAM, which hold the actual bytes.
 
-![Memory virtualization via paging.](images/paging.png)
-{caption: Virtual memory via paging ([source](https://os.phil-opp.com/paging-introduction/)).}
+![Memory virtualization via paging.](images/paging-page-tables.png)
+{caption: Virtual pages are mapped to physical page frames via page tables. ([Source](https://os.phil-opp.com/paging-introduction/)).}
 
-In other words, the buffer we got could span more than one page, and those pages could reside in entirely different physical locations.
+In other words, the buffer we got could span across pages, and those pages could reside in entirely different physical locations.
 
 This layer of indirection enables the OS to physically move pages as it sees fit — it may swap pages to disk to free up space, or migrate pages closer to a requesting CPU core — without disrupting the continuity of our program's virtual address space.
 
-**Pinned memory** refers to pages that are **physically fixed to a page frame**[^pinned-vs-page-locked]. If memory is nearing capacity (see [swappiness](https://wiki.debian.org/swappiness)) and the swap daemon comes along to move lesser-used pages to disk, pinned memory will never be swapped out. This is great for latency: your process will never have to pay for a page fault when accessing pinned memory.
+**Pinned memory** refers to pages that are **physically fixed to a page frame in RAM**[^pinned-vs-page-locked]. In other words, pinned pages will never be swapped or migrated. This is good for latency: our process will never have to pay for a page fault when accessing pinned memory.
 
-Of course, nothing in life is free. Memory is a scarce resource, and pinning memory tells the operating system, "I know better — I need this memory exactly where it is, so don't do anything clever in the name of resource efficiency." Pinning more memory than necessary can starve other processes (or the OS itself) of RAM.
+Of course, nothing in life is free. Memory is a scarce resource, and pinning memory tells the operating system, "I know better — I need this memory exactly where it is, so don't do anything clever in the name of efficiency." Pinning more memory than necessary can starve other processes (or the OS itself) of RAM.
 
-That said, a suitable amount of pinned memory, used well, is a smart choice in some applications. In GPU applications, particularly, it is *necessary*.
+That said, a suitable amount of pinned memory is *essential* for high performance GPU applications.
 
 ## Dissecting DMA
 
 > So why does pinned memory matter for GPUs?
 
-Invariably, working with GPUs requires transferring data between the CPU and GPU. While this should be avoided as much as possible for performance reasons[^transfer-performance], there are usually boundaries[^transfer-boundaries] in most programs where it is compulsory.
+Invariably, working with GPUs requires transferring data between the CPU and GPU. While this should be avoided as much as possible for performance reasons[^transfer-performance], there are usually boundaries in most programs where it is compulsory[^transfer-boundaries].
 
-Every framework has its own transfer APIs (`x.to(device)` in PyTorch, `jax.device_put(x, device)` in JAX). These generally all boil down to some form of `cudaMemcpy`:
+Every framework has its own transfer APIs (`x.to(device)` in PyTorch, `jax.device_put(x, device)` in JAX). These generally all boil down to some form of `cudaMemcpy`. As an example:
 
 ```cpp
 // Reserve and set some host memory.
@@ -53,13 +53,11 @@ int *d_arr;
 cudaMalloc((int**)&d_arr, bytes);
 
 cudaMemcpy(d_arr, h_arr, bytes, cudaMemcpyHostToDevice);  // host -> device
-foo<<<grid, block, 0>>>(d_arr);
+foo<<<grid, block, 0>>>(d_arr);                           // do something on the GPU
 cudaMemcpy(h_arr, d_arr, bytes, cudaMemcpyDeviceToHost);  // device -> host
 ```
 
-Now, what's happening inside of `cudaMemcpy`?
-
-The actual copying of bytes is performed by the GPU's [DMA (Direct Memory Access) engine](https://en.wikipedia.org/wiki/Direct_memory_access), which initiates the read instructions over PCIe. As its name implies, the DMA engine needs direct access to physical host memory — it is a peripheral device, not a standard OS process; therefore, it cannot use CPU virtual addresses, nor participate in the OS's virtual memory translation[^iommu].
+When we do a `cudaMemcpy`, the actual copying of bytes is performed by the GPU's [DMA (Direct Memory Access) engine](https://en.wikipedia.org/wiki/Direct_memory_access), which initiates the read instructions over PCIe. As its name implies, the DMA engine needs *direct* access to physical host memory — it is a peripheral device, not a standard OS process; therefore, it cannot use CPU virtual addresses, nor participate in the OS's virtual memory translation[^iommu].
 
 Thus, the DMA engine takes a range of *physical bytes* on the host. You can start to imagine why it might be problematic if the host-resident bytes were in standard **pageable memory**, rather than pinned memory. What if you called:
 
@@ -76,10 +74,13 @@ To prevent these calamities, the host buffer *must be pinned* before a copy in e
 1. You call `cudaMemcpy(d_arr, h_arr, bytes, cudaMemcpyHostToDevice)`.
 2. The CUDA driver obtains a pinned staging buffer `h_pinned` of length `bytes`.
 3. The CUDA driver **copies** `h_arr` **from pageable memory to** `h_pinned`.
-4. The CUDA driver queues a DMA copy from the physical address of `h_pinned` to the device address of `d_arr`.
+4. The CUDA driver queues a DMA copy operation from the physical address of `h_pinned` to the device address of `d_arr`.
 5. The DMA engine performs the actual host-device copy.
 
-The device-to-host direction proceeds similarly. So, there is an extra pageable-to-pinned copy happening under the hood with every `cudaMemcpy`, and the CUDA driver does it for you.
+![cudaMemcpy from pageable memory, staged through a pinned buffer.](images/pageable-memcpy-staging.png)
+{caption: A host-to-device cudaMemcpy from pageable memory.}
+
+The device-to-host direction proceeds conversely (copying `d_arr` into `h_pinned`, then `h_pinned` into `h_arr`). So, there is an extra copy between pageable and pinned memory happening under the hood with every `cudaMemcpy`, and the CUDA driver does it for you.
 
 ## Manual Pinning
 
@@ -95,7 +96,7 @@ The first reason is that, armed with knowledge of the internals, you can avoid t
 
 `cudaHostAlloc` gives you host memory that is already pinned under the hood[^cuda-malloc-host], hence making it safe for DMA access. That solves the extra-copy problem without much fuss: the subsequent `cudaMemcpy` needs no intermediate staging.
 
-There is a second reason to pin memory manually with `cudaHostAlloc`, and that is **asynchrony**. Imagine you wish to use `cudaMemcpyAsync`, hoping to overlap the transfer latency with computation. Not knowing any better, you use a plain `malloc`:
+There is a second reason to pin memory manually with `cudaHostAlloc`, and that is **asynchrony**. Imagine you instead use `cudaMemcpyAsync`, hoping to overlap the transfer latency with computation. Not knowing any better, you use a plain `malloc`:
 
 ```cpp
 // Reserve and set some (pageable!) host memory.
@@ -107,14 +108,14 @@ int *d_arr;
 cudaMalloc((int**)&d_arr, bytes);
 
 cudaMemcpyAsync(d_arr, h_arr, bytes, cudaMemcpyHostToDevice, stream);  // host -> device
-bar(); // do CPU work while we wait.
+bar(); // do CPU work while we wait
 
-foo<<<grid, block, 0, stream>>>(d_arr);
+foo<<<grid, block, 0, stream>>>(d_arr);  // do something on the GPU
 
 cudaMemcpyAsync(h_arr, d_arr, bytes, cudaMemcpyDeviceToHost, stream);  // device -> host
-bar();  // do CPU work while we wait.
+bar();  // do CPU work while we wait
 
-cudaStreamSynchronize(stream);
+cudaStreamSynchronize(stream);  // block until the CUDA calls complete
 ```
 
 This code should:
@@ -140,7 +141,7 @@ This is a trace[^profiling-setup] of the code directly above, which uses `malloc
 ![cudaMemcpyAsync nsys timeline using a pageable buffer.](images/pageable-async.png)
 {caption: Overlapping CPU work with cudaMemcpyAsync on pageable memory (doesn't work).}
 
-The memcpys are effectively blocking: in each case, `bar()` can't run until the memcpy is complete, since the calling thread is busy staging buffers into pinned memory[^staging-pipeline]. This sequence took 96ms.
+The memcpys are effectively blocking: in each case, `bar()` can't run until the memcpy is complete, since the calling thread is busy staging buffers into pinned memory[^staging-pipeline]. (This sequence took 96ms.)
 
 ### Pinned cudaMemcpyAsync
 
@@ -149,13 +150,13 @@ This is a trace of the same code after swapping `malloc` for `cudaHostAlloc`:
 ![cudaMemcpyAsync nsys timeline using a pinned buffer.](images/pinned-async.png)
 {caption: Overlapping CPU work with cudaMemcpyAsync on pinned memory.}
 
-Much better. Both calls are fully asynchronous: the first `bar()` begins as soon as the first memcpy is enqueued, and the second begins as soon as the kernel and second memcpy are enqueued, since the calling thread does not need to participate in the copies. This sequence took 78ms, about 20% faster.
+Both calls are fully asynchronous: the first `bar()` begins as soon as the first memcpy is enqueued, and the second begins as soon as the kernel and second memcpy are enqueued, since the calling thread does not need to participate in the copies. (This sequence took 78ms, about 20% faster.)
 
 # 2) Pinned Memory: Faster Initialization
 
 > But what's the latency of cudaHostAlloc itself?
 
-Let's get a zoomed out view of the second trace.
+Let's get a zoomed out view of that second trace.
 
 ![Timeline of time spent in cudaHostAlloc.](images/pinned-alloc-time.png)
 {caption: cudaMemcpyAsync with cudaHostAlloc, including allocation time.}
@@ -172,7 +173,7 @@ Pool size | cudaHostAlloc Time
 8 GiB | 3.9 s
 16 GiB | 7.9 s
 
-Is this a problem? If your application is hours long, probably not — who cares about a few seconds of initialization time. But if it runs for less than a minute (serving a real-time use case, for instance), initializing pinned memory could make a 10% dent in your latency. Or if your app uses autoscaling — i.e., dynamically spins up and down processes — you might be paying this cost hundreds of times. In these scenarios, you might really start to care about startup costs.
+Is this a problem? If your application is hours long, probably not — a few seconds of initialization time is trivial. But if it runs for less than a minute (serving a real-time use case, for instance), initializing pinned memory could make up 10% of your latency. Or if your app uses autoscaling — dynamically spinning up and down processes — you might be paying this cost hundreds of times. In these scenarios, you might really start to care about startup costs.
 
 ## Inside cudaHostAlloc
 
@@ -182,22 +183,111 @@ Is this a problem? If your application is hours long, probably not — who cares
 
 1. Ask for a virtual address range of size `n`, e.g. via `malloc` or `mmap`.
 2. Tell the OS to pin each page in the range, e.g. via [`pin_user_pages()`](https://docs.kernel.org/core-api/pin_user_pages.html).
-3. Write down the physical page locations in an internal data structure (which essentially says, "these pages are ready for DMA.")
+3. Write down the physical page locations in an internal data structure managed by the CUDA driver (which essentially says, "these pages are ready for DMA.")
 
-Let's take a closer look at step (2). `pin_user_pages()` walks the range and invokes a page fault to back each virtual page with a physical page frame. This is because a virtual address range returned by `malloc` or `mmap` may not have any physical backing, due to [demand paging](https://en.wikipedia.org/wiki/Demand_paging): pages are backed lazily. That is generally good for efficiency, but pinned memory — by definition — needs to be *physically fixed to a page frame* in order to be pinned.
+The expensive part is step (2). `pin_user_pages()` walks the virtual address range returned by step (1) and **triggers a page fault on each page** to back them with physical page frames. This is apparent if we peek into the [Linux source](https://elixir.bootlin.com/linux/v6.1.175/source/mm/gup.c#L3284-L3318) and walk down the stack trace:
 
-Thus a trace of `cudaHostAlloc` looks something like this, with `pin_user_pages()` having to walk over each page:
+```cpp
+// pin_user_pages is called with FOLL_PIN, which eventually reaches __get_user_pages:
+// https://elixir.bootlin.com/linux/v6.1.175/source/mm/gup.c#L1179-L1304
 
-![cudaHostAlloc: a rough timeline (details elided).](images/cudahostalloc-timeline.jpg)
-{caption: A crude drawing of cudaHostAlloc as a timeline (details elided).}
+static long __get_user_pages(...)
+   do {
+      struct page *page;
+      unsigned int foll_flags = gup_flags;
+retry:
+      page = follow_page_mask(vma, start, foll_flags, &ctx);
+      if (!page) {
+         ret = faultin_page(vma, start, &foll_flags, ...);
+         // Handle errors on ret...
+         goto retry;
+      }
+      pages[i] = page;
+      start += page_increm * PAGE_SIZE;
+      nr_pages -= page_increm;
+   } while (nr_pages);
+```
 
-[^pinned-vs-page-locked]: There is a related notion called 'page-locked' (see [mlock](https://man7.org/linux/man-pages/man2/mlock.2.html)), where the OS guarantees that the page is resident in a page frame, but can still move the page around. If your page is page-locked but not pinned, you might still pay for a '[soft page fault](https://lwn.net/Articles/600502/)', where the new location of a migrated page must be found and remembered. Pinning, in contrast, fixes the page in place. Unfortunately, the [CUDA docs](https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/understanding-memory.html#page-locked-host-memory) use 'page-locked' and 'pinned' interchangeably; for our purposes, they really mean 'pinned'.
+Basically, this is a loop where we look up each page in the page table (`follow_page_mask`), and if it has no physical backing, we invoke the MMU to fault it in (`faultin_page`), and then try again.
 
-[^transfer-performance]: Mark Harris has a great [blog](https://developer.nvidia.com/blog/how-optimize-data-transfers-cuda-cc/) on the performance analysis of these data transfers.
+Why must we do this? The virtual address range returned by `malloc` or `mmap` may not have any physical backing due to [demand paging](https://en.wikipedia.org/wiki/Demand_paging): pages are typically backed lazily. Demand paging is generally good for efficiency, but pinned memory — by definition — needs to be *physically pinned to a page frame*, so it must be eagerly backed.
 
-[^transfer-boundaries]: E.g., a data loader or preprocessor that feeds a GPU training pipeline, printing the result of some inference task, or fetching data from local or remote storage (barring fancy stuff like [GPU Direct Storage](https://docs.nvidia.com/gpudirect-storage/)).
+Thus a timeline of `cudaHostAlloc` looks something like this, with `pin_user_pages()` walking over each page:
 
-[^iommu]: In some cases an [IOMMU](https://en.wikipedia.org/wiki/Input%E2%80%93output_memory_management_unit) interposes between the DMA engine and host memory, mapping device-visible virtual addresses (called IOVAs) to physical addresses on the host. Regardless, the DMA still needs stable physical host addresses underneath that mapping.
+![cudaHostAlloc: a crude timeline.](images/cudahostalloc-page-faults.png)
+{caption: A crude timeline of cudaHostAlloc.}
+
+Let's do some napkin math. For each page fault, the OS finds a free physical page frame, zeroes it, and installs it into the page table. A reasonable estimate might put this at 1-2 microseconds per page. At 10GB of pinned memory — equivalent to 2.5 million 4KB pages — that amounts to:
+
+```
+(1 to 2 microseconds) * (2.5 million pages) = 2.5 to 5 seconds
+```
+
+That's a long time!
+
+## Optimization 1: Parallel Page Faults
+
+Fundamentally, there is no reason why we have to fault in the pages serially. Instead, we can pull the code being executed in `cudaHostAlloc` out of the driver/kernel and into user space. Then, we can replace the for loop by launching a bunch of threads to fault pages in parallel:
+
+```cpp
+// MMAP the region.
+void* allocation =
+   mmap(nullptr, bytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+
+// Get the number of system pages (usually 4KB each) in the allocation.
+const std::size_t page_size = static_cast<std::size_t>(sysconf(_SC_PAGESIZE));
+auto const page_count = bytes / page_size;
+
+// Make another pointer at the allocation, with indexes counted in bytes.
+// Threads will use this to write a byte into each page.
+// Note that it is volatile so that writes are not compiled away.
+auto* const base = static_cast<std::uint8_t volatile*>(allocation);
+std::size_t next_page = 0;
+
+std::vector<std::thread> workers;
+workers.reserve(thread_count);
+
+for (std::size_t i = 0; i < thread_count; ++i) {
+   // Each thread is responsible for a roughly equal number of pages.
+   auto const pages_for_worker =
+      page_count / thread_count + (i < page_count % thread_count ? 1 : 0);
+   auto const first_page = next_page;
+   next_page += pages_for_worker;
+   workers.emplace_back([base, first_page, pages_for_worker, page_size]() {
+      // Each thread simply writes one byte into each of its pages.
+      for (std::size_t page = 0; page < pages_for_worker; ++page) {
+         base[(first_page + page) * page_size] = 0;
+      }
+   });
+}
+
+for (auto& worker : workers) {
+   worker.join();
+}
+```
+
+Once the pages are faulted in, we can use [`cudaHostRegister`](https://docs.nvidia.com/cuda/archive/13.1.2/cuda-runtime-api/group__CUDART__MEMORY.html#group__CUDART__MEMORY_1ge8d5c17670f16ac4fc8fcb4181cb490c), which is like `cudaHostAlloc` in that it pins and registers the memory with CUDA, but accepts an existing host allocation instead of getting its own. We can simply pass in our pre-faulted allocation:
+
+```cpp
+// Since MMAP always uses whole pages, make sure we tell CUDA exactly
+// how many bytes we actually reserved, rounding up to the next page.
+auto const page_aligned_bytes = ((bytes + page_size - 1) / page_size) * page_size;
+cudaHostRegister(allocation, page_aligned_bytes, cudaHostRegisterDefault)
+```
+
+## Optimization 2: Huge Pages
+
+## Issue 1: The MMAP Lock
+
+## Issue 2: NUMA Locality
+
+[^pinned-vs-page-locked]: There is a related notion called 'page-locked' (see [mlock](https://man7.org/linux/man-pages/man2/mlock.2.html)), where the OS guarantees that the page is resident in a page frame, but can still move the page around. If your page is page-locked but not pinned, you might still pay for a '[soft page fault](https://lwn.net/Articles/600502/)', where a page that was migrated elsewhere in memory must be found and remembered. Pinning is a stronger notion where the page is fixed in place. The [CUDA docs](https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/understanding-memory.html#page-locked-host-memory) use 'page-locked' and 'pinned' interchangeably; for our purposes, they really mean 'pinned'.
+
+[^transfer-performance]: Mark Harris has a great [blog](https://developer.nvidia.com/blog/how-optimize-data-transfers-cuda-cc/) on the performance analysis of data transfers.
+
+[^transfer-boundaries]: E.g., a data loader or preprocessor that feeds a GPU training pipeline, printing the result of some inference task, or fetching data from local or remote storage (barring fancier techniques like [GPU Direct Storage](https://docs.nvidia.com/gpudirect-storage/)).
+
+[^iommu]: In some cases an [IOMMU](https://en.wikipedia.org/wiki/Input%E2%80%93output_memory_management_unit), a separate component living on the chipset, interposes between the DMA engine and host memory, mapping device-visible virtual addresses (called IOVAs) to physical addresses on the host. Regardless, the DMA still needs stable physical host addresses underneath that mapping.
 
 [^driver-thread]: More specifically, CUDA driver code (`libcudart.so`) typically runs inline on the calling thread.
 
@@ -209,4 +299,4 @@ Thus a trace of `cudaHostAlloc` looks something like this, with `pin_user_pages(
 
 [^rmm-behavior]: This is what [RMM](https://github.com/rapidsai/rmm)'s pinned memory resource does, which is used by cuDF.
 
-[^cuda-caveat]: Note that the explanation here is all an educated guess, since the CUDA user mode driver is not open source. But benchmarks, along with other hints (like looking at call stacks, inspecting `/proc/self/maps` for memory mapping metadata, and `getrusage()` to count page faults) substantiate the guess.
+[^cuda-caveat]: Note that the explanation here is based off runtime clues, since the CUDA user mode driver is not open source.

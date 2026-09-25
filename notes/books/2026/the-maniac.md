@@ -1,6 +1,6 @@
 Some highlights. I love this genre of "fictionalized biography." It is so interesting to peer into the mind of the author, while he in turn imagines the inner workings of these great scientists.
 
-Personally I don't mind being unable to clearly distinguish which anecdotes are historically accurate and which are imagined by the author. Historical rigor is important and all that, but since almost all historical accounts are aggrandized or dramatized in some fashion, I think we might as well lean into it and color in the gaps in service of a narrative.
+I like the genre because personally I don't mind being unable to clearly distinguish which anecdotes are historically accurate and which are imagined by the author. Historical rigor is important and all that, but since almost all historical accounts are aggrandized or dramatized in some fashion, I see nothing wrong with leaning into it and coloring in the gaps in service of a narrative.
 
 > Ehrenfest sought relentlessly what he called der springende Punkt, the leaping point, the heart of the matter, as for him deriving a result by logical means was never enough: “That is like dancing on one leg,” he would say, “when the essence lies in recognizing connections, meanings and associations in every direction.”
 
