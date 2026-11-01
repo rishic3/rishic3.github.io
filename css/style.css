@@ -147,8 +147,10 @@ img {
 
 .nav-inner {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    gap: 0.75rem 1rem;
     padding-bottom: 1.5rem;
 }
 
@@ -159,6 +161,7 @@ img {
     text-decoration: none;
     transition: color var(--transition);
     line-height: 20px;
+    white-space: nowrap;
 }
 
 .nav-title:hover {
@@ -1245,7 +1248,7 @@ img {
 /* --- Table of Contents (hover-to-reveal) --- */
 .toc-wrapper {
     position: fixed;
-    right: calc((100vw - var(--content-width)) / 4 - 1rem);
+    right: 1.5rem;
     top: 50%;
     transform: translateY(-50%);
     z-index: 50;
@@ -1431,6 +1434,10 @@ img {
 @media (max-width: 768px) {
     :root {
         --page-padding: 1.25rem;
+    }
+
+    .nav-links {
+        gap: 1rem;
     }
 
     .page-header h1 {
