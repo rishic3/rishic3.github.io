@@ -420,6 +420,84 @@ img {
     text-decoration-color: var(--text-primary);
 }
 
+.recent {
+    margin: 1.25rem 0 1.75rem;
+}
+
+.recent-heading {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--text-primary);
+}
+
+.recent-list {
+    list-style: none;
+}
+
+.recent-item {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    align-items: baseline;
+    column-gap: 1rem;
+    row-gap: 0.125rem;
+    padding: 0.5rem 0;
+    font-size: 0.9375rem;
+}
+
+.recent-date {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+}
+
+.recent-title {
+    color: var(--text-primary);
+}
+
+.recent-meta {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
+}
+
+.recent-venue {
+    color: var(--text-secondary);
+}
+
+.recent-venue::after {
+    content: "|";
+    margin-left: 0.375rem;
+    color: var(--text-tertiary);
+}
+
+.recent-meta a {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--text-tertiary);
+    text-underline-offset: 2px;
+    transition: text-decoration-color var(--transition);
+}
+
+/* inline-block keeps the separator out of the link's underline */
+.recent-meta a + a::before {
+    content: "·";
+    display: inline-block;
+    margin-right: 0.375rem;
+    color: var(--text-tertiary);
+}
+
+.recent-meta a:hover,
+.recent-meta a:focus-visible {
+    text-decoration-color: var(--text-primary);
+}
+
 /* --- Post List --- */
 .post-list {
     list-style: none;
@@ -1428,6 +1506,10 @@ img {
         border-radius: 0;
         border-left: none;
         border-right: none;
+    }
+
+    .recent-item {
+        grid-template-columns: 4.25rem 1fr;
     }
 
     .back-to-top {
