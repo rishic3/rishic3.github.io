@@ -9,7 +9,7 @@ Personal website with Reading and Writing sections, hosted on GitHub Pages.
 ├── writing.html            Writing section (technical blog posts)
 ├── reading.html            Reading section (book list with expandable notes)
 ├── css/
-│   └── style.css           Unified stylesheet (Notion-inspired design system)
+│   └── style.css           Unified stylesheet (Newsreader serif on warm ivory)
 ├── js/
 │   ├── markdown-blog.js    Markdown/math/code rendering engine (Blog API)
 │   ├── dark-mode.js        Light/dark theme toggle
